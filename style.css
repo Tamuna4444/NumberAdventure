@@ -1,0 +1,445 @@
+
+
+#startScreen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  height: 100vh;
+  width: 100vw;
+  padding: 20px;
+
+  background-image: url(./image/start.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #001F3F;
+
+  color: white;
+  text-align: center;
+
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+}
+ 
+
+
+#startScreen h1 {
+  font-size: 24px;
+  line-height: 1.3;
+  max-width: 90%;
+  word-wrap: break-word;
+  margin-bottom: 20px;
+}
+
+
+#startScreen button {
+  width: 80%;
+  max-width: 200px;
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid white;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+#startScreen button:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+html, body {
+  height: 100%;
+}
+body {
+    font-family: sans-serif;
+    text-align: center;
+    margin-top: 50px;
+    background-color: #f8f9fa;
+  }
+  #message {
+    font-size: 20px;
+    margin-top: 15px;
+  }
+  #lives {
+    font-size: 30px;
+    color: red;
+    margin-top: 10px;
+  }
+  #timer {
+    font-size: 50px;
+    margin-top: 20px;
+    color:white;
+  }
+  #score {
+    font-size: 40px;
+    color: white;
+    margin-top: 20px;
+  }
+ button {
+  margin: 10px;
+  padding: 10px 10px;
+  font-size: 15px;
+  border-radius: 8px; 
+  cursor: pointer;
+}
+input[type="number"] {
+  padding: 12px 16px;
+  font-size: 15px;
+  width: 50px;
+  border-radius: 6px;
+}
+#guessInput {
+  padding: 12px 16px;
+  font-size: 20px;
+  width: 80px;
+  border-radius: 8px;
+
+}
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+}
+
+.modal-content {
+  background-color: white;
+  margin: 15% auto;
+  padding: 30px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 400px;
+  text-align: center;
+  font-size: 18px;
+  box-shadow: 0 0 10px black;
+  color: black;
+  font-family: "Arial", sans-serif;
+}
+.modal-content h2 {
+  margin-top: 0;
+}
+.modal-content button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  color:red;
+}
+@media (max-width: 600px) {
+  body {
+    padding: 30px;
+    font-size: 16px;
+  }
+
+  h1, h2, p {
+    font-size: 22px;
+    margin: 15px 0;
+  }
+
+  input[type="number"],
+  button {
+    width: 50%;
+    font-size: 18px;
+    padding: 12px;
+    margin-top: 10px;
+  }
+
+  #timer,
+  #score {
+    font-size: 30px;
+    margin-top: 15px;
+  }
+
+  #lives {
+    font-size: 26px;
+    margin: 15px 0;
+  }
+
+  .modal-content {
+    width: 90%;
+    padding: 20px;
+    font-size: 16px;
+  }
+}
+@media (min-width: 700px) {
+  #startScreen h1 {
+    font-size: 32px;
+    
+  }
+
+  #startScreen button {
+    font-size: 24px;
+    max-width: 180px;
+  }
+
+
+  #startScreen h1 {
+    font-size: 32px;
+  }
+
+  #startScreen button {
+    font-size: 30px;
+    max-width: 100px;
+  }
+}
+.start-box {
+  margin-top: -80px;
+}
+
+
+.start-box h1 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.start-box p {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+.desktop-title {
+  display: none;
+}
+
+@media (min-width: 700px) {
+  .desktop-title {
+    display: block;
+    font-size: 32px;
+    margin-bottom: 10px;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+  }
+}
+
+#settingsContainer {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+#settingsBtn {
+  font-size: 5px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid white;
+  border-radius: 5px;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+}
+
+#settingsPanel {
+  margin-top: 10px;
+  padding: 10px;
+  background:none;
+  border: none;
+  border-radius: 10px;
+  
+  backdrop-filter: blur(6px);
+}
+
+
+.hidden {
+  display: none;
+}
+
+.setting-option button {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: white;
+  transition: transform 0.2s ease;
+}
+
+.setting-option button:hover {
+  transform: scale(1.2);
+}
+#toggleSound,
+#toggleVibration {
+  color: white !important;
+  transition: transform 0.2s ease;
+
+}
+
+#numberGame {
+  text-align: center;
+  margin-top: 40px;
+}
+
+#numberBoxes {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 20px;
+}
+
+.box {
+  width: 80px;
+  height: 80px;
+  background-color: white;
+  color: black;
+  font-size: 32px;
+  border: 2px solid black;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.box:hover {
+  background-color: lightgray;
+}
+
+.buttons button {
+  padding: 12px 24px;
+  font-size: 18px;
+  margin: 10px;
+  border-radius: 10px;
+  
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+#startBtn {
+  display: block;
+  margin: 50px auto;
+  padding: 12px 30px;
+  font-size: 30px;
+  border: none;
+  border-radius: 20px;
+  background-color:white;
+  color: rgb(12, 12, 12);
+  cursor: pointer;
+
+}
+.hidden {
+  display: none;
+}
+
+#level5Lives,
+#level5Time,
+#level5ScoreValue {
+  margin-top: 10px;
+  font-size: 24px; 
+  font-weight: bold;
+}
+#level5Container h2 {
+  font-size: 30px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+#level5Container h3 {
+  font-size: 22px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+#level6Boxes button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80px;   
+  height: 80px;
+  font-size: 60px;  
+}
+
+.level-6 {
+  background: #222;
+  color: #fff;
+  
+}
+
+#level6Boxes button {
+  border: 2px solid #fff;
+  background:white;
+  color: #fff;
+  cursor: pointer;
+}
+#level6Score, #level6Lives {
+  font-size: 50px;
+  margin: 15px auto;
+  color: white;
+  
+}
+
+
+#level6StartBtn {
+  display: block;
+  margin: 50px auto;
+  padding: 12px 30px;
+  font-size: 30px;
+  border: none;
+  border-radius: 20px;
+  background-color:white;
+  color: rgb(12, 12, 12);
+  cursor: pointer;
+
+}
+#level6Container h2 {
+  font-size: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+#level6Container h3 {
+  font-size: 22px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+#level6Time {
+  font-size: 32px; 
+  margin-top: 10px; 
+}
+#level6Message{
+  font-size: 32px; 
+  margin-top: 10px; 
+  font-family: Arial, Helvetica, sans-serif;
+}
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+}
+
+.modal-content  {
+  background-color: white;
+  margin: 15% auto;
+  padding: 30px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 400px;
+  text-align: center;
+  font-size: 18px;
+  box-shadow: 0 0 10px black;
+  color: black;
+  font-family: "Arial", sans-serif;
+}
+.modal-content button {
+  display: inline-block; 
+  background: #333;     
+  color: white;          
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+.modal-content button:hover {
+  background: #555;
+}
