@@ -54,7 +54,10 @@ const levelSounds = {
   1: new Audio('sounds/level1.mp3'),
   2: new Audio('sounds/level2.mp3'),
   3: new Audio('sounds/level3.mp3'),
-  4: new Audio('sounds/level4.mp3')
+  4: new Audio('sounds/level4.mp3'),
+  5: new Audio('sounds/level5.mp3'),
+  6: new Audio('sounds/level6.mp3')
+
 };
     function startGame() {
       if (soundOn) clickSound.play();
@@ -329,6 +332,7 @@ function jumpToLevel(n) {
       document.getElementById("level6Container").style.display = "none";
       document.getElementById("level5Container").style.display = "block";
   document.body.className = `level-5`;
+  updateBackground(5);
 
   const numberOptions = document.getElementById("numberOptions");
   const level5Message = document.getElementById("level5Message");
@@ -464,6 +468,7 @@ function renderLevel6Stage() {
   document.getElementById("level6Container").style.display = "block";
 
   document.body.className = "level-6";
+    updateBackground(6);
 
   document.getElementById("level6Message").textContent = "";
   document.getElementById("level6Boxes").innerHTML = "";
