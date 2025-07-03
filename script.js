@@ -199,6 +199,13 @@ function updateBackground(level) {
       if (userGuess === randomNumber) {
         clearInterval(timer);
         score += Math.max(10 - attempts + 1, 1);
+        const earnedPoints = Math.max(10 - attempts + 1, 1);
+score += earnedPoints;
+
+if (level === 1) level1Score += earnedPoints;
+if (level === 2) level2Score += earnedPoints;
+if (level === 3) level3Score += earnedPoints;
+if (level === 4) level4Score += earnedPoints;
         saveProgress();
         document.getElementById("score").innerText = `🏆 High Score: ${score}`;
         message.innerHTML = `🎉 You guessed it in ${attempts} attempts! Moving to next level...`;
