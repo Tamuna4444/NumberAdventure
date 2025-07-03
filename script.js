@@ -198,7 +198,7 @@ function updateBackground(level) {
 
       if (userGuess === randomNumber) {
         clearInterval(timer);
-        score += Math.max(10 - attempts + 1, 1);
+        
         const earnedPoints = Math.max(10 - attempts + 1, 1);
 score += earnedPoints;
 
