@@ -59,15 +59,25 @@ const levelSounds = {
   6: new Audio('sounds/level6.mp3')
 
 };
-    function startGame() {
-      if (soundOn) clickSound.play();
-
+   function startGame() {
+  if (soundOn) clickSound.play();
 
   document.getElementById("startScreen").style.display = "none";
-  document.getElementById("gameContainer").style.display = "block";
 
+  loadProgress(); 
+
+  if (level === 5) {
+    renderLevel5Stage(); 
+    return;
+  }
+
+  if (level === 6) {
+    renderLevel6Stage();
+    return;
+  }
+
+  document.getElementById("gameContainer").style.display = "block";
   updateBackground(level); 
-  loadProgress();
   startTimer();
   updateLivesDisplay();
 }
@@ -409,7 +419,7 @@ function jumpToLevel(n) {
     buttons.forEach(btn => btn.disabled = true);
 
     if (choice === correct) {
-      level5Message.textContent = `✅ Correct! The number was ${correct}`;
+      level5Message.textContent = ` Correct! The number was ${correct}`;
       updateLevel5Score(10);
 
       setTimeout(() => {
@@ -419,14 +429,15 @@ function jumpToLevel(n) {
         } else if (rangeStart === 51) {
           rangeStart = 101;
           rangeEnd = 200;
-        } else {
-          level5Message.textContent = " You passed Level 5!"
-          setTimeout(() => {
-            document.getElementById("level5Container").style.display = "none";
-            document.getElementById("victoryModal").style.display = "block";
-          }, 1500);
-          return;
-        }
+  } else {
+  level5Message.textContent = "✅ You passed Level 5!";
+  setTimeout(() => {
+    document.getElementById("level5Container").style.display = "none";
+    level = 6; 
+    renderLevel6Stage(); 
+  }, 1500);
+  return;
+}
 
         renderOptions(rangeStart, rangeEnd);
         startLevel5Timer();
@@ -439,6 +450,7 @@ function jumpToLevel(n) {
       if (level5Lives <= 0) {
         numberOptions.innerHTML = "";
         level5Message.textContent = `💀 Game Over! The correct number was: ${correct}`;
+        document.getElementById("restartLevel5Btn").classList.remove("hidden");
         showSummary();
       } else {
         setTimeout(() => {
@@ -533,6 +545,13 @@ function checkLevel6Box(index, box) {
      
 
     document.getElementById("level6Message").textContent = "Correct! Next...";
+  if (level6Score >= 50) {
+    document.getElementById("level6Message").textContent = "🏆 You completed Level 6!";
+    document.getElementById("restartLevel6Btn").classList.remove("hidden");
+    showSummary();
+    return;
+  }
+
     setTimeout(() => {
       document.getElementById("level6Message").textContent = "";
       setupLevel6Round();
@@ -547,6 +566,7 @@ function checkLevel6Box(index, box) {
 
     if (level6Lives <= 0) {
       document.getElementById("level6Message").textContent = "Game Over!";
+        document.getElementById("restartLevel6Btn").classList.remove("hidden");
       showSummary();
     } else {
       document.getElementById("level6Message").textContent = "Oops! Try again...";

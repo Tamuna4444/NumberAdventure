@@ -14,7 +14,7 @@
   <p>Welcome to the Adventure!</p> 
   <button onclick="startGame()">Start</button>
 
-<!--
+
 <div id="devTools" style="margin: 30px; text-align: center;">
   <button onclick="jumpToLevel(1)"> Level 1</button>
   <button onclick="jumpToLevel(2)"> Level 2</button>
@@ -23,7 +23,7 @@
   <button onclick="jumpToLevel(5)"> Level 5</button>
   <button onclick="jumpToLevel(6)"> Level 6</button>
 </div>
--->
+
 
 
 <div id="settingsContainer">
@@ -78,6 +78,7 @@
    <div id="level5ScoreValue" class="hidden">🏆Score: 0</div>
    <div id="level5Message"></div>
    <button id="startBtn">Start</button>
+   <button id="restartLevel5Btn" class="hidden" onclick="resetProgress()"> Restart Game</button>
   </div>
 
 
@@ -90,6 +91,7 @@
   <div id="level6Lives"></div>
   <div id="level6Time">⏱️</div>
   <div id="level6ScoreValue" style="display: none;">🏆Score: 0</div>
+  <button id="restartLevel6Btn" class="hidden" onclick="resetProgress()"> Restart Game</button>
 
  
 
