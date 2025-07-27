@@ -137,4 +137,34 @@ body.level-6 {
   padding-top: 60px; 
   text-align: center;
 }
+#summaryModal button {
+  display: inline-block;
+  background-color: #001F3F;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  margin-top: 20px;
+  cursor: pointer;
+}
+.language-container {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 1000;
+}
+
+.language-select {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid white;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 13px;
+  width: 90px;
+  appearance: none;
+  backdrop-filter: blur(2px);
+  cursor: pointer;
+}
 

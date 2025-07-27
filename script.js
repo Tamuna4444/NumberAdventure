@@ -1,3 +1,85 @@
+let currentLang = "ru"; 
+
+const translations = {
+  en: {
+    title: "Guess the Number",
+    start: "Start",
+    level1: "Level 1",
+    level2: "Level 2",
+    level3: "Level 3",
+    level4: "Level 4",
+    level5: "Level 5",
+    level6: "Level 6",
+    welcome: "Welcome to the Adventure!",
+    tooHigh: "📉 Too high! Try again.",
+    tooLow: "📈 Too low! Try again.",
+    correct: (attempts) => `🎉 You guessed it in ${attempts} attempts! Moving to next level...`,
+    gameOver: (number) => `👻 Game Over! You lost all lives.<br>✅ The correct number was: ${number}`,
+    timeUp: "🕐 Time's up! You lost 1 life.",
+    enterNumber: "⛔ Please enter a number!",
+
+    level5Correct: "✅ Correct! The number was ",
+    level5Wrong: "❌ Wrong! Correct was: ",
+    level5Passed: "🎉 You passed Level 5!",
+    level5TimeUp: "🕐 Time’s up! You lost 1 life.",
+    level5GameOver: "💀 Game Over! The correct number was: ",
+
+    level6Correct: "✅ Correct! Next...",
+    level6Wrong: "❌ Oops! Try again...",
+    level6GameOver: "💀 Game Over!",
+    level6TimeUp: "🕐 Time's up! You lost 1 life.",
+      timerLabel: "⏱️ Time left:",
+      scoreLabel: "🏆 High Score:"
+  },
+  ru: {
+    title: "Угадай число",
+    start: "Начать",
+    level1: "Уровень 1",
+    level2: "Уровень 2",
+    level3: "Уровень 3",
+    level4: "Уровень 4",
+    level5: "Уровень 5",
+    level6: "Уровень 6",
+    welcome: "Добро пожаловать в приключение!",
+    tooHigh: "📉 Слишком много! Попробуй ещё раз.",
+    tooLow: "📈 Слишком мало! Попробуй ещё раз.",
+    correct: (attempts) => `🎉 Угадал за ${attempts} попыток! Переход на следующий уровень...`,
+    gameOver: (number) => `👻 Игра окончена! Ты потерял все жизни.<br>✅ Загаданное число было: ${number}`,
+    timeUp: "🕐 Время вышло! Ты потерял 1 жизнь.",
+    enterNumber: "⛔ Пожалуйста, введи число!",
+
+    level5Correct: "✅ Верно! Число было ",
+    level5Wrong: "❌ Неверно! Правильный ответ: ",
+    level5Passed: "🎉 Ты прошел 5 уровень!",
+    level5TimeUp: "🕐 Время вышло! Ты потерял 1 жизнь.",
+    level5GameOver: "💀 Игра окончена! Правильное число было: ",
+
+    level6Correct: "✅ Верно! Далее...",
+    level6Wrong: "❌ Упс! Попробуй снова...",
+    level6GameOver: "💀 Игра окончена!",
+    level6TimeUp: "🕐 Время вышло! Ты потерял 1 жизнь.",
+     timerLabel: "⏱️ Осталось времени:",
+     scoreLabel: "🏆 Рекорд:"
+  }
+};
+
+function changeLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem("lang", lang);
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    const key = el.getAttribute("data-i18n");
+    const translation = translations[lang][key];
+    if (typeof translation === "function") {
+      el.textContent = translation(0); 
+    } else if (translation) {
+      el.textContent = translation;
+    }
+  });
+}
+
+
+
+
 let level1Score = 0;
 let level2Score = 0;
 let level3Score = 0;
@@ -160,7 +242,7 @@ function updateBackground(level) {
 
             return;
           } else {
-            message.innerHTML = "🕐 Time's up! You lost 1 life.";
+            message.innerHTML = translations[currentLang].timeUp;
             message.style.color = "orange";
             startTimer();
           }
@@ -180,7 +262,7 @@ function updateBackground(level) {
 
   if (savedScore) {
     score = parseInt(savedScore);
-    document.getElementById("score").innerText = `🏆 High Score: ${score}`;
+    document.getElementById("score").innerText = `${translations[currentLang].highScore}: ${score}`;
   }
 
   if (completedLevel) {
@@ -188,8 +270,9 @@ function updateBackground(level) {
     const data = getLevelData(level);
     maxNumber = data.max;
     randomNumber = Math.floor(Math.random() * maxNumber) + 1;
-    document.getElementById("levelTitle").innerText = data.title;
-    document.getElementById("levelStory").innerText = data.story;
+   document.getElementById("levelTitle").innerText = translations[currentLang][`level${level}`];
+   document.getElementById("levelStory").innerText = `Guess a number between 1 and ${maxNumber}`;
+
     document.getElementById("guessInput").setAttribute("max", maxNumber);
   }
 
@@ -200,7 +283,7 @@ function updateBackground(level) {
       const message = document.getElementById("message");
 
       if (!userGuess) {
-        message.innerHTML = "⛔ Please enter a number!";
+       message.innerHTML = translations[currentLang].enterNumber;
         return;
       }
 
@@ -218,7 +301,7 @@ if (level === 3) level3Score += earnedPoints;
 if (level === 4) level4Score += earnedPoints;
         saveProgress();
         document.getElementById("score").innerText = `🏆 High Score: ${score}`;
-        message.innerHTML = `🎉 You guessed it in ${attempts} attempts! Moving to next level...`;
+        message.innerHTML = translations[currentLang].correct(attempts);
         message.style.color = "green";
 
       if (level === 4) {
@@ -263,7 +346,7 @@ if (level === 4) level4Score += earnedPoints;
 
 
   
-          message.innerHTML = `👻 Game Over! You lost all lives.<br> ☑️ The correct number was: ${randomNumber}`;
+         message.innerHTML = translations[currentLang].gameOver(randomNumber);
           message.style.color = "black";
           document.getElementById("gameButton").disabled = true;
 
@@ -273,10 +356,10 @@ if (level === 4) level4Score += earnedPoints;
         }
 
         if (userGuess > randomNumber) {
-          message.innerHTML = "📉 Too high! Try again.";
+          message.innerHTML = translations[currentLang].tooHigh;
           message.style.color = "red";
         } else {
-          message.innerHTML = "📈 Too low! Try again.";
+          message.innerHTML = translations[currentLang].tooLow;
           message.style.color = "red";
         }
       }
@@ -396,10 +479,10 @@ function jumpToLevel(n) {
         clearInterval(level5TimerInterval);
         level5Lives--;
         document.getElementById("level5Lives").textContent = "❤️".repeat(level5Lives);
-        level5Message.textContent = "🕐 Time’s up! You lost 1 life.";
+        level5Message.textContent = translations[currentLang].level5TimeUp;
         if (level5Lives <= 0) {
           numberOptions.innerHTML = "";
-          level5Message.textContent = "💀 Game Over!";
+          level5Message.textContent = translations[currentLang].level5GameOver;
           showSummary();
         
         } else {
@@ -419,7 +502,7 @@ function jumpToLevel(n) {
     buttons.forEach(btn => btn.disabled = true);
 
     if (choice === correct) {
-      level5Message.textContent = ` Correct! The number was ${correct}`;
+    level5Message.textContent = translations[currentLang].level5Correct + correct;
       updateLevel5Score(10);
 
       setTimeout(() => {
@@ -430,7 +513,7 @@ function jumpToLevel(n) {
           rangeStart = 101;
           rangeEnd = 200;
   } else {
-  level5Message.textContent = "✅ You passed Level 5!";
+  level5Message.textContent = translations[currentLang].level5Passed;
   setTimeout(() => {
     document.getElementById("level5Container").style.display = "none";
     level = 6; 
@@ -445,7 +528,7 @@ function jumpToLevel(n) {
     } else {
       level5Lives--;
       document.getElementById("level5Lives").textContent = "❤️".repeat(level5Lives);
-      level5Message.textContent = `❌ Wrong! Correct was: ${correct}`;
+      level5Message.textContent = translations[currentLang].level5Wrong + correct;
 
       if (level5Lives <= 0) {
         numberOptions.innerHTML = "";
@@ -544,7 +627,7 @@ function checkLevel6Box(index, box) {
     document.getElementById("level6ScoreValue").textContent = `🏆Score: ${level6Score}`;
      
 
-    document.getElementById("level6Message").textContent = "Correct! Next...";
+document.getElementById("level6Message").textContent = translations[currentLang].level6Correct;
   if (level6Score >= 50) {
     document.getElementById("level6Message").textContent = "🏆 You completed Level 6!";
     document.getElementById("restartLevel6Btn").classList.remove("hidden");
@@ -565,11 +648,11 @@ function checkLevel6Box(index, box) {
     document.getElementById("level6Lives").textContent = "❤️".repeat(level6Lives);
 
     if (level6Lives <= 0) {
-      document.getElementById("level6Message").textContent = "Game Over!";
+      document.getElementById("level6Message").textContent = translations[currentLang].level6GameOver;
         document.getElementById("restartLevel6Btn").classList.remove("hidden");
       showSummary();
     } else {
-      document.getElementById("level6Message").textContent = "Oops! Try again...";
+document.getElementById("level6Message").textContent = translations[currentLang].level6Wrong;
       setTimeout(() => {
         document.getElementById("level6Message").textContent = "";
         setupLevel6Round();
@@ -614,3 +697,11 @@ function showSummary() {
 function closeSummary() {
   document.getElementById("summaryModal").style.display = "none";
 }
+
+
+document.addEventListener('DOMContentLoaded', function () {
+  const savedLang = localStorage.getItem("lang") || "en";
+  currentLang = savedLang;
+  changeLanguage(savedLang);
+  document.getElementById("langSelect").value = savedLang;
+});
