@@ -1,4 +1,4 @@
-let currentLang = "en";
+let currentLang = localStorage.getItem("lang") || "en";
 
 const translations = {
   en: {
@@ -161,6 +161,21 @@ document.addEventListener("DOMContentLoaded", () => {
   toggleSound.addEventListener('click', () => {
     soundOn = !soundOn;
     toggleSound.textContent = soundOn ? '🔊' : '🔇';
+   if (!soundOn) {
+    Object.values(levelSounds).forEach(sound => {
+      sound.pause();
+      sound.currentTime = 0;
+    });
+    startSound.pause();
+    clickSound.pause();
+    failSound.pause();
+  } else {
+    // თუ გინდა, რომ ისევ ჩაირთოს მუსიკა ღილაკზე დაჭერით, შეგიძლია ეს ჩასვა:
+    if (levelSounds[level]) {
+      levelSounds[level].loop = true;
+      levelSounds[level].play();
+    }
+  } 
   });
 
   toggleVibration.addEventListener('click', () => {
@@ -253,12 +268,12 @@ function updateBackground(level) {
   });
 
   
-  if (levelSounds[level]) {
-    levelSounds[level].loop = true;
-    levelSounds[level].play().catch((err) => {
-      console.warn("🔇 Level sound autoplay was blocked:", err);
-    });
-  }
+ if (soundOn && levelSounds[level]) {
+  levelSounds[level].loop = true;
+  levelSounds[level].play().catch((err) => {
+    console.warn("🔇 Level sound autoplay was blocked:", err);
+  });
+}
 
 
   
@@ -448,10 +463,14 @@ if (level === 4) level4Score += earnedPoints;
       }
     }
 
-    function resetProgress() {
-      localStorage.clear();
-      location.reload();
-    }
+   function resetProgress() {
+  const savedLang = localStorage.getItem("lang");
+  localStorage.clear();
+  if (savedLang) {
+    localStorage.setItem("lang", savedLang);
+  }
+  location.reload();
+}
 function jumpToLevel(n) {
   level = n;
   localStorage.setItem("completedLevel", n - 1);
@@ -729,24 +748,28 @@ function checkLevel6Box(index, box) {
      
 
 document.getElementById("level6Message").textContent = translations[currentLang].level6Correct;
-  if (level6Score >= 50) {
-    document.getElementById("level6Message").textContent = "🏆 You completed Level 6!";
-    document.getElementById("restartLevel6Btn").classList.remove("hidden");
-    showSummary();
-    return;
-  }
+
 
     setTimeout(() => {
       document.getElementById("level6Message").textContent = "";
       setupLevel6Round();
     }, 1000);
+    return;
 
   } else {
     box.textContent = "❌";
     box.style.color = "red";
 
     level6Lives--;
-    document.getElementById("level6Lives").textContent = "❤️".repeat(level6Lives);
+  document.getElementById("level6Lives").textContent = "❤️".repeat(level6Lives);
+
+  const allBoxes = document.querySelectorAll("#level6Boxes button");
+  const correctBox = allBoxes[level6HiddenBoxIndex];
+  correctBox.textContent = level6Correct;
+  correctBox.style.color = "black";
+  correctBox.style.border = "2px solid green";
+
+
 
     if (level6Lives <= 0) {
       document.getElementById("level6Message").textContent = translations[currentLang].level6GameOver;
