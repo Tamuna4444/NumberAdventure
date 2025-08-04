@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guess the Number – Levels & Lives</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style-level.css">
+</head>
+
+<body class="level-1">
+<div id="startScreen">
+  <div class="language-container">
+  <label for="langSelect" class="language-label"></label>
+  <select id="langSelect" onchange="changeLanguage(this.value)" class="language-select">
+    <option value="en" selected>English</option>
+    <option value="ru">Русский</option>
+
+  </select>
+</div>
+  
+
+<h1 data-i18n="title"></h1>
+  <p data-i18n="welcome">Welcome to the Adventure!</p>
+  <button onclick="startGame()" data-i18n="start">Start</button>
+
+
+  <div id="devTools">
+    <button class="levelBtn locked" data-level="1" onclick="jumpToLevel(1)"></button>
+    <button class="levelBtn locked" data-level="2" onclick="jumpToLevel(2)"></button>
+    <button class="levelBtn locked" data-level="3" onclick="jumpToLevel(3)"></button>
+    <button class="levelBtn locked" data-level="4" onclick="jumpToLevel(4)"></button>
+    <button class="levelBtn locked" data-level="5" onclick="jumpToLevel(5)"></button>
+    <button class="levelBtn locked" data-level="6" onclick="jumpToLevel(6)"></button>
+  </div>
+  
+
+
+
+<div id="settingsContainer">
+  <button id="settingsBtn">⚙️</button>
+
+  <div id="settingsPanel" class="hidden">
+    <div class="setting-option">
+      <button id="toggleSound">🔊</button>
+    </div>
+    <div class="setting-option">
+      <button id="toggleVibration">📳</button>
+    </div>
+  </div>
+</div>
+</div>
+
+
+
+<div id="gameContainer" style="display:none;">
+<h1 data-i18n="gameTitle">Guess the Number!</h1>
+<h1 id="levelTitle" data-i18n="levelTitle">Level 1: The Beginning</h1>
+<h4 id="levelStory" data-i18n="levelStory"></h4>
+
+
+  <input 
+  type="tel" 
+  inputmode="numeric" 
+  pattern="[0-9]*" 
+  id="guessInput" 
+  min="1"
+  autocomplete="off">
+
+
+  <br>
+ <button id="gameButton" onclick="checkGuess()" data-i18n="check">Check</button>
+
+  <br>
+ <button onclick="resetProgress()" data-i18n="reset">Reset Game</button>
+  
+ 
+  
+
+  <p id="message"></p>
+  <div id="lives">🤎🤎🤎🤎🤎</div>
+ <p id="timer"><span data-i18n="timerLabel">⏱️ Time left:</span> <span id="timeValue">50s</span></p>
+<p id="score"><span data-i18n="scoreLabel">🏆 High Score:</span> <span id="scoreValue">0</span></p>
+  </div>
+
+  <div id="level5Container" style="display: none;">
+ <h2 data-i18n="level5Title">Level 5: Follow the Intuition</h2>
+<h3 data-i18n="level5Subtitle">Choose the number you feel is correct</h3>
+    <div id="numberOptions"></div>
+   <div id="level5Lives" class="hidden">❤️❤️❤️</div>
+   <div id="level5Time" class="hidden">⏰ 30s</div>
+  <div id="level5ScoreValue" class="hidden">
+    <span data-i18n="levelScoreLabel">🏆 Score:</span> <span id="level5ScoreNum">0</span></div>
+   <div id="level5Message"></div>
+<button id="startBtn" data-i18n="start">Start</button>
+<button id="restartLevel5Btn" class="hidden" onclick="resetProgress()" data-i18n="reset">Restart Game</button>
+  </div>
+
+
+<div id="level6Container" style="display: none; text-align: center;">
+  <h2 id="level6Title">Level 6: Hidden Choice</h2>
+  <h3 id="level6Story">Find the Hidden Number</h3>
+  <button id="level6StartBtn" data-i18n="start">Start</button>
+  <div id="level6Boxes" style="display: flex; justify-content: center; gap: 20px; margin: 20px 0;"></div>
+  <p id="level6Message"></p>
+  <div id="level6Lives"></div>
+  <div id="level6Time">⏱️</div>
+  <div id="level6ScoreValue" style="display: none;">
+    <span data-i18n="levelScoreLabel">🏆 Score:</span> <span id="level6ScoreNum">0</span></div>
+<button id="restartLevel6Btn" class="hidden" onclick="resetProgress()" data-i18n="reset">Restart Game</button>
+
+ 
+
+</div>
+<div id="summaryModal" class="modal">
+  <div class="modal-content">
+   <h2 data-i18n="finalScore">🎉 Final Score!</h2>
+    <p id="level1Score"></p>
+    <p id="level5Score"></p>
+    <p id="level6FinalScore"></p> 
+    <hr>
+   <p id="totalScore" data-i18n="total">🏆 Total: </p>
+   <button onclick="closeSummary()" data-i18n="close">Close</button>
+  </div>
+</div>
+
+
+
+
+
+
+
+  <script src="script.js"></script>
+</body>
+</html>
