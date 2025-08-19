@@ -101,22 +101,44 @@ function changeLanguage(lang) {
   currentLang = lang;
   localStorage.setItem("lang", lang);
 
- 
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     const key = el.getAttribute("data-i18n");
-    const translation = translations[lang][key];
-    if (typeof translation === "function") {
-      el.textContent = translation(0);
-    } else if (translation) {
-      el.textContent = translation;
-    }
+
+    
+    if (key === "levelTitle" || key === "levelStory") return;
+
+    const tr = translations[lang][key];
+    if (typeof tr === "function") el.textContent = tr(0);
+    else if (tr) el.textContent = tr;
   });
 
  
   document.querySelectorAll(".levelBtn").forEach((btn) => {
-    const levelNumber = btn.getAttribute("data-level");
-    btn.textContent = `${translations[lang].level} ${levelNumber}`;
+    const n = btn.getAttribute("data-level");
+    btn.textContent = `${translations[lang].level} ${n}`;
   });
+
+  
+  const dataNow = getLevelData(level);
+  if (dataNow) {
+    const t = document.getElementById("levelTitle");
+    const s = document.getElementById("levelStory");
+    if (t) t.innerText = dataNow.title[lang];
+    if (s) s.innerText = dataNow.story[lang];
+  }
+
+  
+  const l5 = getLevelData(5);
+  const l5t = document.querySelector('[data-i18n="level5Title"]');
+  const l5s = document.querySelector('[data-i18n="level5Subtitle"]');
+  if (l5 && l5t) l5t.innerText = l5.title[lang];
+  if (l5 && l5s) l5s.innerText = l5.story[lang];
+
+  const l6 = getLevelData(6);
+  const l6t = document.getElementById("level6Title");
+  const l6s = document.getElementById("level6Story");
+  if (l6 && l6t) l6t.innerText = l6.title[lang];
+  if (l6 && l6s) l6s.innerText = l6.story[lang];
 }
  
 function applyTranslations() {
@@ -124,7 +146,7 @@ function applyTranslations() {
 }
 function updateLevelLocks() {
 
-  localStorage.setItem("unlockedLevel", "6");
+  
   const unlockedLevel = parseInt(localStorage.getItem("unlockedLevel")) || 1;
 
   document.querySelectorAll(".levelBtn").forEach((btn) => {
@@ -132,8 +154,10 @@ function updateLevelLocks() {
 
     if (levelNum <= unlockedLevel) {
       btn.classList.remove("locked");
+      btn.disabled = false;
     } else {
-      btn.classList.add("locked"); 
+      btn.classList.add("locked");
+      btn.disabled = true;
     }
   });
 }
@@ -203,16 +227,16 @@ const restartGame5Btn = document.getElementById("restartGame5Btn");
   if (restartGame5Btn) {
     restartGame5Btn.addEventListener("click", (e) => {
       e.preventDefault();
-      resetProgress();   // თავიდან მთლიანი თამაში
+      resetProgress();   
     });
   }
 
-  // 🔄 Restart Level (Level 5)
+
   const restartLevel5Btn = document.getElementById("restartLevel5Btn");
   if (restartLevel5Btn) {
     restartLevel5Btn.addEventListener("click", (e) => {
       e.preventDefault();
-      restartLevelTo(5); // თავიდან მხოლოდ Level 5
+      restartLevelTo(5); 
     });
   }
 
@@ -515,40 +539,20 @@ if (level === 4) level4Score += earnedPoints;
 }
 function restartLevel() {
   
-  clearInterval(timer);
-  if (typeof level5TimerInterval !== "undefined") clearInterval(level5TimerInterval);
-  if (typeof level6Timer !== "undefined") clearInterval(level6Timer);
+  try { clearInterval(timer); } catch (_) {}
+  try { clearInterval(level5TimerInterval); } catch (_) {}
+  try { clearInterval(level6Timer); } catch (_) {}
 
-  
+ 
   try {
     Object.values(levelSounds).forEach(s => { s.pause(); s.currentTime = 0; });
-    startSound.pause(); clickSound.pause(); failSound.pause();
-  } catch(e) {}
-
- 
-  const summary = document.getElementById("summaryModal");
-  if (summary) summary.style.display = "none";
-
- 
-  attempts = 0;
-
-  if (level === 5) {
-    
-    rangeStart = 1;
-    rangeEnd = 50;
-    level5Lives = 3;
-    level5Score = 0;
-  }
-
-  if (level === 6) {
-    
-    level6Lives = 3;
-    level6Score = 0;
-  }
-
-  
+  } catch (_) {}
+  const msg = document.getElementById("message");
+  if (msg) msg.innerHTML = "";
   jumpToLevel(level);
 }
+
+ 
 function jumpToLevel(n) {
   level = n;
   localStorage.setItem("completedLevel", n - 1);
@@ -621,7 +625,7 @@ function jumpToLevel(n) {
       document.getElementById("victoryModal").style.display = "none";
     }
 
-    // Initialize
+    
     loadProgress();
     startTimer();
     updateLivesDisplay();
@@ -1084,48 +1088,61 @@ function restartLevelTo(n) {
 
   attempts = 0;
 
- 
   if (n === 5) {
+    level = 5;
+    
     rangeStart  = 1;
     rangeEnd    = 50;
     level5Lives = 3;
     level5Score = 0;
-    const msg = document.getElementById("level5Message");
-    const opts = document.getElementById("numberOptions");
-    if (msg)  msg.textContent = "";
-    if (opts) opts.innerHTML = "";
-  } else if (n === 6) {
+
+    
+    renderLevel5Stage();
+
+    
+    requestAnimationFrame(() => {
+      const startBtn = document.getElementById("startBtn");
+      if (startBtn) startBtn.click();
+    });
+    return;
+  }
+
+  if (n === 6) {
+    level = 6;
     level6Lives = 3;
     level6Score = 0;
+    renderLevel6Stage();
+    return;
   }
 
+ 
   level = n;
-  jumpToLevel(n); 
-
-  
-  if (n === 5) {
-    setTimeout(() => {
-      const startBtn = document.getElementById("startBtn");
-      if (startBtn) {
-        startBtn.style.display = "inline-block"; 
-        startBtn.click(); 
-      }
-    }, 0);
-  }
+  jumpToLevel(n);
 }
 
 document.addEventListener("click", (e) => {
- 
-  if (e.target.closest("#restartGame6Btn")) {
-    e.preventDefault();
-    resetProgress();        
-    return;
-  }
+  const btn = e.target.closest("button");
+  if (!btn) return;
 
-  
-  if (e.target.closest("#restartLevel6Btn")) {
-    e.preventDefault();
-    restartLevelTo(6);      
-    return;
+  switch (btn.id) {
+    case "restartLevel5Btn":
+      e.preventDefault();
+      restartLevelTo(5);
+      break;
+
+    case "restartGame5Btn":
+      e.preventDefault();
+      resetProgress();
+      break;
+
+    case "restartLevel6Btn":
+      e.preventDefault();
+      restartLevelTo(6);
+      break;
+
+    case "restartGame6Btn":
+      e.preventDefault();
+      resetProgress();
+      break;
   }
 });
