@@ -45,6 +45,7 @@ const translations = {
     finalScore: "🎉 Final Score!",
     close: "Close",
     guessRange: (max) => `Guess a number between 1 and ${max}`,
+    restartLevel: "Restart Level"
   },
 
   ru: {
@@ -91,6 +92,7 @@ const translations = {
     finalScore: "🎉 Финальный счёт!",
     close: "Закрыть",
     guessRange: (max) => `Угадай число от 1 до ${max}`,
+    restartLevel: "Сбросить уровень"
   }
 };
 
@@ -116,9 +118,23 @@ function changeLanguage(lang) {
     btn.textContent = `${translations[lang].level} ${levelNumber}`;
   });
 }
+ 
+function applyTranslations() {
+  try { changeLanguage(currentLang); } catch (e) {}
+}
 function updateLevelLocks() {
+
+  localStorage.setItem("unlockedLevel", "6");
+  const unlockedLevel = parseInt(localStorage.getItem("unlockedLevel")) || 1;
+
   document.querySelectorAll(".levelBtn").forEach((btn) => {
-    btn.classList.remove("locked");
+    const levelNum = parseInt(btn.getAttribute("data-level"));
+
+    if (levelNum <= unlockedLevel) {
+      btn.classList.remove("locked");
+    } else {
+      btn.classList.add("locked"); 
+    }
   });
 }
 
@@ -170,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
     clickSound.pause();
     failSound.pause();
   } else {
-    // თუ გინდა, რომ ისევ ჩაირთოს მუსიკა ღილაკზე დაჭერით, შეგიძლია ეს ჩასვა:
+    
     if (levelSounds[level]) {
       levelSounds[level].loop = true;
       levelSounds[level].play();
@@ -183,6 +199,22 @@ document.addEventListener("DOMContentLoaded", () => {
     toggleVibration.textContent = vibrationOn ? '📳' : '❌';
   });
 });
+const restartGame5Btn = document.getElementById("restartGame5Btn");
+  if (restartGame5Btn) {
+    restartGame5Btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      resetProgress();   // თავიდან მთლიანი თამაში
+    });
+  }
+
+  // 🔄 Restart Level (Level 5)
+  const restartLevel5Btn = document.getElementById("restartLevel5Btn");
+  if (restartLevel5Btn) {
+    restartLevel5Btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      restartLevelTo(5); // თავიდან მხოლოდ Level 5
+    });
+  }
 
 
 
@@ -225,6 +257,16 @@ const levelSounds = {
   updateBackground(level); 
   updateLivesDisplay();    
   startTimer();
+
+    const gameBtn = document.getElementById("gameButton");
+  if (gameBtn) {
+    gameBtn.disabled = false;
+    gameBtn.onclick = checkGuess;
+  }
+
+  applyTranslations();
+
+
 
   if (level === 5) {
     renderLevel5Stage(); 
@@ -471,6 +513,42 @@ if (level === 4) level4Score += earnedPoints;
   }
   location.reload();
 }
+function restartLevel() {
+  
+  clearInterval(timer);
+  if (typeof level5TimerInterval !== "undefined") clearInterval(level5TimerInterval);
+  if (typeof level6Timer !== "undefined") clearInterval(level6Timer);
+
+  
+  try {
+    Object.values(levelSounds).forEach(s => { s.pause(); s.currentTime = 0; });
+    startSound.pause(); clickSound.pause(); failSound.pause();
+  } catch(e) {}
+
+ 
+  const summary = document.getElementById("summaryModal");
+  if (summary) summary.style.display = "none";
+
+ 
+  attempts = 0;
+
+  if (level === 5) {
+    
+    rangeStart = 1;
+    rangeEnd = 50;
+    level5Lives = 3;
+    level5Score = 0;
+  }
+
+  if (level === 6) {
+    
+    level6Lives = 3;
+    level6Score = 0;
+  }
+
+  
+  jumpToLevel(level);
+}
 function jumpToLevel(n) {
   level = n;
   localStorage.setItem("completedLevel", n - 1);
@@ -478,29 +556,28 @@ function jumpToLevel(n) {
   document.getElementById("level5Container").style.display = "none";
   document.getElementById("level6Container").style.display = "none";
 
+  
   if (level === 5) {
     document.getElementById("startScreen").style.display = "none";
-    renderLevel5Stage(); 
+    renderLevel5Stage();
     return;
   }
   if (level === 6) {
     document.getElementById("startScreen").style.display = "none";
-   renderLevel6Stage(); 
+    renderLevel6Stage();
     return;
   }
+
   
   const next = getLevelData(level);
   maxNumber = next.max;
   randomNumber = Math.floor(Math.random() * maxNumber) + 1;
   attempts = 0;
   lives = next.lives || 5;
-  timeLeft = 40 + level * 5;
 
-  if (level === 1) {
-    timeLeft = 50;
-  } else {
-    timeLeft = 40 + level * 5;
-  }
+  
+  timeLeft = (level === 1) ? 50 : (40 + level * 5);
+
   
   document.body.className = `level-${level}`;
   document.getElementById("startScreen").style.display = "none";
@@ -508,18 +585,29 @@ function jumpToLevel(n) {
   document.getElementById("levelTitle").innerText = next.title[currentLang];
   document.getElementById("levelStory").innerText = next.story[currentLang];
 
-
-  document.getElementById("guessInput").setAttribute("max", maxNumber);
-  document.getElementById("guessInput").value = "";
+  const input = document.getElementById("guessInput");
+  input.setAttribute("max", maxNumber);
+  input.value = "";
   document.getElementById("message").innerHTML = "";
-  
+
   updateBackground(level);
   updateLivesDisplay();
   startTimer();
 
+  
+  const gameBtn = document.getElementById("gameButton");
+  if (gameBtn) {
+    gameBtn.disabled = false;     
+    gameBtn.onclick = null;       
+    gameBtn.addEventListener("click", checkGuess, { once: false });
+  }
 
-  applyTranslations();
+  
+  input?.focus();
+
+  applyTranslations(); 
 }
+
 
  
   function completeLevel(currentLevel) {
@@ -537,140 +625,202 @@ function jumpToLevel(n) {
     loadProgress();
     startTimer();
     updateLivesDisplay();
-    function renderLevel5Stage() {
-      document.getElementById("startScreen").style.display = "none";
-      document.getElementById("gameContainer").style.display = "none";
-      document.getElementById("level6Container").style.display = "none";
-      document.getElementById("level5Container").style.display = "block";
-  document.body.className = `level-5`;
+
+function renderLevel5Stage() {
+  
+  document.getElementById("startScreen").style.display = "none";
+  document.getElementById("gameContainer").style.display = "none";
+  document.getElementById("level6Container").style.display = "none";
+  document.getElementById("level5Container").style.display = "block";
+
+  document.body.className = "level-5";
   updateBackground(5);
 
+  
   const data = getLevelData(5);
   document.querySelector('[data-i18n="level5Title"]').innerText = data.title[currentLang];
   document.querySelector('[data-i18n="level5Subtitle"]').innerText = data.story[currentLang];
 
-
+ 
   const numberOptions = document.getElementById("numberOptions");
   const level5Message = document.getElementById("level5Message");
 
+  
   function updateLevel5Score(points) {
     level5Score += points;
-    document.getElementById("level5ScoreValue").innerText = level5Score;
+    document.getElementById("level5ScoreNum").innerText = String(level5Score);
   }
 
   function renderOptions(start, end) {
-    numberOptions.innerHTML = '';
+    numberOptions.innerHTML = "";
     const options = new Set();
 
+    
     correct = Math.floor(Math.random() * (end - start + 1)) + start;
     options.add(correct);
 
+    
     while (options.size < 3) {
       options.add(Math.floor(Math.random() * (end - start + 1)) + start);
     }
 
-    const shuffled = Array.from(options).sort(() => 0.5 - Math.random());
+   
+    const shuffled = Array.from(options).sort(() => Math.random() - 0.5);
 
-    shuffled.forEach(num => {
+    
+    shuffled.forEach((num) => {
       const btn = document.createElement("button");
       btn.textContent = num;
       btn.classList.add("option-btn");
-      btn.disabled = false;
-      btn.addEventListener("click", () => handleChoice(num));
+      btn.onclick = () => handleChoice(num);
       numberOptions.appendChild(btn);
     });
   }
 
   function startLevel5Timer() {
-    clearInterval(level5TimerInterval);
+    try { clearInterval(level5TimerInterval); } catch (_) {}
     level5Time = 30;
-    document.getElementById("level5Time").innerText = level5Time;
+    document.getElementById("level5Time").innerText = `🕐 ${level5Time}s`;
 
     level5TimerInterval = setInterval(() => {
       level5Time--;
       document.getElementById("level5Time").innerText = `🕐 ${level5Time}s`;
-
 
       if (level5Time <= 0) {
         clearInterval(level5TimerInterval);
         level5Lives--;
         document.getElementById("level5Lives").textContent = "❤️".repeat(level5Lives);
         level5Message.textContent = translations[currentLang].level5TimeUp;
+
         if (level5Lives <= 0) {
           numberOptions.innerHTML = "";
-          level5Message.textContent = translations[currentLang].level5GameOver;
+          level5Message.textContent = translations[currentLang].level5GameOver + correct;
+          
+          const r5 = document.getElementById("restartLevel5Btn");
+          r5 && r5.classList.remove("hidden");
+          const rg5 = document.getElementById("restartGame5Btn");
+          rg5 && rg5.classList.remove("hidden");
           showSummary();
-        
-        } else {
-          setTimeout(() => {
-            renderOptions(rangeStart, rangeEnd);
-            startLevel5Timer();
-          }, 1500);
+          return;
         }
+
+        
+        setTimeout(() => {
+          renderOptions(rangeStart, rangeEnd);
+          startLevel5Timer();
+        }, 1200);
       }
     }, 1000);
   }
 
   function handleChoice(choice) {
-    clearInterval(level5TimerInterval);
+    try { clearInterval(level5TimerInterval); } catch (_) {}
 
-    const buttons = document.querySelectorAll("#numberOptions button");
-    buttons.forEach(btn => btn.disabled = true);
+    
+    numberOptions.querySelectorAll("button").forEach(b => b.disabled = true);
 
     if (choice === correct) {
-    level5Message.textContent = translations[currentLang].level5Correct + correct;
+      level5Message.textContent = translations[currentLang].level5Correct + correct;
       updateLevel5Score(10);
 
       setTimeout(() => {
+        
         if (rangeStart === 1) {
-          rangeStart = 51;
-          rangeEnd = 100;
+          rangeStart = 51; rangeEnd = 100;
         } else if (rangeStart === 51) {
-          rangeStart = 101;
-          rangeEnd = 200;
-  } else {
-  level5Message.textContent = translations[currentLang].level5Passed;
-  setTimeout(() => {
-    document.getElementById("level5Container").style.display = "none";
-    level = 6; 
-    renderLevel6Stage(); 
-  }, 1500);
-  return;
-}
+          rangeStart = 101; rangeEnd = 200;
+         } else if (rangeStart === 101) {
+        if (level5Lives > 0) {
+          rangeStart = 1; rangeEnd = 50;
+        } else {
+          level5Message.textContent = translations[currentLang].level5GameOver;
+          showSummary();
+          return;
+        }
+      }
 
         renderOptions(rangeStart, rangeEnd);
         startLevel5Timer();
-      }, 2000);
+      }, 900);
     } else {
       level5Lives--;
       document.getElementById("level5Lives").textContent = "❤️".repeat(level5Lives);
       level5Message.textContent = translations[currentLang].level5Wrong + correct;
 
-      if (level5Lives <= 0) {
-        numberOptions.innerHTML = "";
-        level5Message.textContent = `💀 Game Over! The correct number was: ${correct}`;
-        document.getElementById("restartLevel5Btn").classList.remove("hidden");
+     if (level5Lives <= 0) {
+      numberOptions.innerHTML = "";
+      level5Message.textContent = translations[currentLang].level5GameOver + correct;
+      const r5 = document.getElementById("restartLevel5Btn");
+      r5 && r5.classList.remove("hidden");
+      const rg5 = document.getElementById("restartGame5Btn");
+      rg5 && rg5.classList.remove("hidden");
         showSummary();
       } else {
         setTimeout(() => {
           renderOptions(rangeStart, rangeEnd);
           startLevel5Timer();
-        }, 2000);
+        }, 1200);
       }
     }
   }
 
+ 
   const startBtn = document.getElementById("startBtn");
-
   startBtn.onclick = () => {
-    startBtn.style.display = "none"; 
+    startBtn.style.display = "none";
     document.getElementById("level5Lives").classList.remove("hidden");
     document.getElementById("level5Time").classList.remove("hidden");
     document.getElementById("level5ScoreValue").classList.remove("hidden");
+
+    
+    rangeStart = 1; rangeEnd = 50;
+    level5Lives = 3;
+    level5Score = 0;
+    document.getElementById("level5Lives").textContent = "❤️❤️❤️";
+    document.getElementById("level5ScoreNum").innerText = "0";
+    level5Message.textContent = "";
+
     renderOptions(rangeStart, rangeEnd);
     startLevel5Timer();
   };
+
+  
+  const restartLevel5Btn = document.getElementById("restartLevel5Btn");
+  if (restartLevel5Btn) {
+    restartLevel5Btn.type = "button";
+    restartLevel5Btn.classList.remove("hidden");
+    restartLevel5Btn.style.display = "inline-block";
+    restartLevel5Btn.onclick = (e) => {
+      e.preventDefault();
+
+      
+      try { clearInterval(level5TimerInterval); } catch (_) {}
+      rangeStart = 1; rangeEnd = 50;
+      level5Lives = 3;
+      level5Score = 0;
+      level = 5;
+
+     
+      numberOptions.innerHTML = "";
+      level5Message.textContent = "";
+      renderLevel5Stage();
+    };
+  }
+
+  
+  const restartGame5Btn = document.getElementById("restartGame5Btn");
+  if (restartGame5Btn) {
+    restartGame5Btn.type = "button";
+    restartGame5Btn.classList.remove("hidden");
+    restartGame5Btn.style.display = "inline-block";
+    restartGame5Btn.onclick = (e) => {
+      e.preventDefault();
+      resetProgress(); 
+    };
+  }
 }
+ 
+
 let level6Lives = 3;
 let level6Time = 5; 
 let level6Timer;
@@ -844,6 +994,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+  
+
 function getLevelData(level) {
   const data = {
     1: {
@@ -923,3 +1075,57 @@ function getLevelData(level) {
 
   return data[level];
 }
+
+function restartLevelTo(n) {
+  
+  try { clearInterval(timer); } catch(_) {}
+  try { clearInterval(level5TimerInterval); } catch(_) {}
+  try { clearInterval(level6Timer); } catch(_) {}
+
+  attempts = 0;
+
+ 
+  if (n === 5) {
+    rangeStart  = 1;
+    rangeEnd    = 50;
+    level5Lives = 3;
+    level5Score = 0;
+    const msg = document.getElementById("level5Message");
+    const opts = document.getElementById("numberOptions");
+    if (msg)  msg.textContent = "";
+    if (opts) opts.innerHTML = "";
+  } else if (n === 6) {
+    level6Lives = 3;
+    level6Score = 0;
+  }
+
+  level = n;
+  jumpToLevel(n); 
+
+  
+  if (n === 5) {
+    setTimeout(() => {
+      const startBtn = document.getElementById("startBtn");
+      if (startBtn) {
+        startBtn.style.display = "inline-block"; 
+        startBtn.click(); 
+      }
+    }, 0);
+  }
+}
+
+document.addEventListener("click", (e) => {
+ 
+  if (e.target.closest("#restartGame6Btn")) {
+    e.preventDefault();
+    resetProgress();        
+    return;
+  }
+
+  
+  if (e.target.closest("#restartLevel6Btn")) {
+    e.preventDefault();
+    restartLevelTo(6);      
+    return;
+  }
+});

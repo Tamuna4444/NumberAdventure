@@ -363,6 +363,7 @@ body.level-3 p {
   cursor: pointer;
 
 }
+
 .hidden {
   display: none;
 }
@@ -495,8 +496,54 @@ body.level-3 p {
   font-size: 14px;
 }
 
+#level5Container #restartLevel5Btn,
+#level5Container #restartGame5Btn,
+#level6Container #restartLevel6Btn,
+#level6Container #restartGame6Btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  
+  padding: 10px 16px;
+  min-width: 160px;
+  height: 40px;
+  border-radius: 12px;
+
+  
+  background: white;   
+  color:black;
+  border: none;
+
+  
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1;
+
+  
+  cursor: pointer;
+  user-select: none;
+  transition: transform .08s ease, filter .15s ease, opacity .15s ease;
+}
+
+#level5Container #restartLevel5Btn:hover,
+#level5Container #restartGame5Btn:hover {
+  filter: brightness(1.06);
+}
+
+#level5Container #restartLevel5Btn:active,
+#level5Container #restartGame5Btn:active {
+  transform: translateY(1px);
+}
+
+#level5Container #restartLevel5Btn:disabled,
+#level5Container #restartGame5Btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
 
 
-
-
+  
+  
 
