@@ -146,8 +146,8 @@ function applyTranslations() {
 }
 function updateLevelLocks() {
 
-  
-  const unlockedLevel = parseInt(localStorage.getItem("unlockedLevel")) || 1;
+const unlockedLevel = parseInt(localStorage.getItem("unlockedLevel")) || 1; 
+
 
   document.querySelectorAll(".levelBtn").forEach((btn) => {
     const levelNum = parseInt(btn.getAttribute("data-level"));
@@ -231,14 +231,6 @@ const restartGame5Btn = document.getElementById("restartGame5Btn");
     });
   }
 
-
-  const restartLevel5Btn = document.getElementById("restartLevel5Btn");
-  if (restartLevel5Btn) {
-    restartLevel5Btn.addEventListener("click", (e) => {
-      e.preventDefault();
-      restartLevelTo(5); 
-    });
-  }
 
 
 
@@ -627,7 +619,7 @@ function jumpToLevel(n) {
 
     
     loadProgress();
-    startTimer();
+   
     updateLivesDisplay();
 
 function renderLevel5Stage() {
@@ -700,10 +692,7 @@ function renderLevel5Stage() {
           numberOptions.innerHTML = "";
           level5Message.textContent = translations[currentLang].level5GameOver + correct;
           
-          const r5 = document.getElementById("restartLevel5Btn");
-          r5 && r5.classList.remove("hidden");
-          const rg5 = document.getElementById("restartGame5Btn");
-          rg5 && rg5.classList.remove("hidden");
+          
           showSummary();
           return;
         }
@@ -810,18 +799,6 @@ function renderLevel5Stage() {
       renderLevel5Stage();
     };
   }
-
-  
-  const restartGame5Btn = document.getElementById("restartGame5Btn");
-  if (restartGame5Btn) {
-    restartGame5Btn.type = "button";
-    restartGame5Btn.classList.remove("hidden");
-    restartGame5Btn.style.display = "inline-block";
-    restartGame5Btn.onclick = (e) => {
-      e.preventDefault();
-      resetProgress(); 
-    };
-  }
 }
  
 
@@ -830,6 +807,9 @@ let level6Time = 5;
 let level6Timer;
 let level6Correct; 
 let level6HiddenBoxIndex; 
+
+let level6Wins = 0;
+const LEVEL6_TARGET_WINS = 4;
 
 
 
@@ -850,6 +830,12 @@ function renderLevel6Stage() {
   document.getElementById("level6Boxes").innerHTML = "";
   document.getElementById("level6Lives").textContent = "";
   document.getElementById("level6Time").textContent = "";
+   const timeEl = document.getElementById("level6Time");
+  if (timeEl) { timeEl.textContent = ""; timeEl.style.display = "none"; }
+
+  // score initially hidden (until start)
+  document.getElementById("level6ScoreValue").style.display = "none";
+
 
   const startBtn = document.getElementById("level6StartBtn");
   startBtn.style.display = "inline-block";
@@ -865,13 +851,15 @@ function startLevel6() {
 }
 
 function setupLevel6Round() {
+  try { clearInterval(level6Timer); } catch(_) {}
+
   const boxesContainer = document.getElementById("level6Boxes");
   boxesContainer.innerHTML = "";
 
- 
-  level6Correct = Math.floor(Math.random() * (rangeEnd - rangeStart + 1)) + rangeStart;
-  
-  
+  // გამოიყენე Level 6-ის საკუთარი დიაპაზონი
+  const { max } = getLevelData(6);
+  level6Correct = Math.floor(Math.random() * max) + 1;
+
   level6HiddenBoxIndex = Math.floor(Math.random() * 3);
 
   for (let i = 0; i < 3; i++) {
@@ -885,9 +873,38 @@ function setupLevel6Round() {
   }
 
   level6Time = 5;
-  startLevel6Timer();
+  startLevel6Timer(); // ← ეს ახლა ნამდვილად იარსებებს (შემდეგ ნაბიჯი)
 }
+function startLevel6Timer() {
+  try { clearInterval(level6Timer); } catch (_) {}
 
+  document.getElementById("level6Time").textContent = `⏱️ ${level6Time}s`;
+
+  level6Timer = setInterval(() => {
+    level6Time--;
+    document.getElementById("level6Time").textContent = `⏱️ ${level6Time}s`;
+
+    if (level6Time <= 0) {
+      clearInterval(level6Timer);
+
+      level6Lives--;
+      document.getElementById("level6Lives").textContent = "❤️".repeat(Math.max(level6Lives, 0));
+      document.getElementById("level6Message").textContent = translations[currentLang].level6TimeUp;
+
+      if (level6Lives <= 0) {
+        document.getElementById("level6Message").textContent = translations[currentLang].level6GameOver;
+        showSummary();
+        return;
+      }
+
+      setTimeout(() => {
+        document.getElementById("level6Message").textContent = "";
+        level6Time = 5;
+        setupLevel6Round();
+      }, 800);
+    }
+  }, 1000);
+}
 
 
 function checkLevel6Box(index, box) {
@@ -898,18 +915,21 @@ function checkLevel6Box(index, box) {
     box.style.color = "black";
 
     level6Score += 10;
-    document.getElementById("level6ScoreValue").textContent = `🏆Score: ${level6Score}`;
-     
-
-document.getElementById("level6Message").textContent = translations[currentLang].level6Correct;
-
-
-    setTimeout(() => {
-      document.getElementById("level6Message").textContent = "";
-      setupLevel6Round();
-    }, 1000);
-    return;
-
+   document.getElementById("level6ScoreNum").textContent = level6Score;
+   level6Wins += 1;  
+if (level6Wins >= LEVEL6_TARGET_WINS) {
+  document.getElementById("level6Message").textContent =
+    `${translations[currentLang].level6Correct} (${level6Wins}/${LEVEL6_TARGET_WINS})`;
+  setTimeout(() => {
+    showSummary();
+  }, 500);
+  return;
+}
+     document.getElementById("level6Message").textContent = translations[currentLang].level6Correct;
+  setTimeout(() => {
+    document.getElementById("level6Message").textContent = "";
+    setupLevel6Round();
+  }, 700);
   } else {
     box.textContent = "❌";
     box.style.color = "red";
@@ -927,7 +947,7 @@ document.getElementById("level6Message").textContent = translations[currentLang]
 
     if (level6Lives <= 0) {
       document.getElementById("level6Message").textContent = translations[currentLang].level6GameOver;
-        document.getElementById("restartLevel6Btn").classList.remove("hidden");
+ 
       showSummary();
     } else {
 document.getElementById("level6Message").textContent = translations[currentLang].level6Wrong;
@@ -954,11 +974,11 @@ function startLevel6() {
 
   
   document.getElementById("level6ScoreValue").style.display = "block";
-  document.getElementById("level6ScoreValue").textContent = `🏆Score: ${level6Score}`;
-  
- 
+  document.getElementById("level6ScoreNum").textContent = level6Score;
+
   setupLevel6Round();
 }
+
 
 function showSummary() {
   const score1to4 = level1Score + level2Score + level3Score + level4Score;
@@ -1120,29 +1140,25 @@ function restartLevelTo(n) {
   jumpToLevel(n);
 }
 
-document.addEventListener("click", (e) => {
-  const btn = e.target.closest("button");
-  if (!btn) return;
 
-  switch (btn.id) {
-    case "restartLevel5Btn":
-      e.preventDefault();
-      restartLevelTo(5);
-      break;
+document.addEventListener("DOMContentLoaded", () => {
+  const modalRestartLevelBtn = document.getElementById("restartLevelBtn");
+  const modalRestartGameBtn  = document.getElementById("restartGameBtn");
 
-    case "restartGame5Btn":
-      e.preventDefault();
-      resetProgress();
-      break;
+  if (modalRestartLevelBtn) {
+    modalRestartLevelBtn.addEventListener("click", () => {
+      closeSummary();
+        if (typeof level !== "undefined" && level === 5) {
+      return restartLevelTo(5); 
+    }
+      restartLevel(); 
+    });
+  }
 
-    case "restartLevel6Btn":
-      e.preventDefault();
-      restartLevelTo(6);
-      break;
-
-    case "restartGame6Btn":
-      e.preventDefault();
-      resetProgress();
-      break;
+  if (modalRestartGameBtn) {
+    modalRestartGameBtn.addEventListener("click", () => {
+      closeSummary();
+      resetProgress(); 
+    });
   }
 });

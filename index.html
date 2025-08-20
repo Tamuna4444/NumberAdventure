@@ -71,12 +71,7 @@
   <br>
  <button id="gameButton" onclick="checkGuess()" data-i18n="check">Check</button>
 
-  <br>
-<button id="restartLevelBtn" data-i18n="restartLevel" onclick="restartLevel()">Restart Level</button>
-
-  <button onclick="resetProgress()" data-i18n="reset">Reset Game</button>
   
- 
   
 
   <p id="message"></p>
@@ -100,10 +95,7 @@
   <div id="level5Message"></div>
 
   <button id="startBtn" data-i18n="start">Start</button>
-  <button id="restartGame5Btn" data-i18n="reset">Restart Game</button>
-<button id="restartLevel5Btn" class="btn ghost restart-level" type="button" data-level="5">
-  <span data-i18n="restartLevel">Restart Level</span>
-</button>
+
 </div>
 
 
@@ -123,9 +115,7 @@
   <div id="level6ScoreValue" style="display: none;">
     <span data-i18n="levelScoreLabel">🏆 Score:</span> <span id="level6ScoreNum">0</span>
   </div>
- <button id="restartGame6Btn" data-i18n="reset">Restart Game</button>
-<button id="restartLevel6Btn" class="btn ghost restart-level" type="button" data-level="6">
-  <span data-i18n="restartLevel">Restart Level</span>
+
 </button>
 </div>
 
@@ -134,13 +124,19 @@
 </div>
 <div id="summaryModal" class="modal">
   <div class="modal-content">
-   <h2 data-i18n="finalScore">🎉 Final Score!</h2>
+    <h2 data-i18n="finalScore">🎉 Final Score!</h2>
     <p id="level1Score"></p>
     <p id="level5Score"></p>
-    <p id="level6FinalScore"></p> 
+    <p id="level6FinalScore"></p>
     <hr>
-   <p id="totalScore" data-i18n="total">🏆 Total: </p>
-   <button onclick="closeSummary()" data-i18n="close">Close</button>
+    <p id="totalScore" data-i18n="total">🏆 Total: </p>
+
+    <!-- აქ გადავიტანეთ ღილაკები -->
+    <div class="summary-actions" style="display:flex; gap:10px; justify-content:center; margin-top:12px;">
+      <button id="restartLevelBtn" data-i18n="restartLevel">🔄 Restart Level</button>
+      <button id="restartGameBtn" data-i18n="reset">🔁 Restart Game</button>
+      <button onclick="closeSummary()" data-i18n="close">❌ Close</button>
+    </div>
   </div>
 </div>
 
