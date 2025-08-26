@@ -261,7 +261,7 @@ body.level-3 p {
 
 
 #settingsBtn {
-  width: 36px;
+  width: 10px;
   height: 36px;
   font-size: 18px;
   background-color: rgba(255, 255, 255, 0.1);
@@ -542,7 +542,24 @@ body.level-3 p {
   opacity: 0.55;
   cursor: not-allowed;
 }
+/* --- Main Menu სუფთა მდგომარეობა --- */
+body.menu { 
+  margin-top: 0;            /* მოაშორე ზედა სიცარიელე */
+  background: none;         /* ვეღარ დარჩება level-ის ფონები */
+}
 
+/* menu მდგომარეობაში level UI *არასოდეს* ჩანდეს */
+body.menu #gameContainer,
+body.menu #level5Container,
+body.menu #level6Container,
+body.menu #summaryModal {
+  display: none !important;
+}
+
+/* აუცილებლად გამოჩნდეს ჩვენი სტარტ ეკრანი თავისი განლაგებით */
+body.menu #startScreen {
+  display: flex !important;
+}
 
   
   

@@ -8,16 +8,9 @@
   <link rel="stylesheet" href="style-level.css">
 </head>
 
-<body class="level-1">
+<body class="menu">
 <div id="startScreen">
-  <div class="language-container">
-  <label for="langSelect" class="language-label"></label>
-  <select id="langSelect" onchange="changeLanguage(this.value)" class="language-select">
-    <option value="en" selected>English</option>
-    <option value="ru">Русский</option>
 
-  </select>
-</div>
   
 
 <h1 data-i18n="title"></h1>
@@ -26,7 +19,7 @@
 
 
   <div id="devTools">
-    <button class="levelBtn locked" data-level="1" onclick="jumpToLevel(1)"></button>
+   <button class="levelBtn locked" data-level="1" onclick="jumpToLevel(1)"></button>
     <button class="levelBtn locked" data-level="2" onclick="jumpToLevel(2)"></button>
     <button class="levelBtn locked" data-level="3" onclick="jumpToLevel(3)"></button>
     <button class="levelBtn locked" data-level="4" onclick="jumpToLevel(4)"></button>
@@ -44,9 +37,11 @@
     <div class="setting-option">
       <button id="toggleSound">🔊</button>
     </div>
-    <div class="setting-option">
-      <button id="toggleVibration">📳</button>
-    </div>
+     <div class="setting-option">
+    <button class="langBtn" data-lang="en">ENG</button>
+    <button class="langBtn" data-lang="ru">RUS</button>
+  </div>
+</div>
   </div>
 </div>
 </div>
@@ -78,6 +73,7 @@
   <div id="lives">🤎🤎🤎🤎🤎</div>
  <p id="timer"><span data-i18n="timerLabel">⏱️ Time left:</span> <span id="timeValue">50s</span></p>
 <p id="score"><span data-i18n="scoreLabel">🏆 High Score:</span> <span id="scoreValue">0</span></p>
+<button id="mainMenuBtn1" data-i18n="mainMenu"></button>
   </div>
 
  <div id="level5Container" style="display: none;">
@@ -90,14 +86,15 @@
 
   <div id="level5ScoreValue" class="hidden">
     <span data-i18n="levelScoreLabel">🏆 Score:</span> <span id="level5ScoreNum">0</span>
+   
   </div>
+   <button id="mainMenuBtn5" data-i18n="mainMenu"></button>
 
   <div id="level5Message"></div>
 
   <button id="startBtn" data-i18n="start">Start</button>
-
+  
 </div>
-
 
 
 
@@ -114,14 +111,13 @@
 
   <div id="level6ScoreValue" style="display: none;">
     <span data-i18n="levelScoreLabel">🏆 Score:</span> <span id="level6ScoreNum">0</span>
+   
   </div>
-
-</button>
-</div>
-
- 
+  <button id="mainMenuBtn6" data-i18n="mainMenu"></button>
 
 </div>
+
+
 <div id="summaryModal" class="modal">
   <div class="modal-content">
     <h2 data-i18n="finalScore">🎉 Final Score!</h2>

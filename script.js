@@ -45,7 +45,9 @@ const translations = {
     finalScore: "🎉 Final Score!",
     close: "Close",
     guessRange: (max) => `Guess a number between 1 and ${max}`,
-    restartLevel: "Restart Level"
+    restartLevel: "Restart Level",
+    score: "Score",
+    mainMenu: " Main Menu"
   },
 
   ru: {
@@ -92,7 +94,9 @@ const translations = {
     finalScore: "🎉 Финальный счёт!",
     close: "Закрыть",
     guessRange: (max) => `Угадай число от 1 до ${max}`,
-    restartLevel: "Сбросить уровень"
+    restartLevel: "Сбросить уровень",
+    score: "Очки",
+     mainMenu: "Главное меню"
   }
 };
 
@@ -145,8 +149,8 @@ function applyTranslations() {
   try { changeLanguage(currentLang); } catch (e) {}
 }
 function updateLevelLocks() {
-
-const unlockedLevel = parseInt(localStorage.getItem("unlockedLevel")) || 1; 
+const unlockedLevel = 999;
+//const unlockedLevel = parseInt(localStorage.getItem("unlockedLevel")) || 1; 
 
 
   document.querySelectorAll(".levelBtn").forEach((btn) => {
@@ -319,19 +323,18 @@ const levelSounds = {
 function updateBackground(level) {
   document.body.className = `level-${level}`;
 
-  
   Object.values(levelSounds).forEach(sound => {
     sound.pause();
     sound.currentTime = 0;
   });
 
-  
- if (soundOn && levelSounds[level]) {
-  levelSounds[level].loop = true;
-  levelSounds[level].play().catch((err) => {
-    console.warn("🔇 Level sound autoplay was blocked:", err);
-  });
-}
+  if (soundOn && levelSounds[level]) {
+    levelSounds[level].loop = true;
+    levelSounds[level].play().catch(err => {
+      console.warn("🔇 Level sound autoplay was blocked:", err);
+    });
+  }
+
 
 
   
@@ -392,7 +395,8 @@ function updateBackground(level) {
 
   if (savedScore) {
     score = parseInt(savedScore);
-    document.getElementById("score").innerText = `${translations[currentLang].highScore}: ${score}`;
+   document.getElementById("score").innerHTML =
+   `${translations[currentLang].levelScoreLabel}: ${score}`;
   }
 
   if (completedLevel) {
@@ -400,14 +404,15 @@ function updateBackground(level) {
     const data = getLevelData(level);
     maxNumber = data.max;
     randomNumber = Math.floor(Math.random() * maxNumber) + 1;
-   document.getElementById("levelTitle").innerText = translations[currentLang][`level${level}`];
-   document.getElementById("levelStory").innerText = `${translations[currentLang].guessBetween} 1 и ${maxNumber}`;
+  document.getElementById("levelTitle").innerText = getLevelData(level).title[currentLang];
+  document.getElementById("levelStory").innerText = translations[currentLang].guessRange(maxNumber);
 
 
     document.getElementById("guessInput").setAttribute("max", maxNumber);
   }
 
-  updateBackground(level); 
+  
+   document.body.className = "menu";
 }
     function checkGuess() {
       const userGuess = Number(document.getElementById("guessInput").value);
@@ -603,8 +608,41 @@ function jumpToLevel(n) {
 
   applyTranslations(); 
 }
+function goToMainMenu() {
+  // 1) გააჩერე ყველა ტაიმერი
+  try { clearInterval(timer); } catch(_) {}
+  try { clearInterval(level5TimerInterval); } catch(_) {}
+  try { clearInterval(level6Timer); } catch(_) {}
 
+  // 2) გააჩერე ყველა ხმა და დააბრუნე დასაწყისში
+  try {
+    Object.values(levelSounds).forEach(s => { s.pause(); s.currentTime = 0; });
+    startSound.pause(); startSound.currentTime = 0;
+    clickSound.pause(); clickSound.currentTime = 0;
+    failSound.pause();  failSound.currentTime  = 0;
+  } catch(_) {}
 
+  // 3) body-ის კლასი ზუსტად "menu" იყოს (და მხოლოდ ის)
+  document.body.className = "";
+  document.body.classList.add("menu");
+
+  // 4) დამალე ყველა ლეველის UI
+  ["gameContainer","level5Container","level6Container","summaryModal"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = "none";
+  });
+
+  // 5) აჩვენე მთავარი მენიუ
+  const start = document.getElementById("startScreen");
+  if (start) {
+    start.style.display = "block";
+    start.scrollTop = 0; // ზედა ნაწილში დაბრუნება
+  }
+
+  // 6) ლოკები/ტექსტები განახლდეს ამჟამად არჩეული ენით
+  try { updateLevelLocks(); } catch(_) {}
+  try { applyTranslations(); } catch(_) {}
+}
  
   function completeLevel(currentLevel) {
     const nextLevel = currentLevel + 1;
@@ -1003,12 +1041,13 @@ document.addEventListener("DOMContentLoaded", () => {
   currentLang = savedLang;
   changeLanguage(savedLang);
 
- 
   const langSelect = document.getElementById("langSelect");
   if (langSelect) {
     langSelect.value = savedLang;
   }
+
   updateLevelLocks();
+
   document.querySelectorAll(".levelBtn").forEach((btn) => {
     btn.addEventListener("click", () => {
       if (!btn.classList.contains("locked")) {
@@ -1017,9 +1056,26 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
-});
-  
 
+  
+// Main Menu buttons (Level 1 / Level 5 / Level 6)
+const mm1 = document.getElementById("mainMenuBtn1");
+if (mm1) mm1.addEventListener("click", goToMainMenu);
+
+const mm5 = document.getElementById("mainMenuBtn5");
+if (mm5) mm5.addEventListener("click", goToMainMenu);
+
+const mm6 = document.getElementById("mainMenuBtn6");
+if (mm6) mm6.addEventListener("click", goToMainMenu);
+ document.querySelectorAll(".langBtn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const lang = btn.getAttribute("data-lang");
+      changeLanguage(lang);
+      localStorage.setItem("lang", lang);
+    });
+  });
+
+}); // აქ იხურება DOMContentLoaded
 function getLevelData(level) {
   const data = {
     1: {
