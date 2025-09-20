@@ -1187,20 +1187,30 @@ document.addEventListener("DOMContentLoaded", () => {
   
 // Main Menu buttons (Level 1 / Level 5 / Level 6)
 const mm1 = document.getElementById("mainMenuBtn1");
-if (mm1) mm1.addEventListener("click", goToMainMenu);
+if (mm1) mm1.addEventListener("click", () => {
+  restartGameFull();   // ქულების და state-ის განულება
+  goToMainMenu();      // მთავარ მენიუზე დაბრუნება
+});
 
 const mm5 = document.getElementById("mainMenuBtn5");
-if (mm5) mm5.addEventListener("click", goToMainMenu);
+if (mm5) mm5.addEventListener("click", () => {
+  restartGameFull();
+  goToMainMenu();
+});
 
 const mm6 = document.getElementById("mainMenuBtn6");
-if (mm6) mm6.addEventListener("click", goToMainMenu);
- document.querySelectorAll(".langBtn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const lang = btn.getAttribute("data-lang");
-      changeLanguage(lang);
-      localStorage.setItem("lang", lang);
-    });
+if (mm6) mm6.addEventListener("click", () => {
+  restartGameFull();
+  goToMainMenu();
+});
+
+document.querySelectorAll(".langBtn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const lang = btn.getAttribute("data-lang");
+    changeLanguage(lang);
+    localStorage.setItem("lang", lang);
   });
+});
 
 }); // აქ იხურება DOMContentLoaded
 function getLevelData(level) {
@@ -1338,17 +1348,54 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
   if (modalRestartGameBtn) {
-    modalRestartGameBtn.addEventListener("click", () => {
-      closeSummary();
-      restartGameFull();
-      goToMainMenu();
-    
+  modalRestartGameBtn.addEventListener("click", () => {
+    closeSummary();
+    restartGameFull();
+    goToMainMenu();
+  
     const start = document.getElementById("startScreen");
     if (start) start.style.display = "block";
 
     try { updateLevelLocks(); } catch(_) {}
     try { applyTranslations(); } catch(_) {}
-      
-    });
-  }
+  });
+}
+
+// Main Menu – საერთო ჰენდლერი სამი ღილაკისთვის
+function handleMainMenuClick(e) {
+  if (e) { e.preventDefault(); e.stopPropagation(); }
+
+  // გავაჩეროთ ტაიმერები
+  try { clearInterval(timer); } catch(_) {}
+  try { clearInterval(level5TimerInterval); } catch(_) {}
+  try { clearInterval(level6Timer); } catch(_) {}
+
+  // გავაჩეროთ ხმები
+  try {
+    Object.values(levelSounds).forEach(s => { s.pause(); s.currentTime = 0; });
+    startSound.pause(); startSound.currentTime = 0;
+    clickSound.pause(); clickSound.currentTime = 0;
+    failSound.pause();  failSound.currentTime  = 0;
+  } catch(_) {}
+
+  // ქულების განულება
+  restartGameFull();
+
+  // HUD-ის ქულა ნულზე
+  const sv = document.getElementById("scoreValue");
+  if (sv) sv.textContent = "0";
+
+  // მენიუზე დაბრუნება
+  goToMainMenu();
+}
+
+// მიამაგრე ღილაკებზე
+const mm1 = document.getElementById("mainMenuBtn1");
+if (mm1) mm1.addEventListener("click", handleMainMenuClick);
+
+const mm5 = document.getElementById("mainMenuBtn5");
+if (mm5) mm5.addEventListener("click", handleMainMenuClick);
+
+const mm6 = document.getElementById("mainMenuBtn6");
+if (mm6) mm6.addEventListener("click", handleMainMenuClick);
 });
