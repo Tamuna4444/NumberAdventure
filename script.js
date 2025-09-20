@@ -1,3 +1,70 @@
+/* === PERSISTENT SESSION STATE (scores/lives/level) === */
+const STATE_KEY = 'ng_state_v1';
+
+let state = {
+  currentLevel: 1,
+  lives: 3, // თუ იყენებ
+  levelScores: { 1:0, 2:0, 3:0, 4:0, 5:0, 6:0 },
+};
+
+function loadState() {
+  try {
+    const raw = sessionStorage.getItem(STATE_KEY);
+    if (!raw) return;
+    const saved = JSON.parse(raw);
+    // merge defensively
+    state = {
+      ...state,
+      ...saved,
+      levelScores: { ...state.levelScores, ...(saved.levelScores || {}) },
+    };
+  } catch(e){}
+}
+
+function saveState() {
+  try {
+    sessionStorage.setItem(STATE_KEY, JSON.stringify(state));
+  } catch(e){}
+}
+
+function clearState() {
+  sessionStorage.removeItem(STATE_KEY);
+}
+
+function getTotalScore() {
+  return Object.values(state.levelScores).reduce((a,b)=>a+(b||0),0);
+}
+
+function setScoreUI(total){
+  document.querySelectorAll('#scoreLabel, #totalScore, #scoreLabelL5, .scoreLabel')
+    .forEach(el => el.textContent = String(total));
+}
+
+/* ქულების დამატება — ყოველთვის ინახავს sessionStorage-ში და აახლებს ჯამს */
+function addPoints(points, lvl){
+  const L = lvl || state.currentLevel;
+  state.levelScores[L] = (state.levelScores[L] || 0) + (points||0);
+  saveState();
+  setScoreUI(getTotalScore());
+}
+
+/* ლეველზე გადასვლისას — მხოლოდ currentLevel ინახება. ქულებს არ ვეხებით. */
+function goToLevel(n){
+  state.currentLevel = n;
+  saveState();
+}
+
+/* სრულ რესტარტზე — მარტო აქ ნულდება ქულები! */
+function restartGameFull(){
+  clearState();
+  state = { currentLevel: 1, lives: 3, levelScores: {1:0,2:0,3:0,4:0,5:0,6:0} };
+  saveState();
+  setScoreUI(0);
+}
+
+
+
+
 let currentLang = localStorage.getItem("lang") || "en";
 
 const translations = {
@@ -190,15 +257,31 @@ let level5Time = 30;
 let level5TimerInterval;
 
 document.addEventListener("DOMContentLoaded", () => {
+  loadState();
+  setScoreUI(getTotalScore());
+ 
   const settingsBtn = document.getElementById('settingsBtn');
   const toggleSound = document.getElementById('toggleSound');
   const toggleVibration = document.getElementById('toggleVibration');
   const settingsPanel = document.getElementById('settingsPanel');
 
+
     settingsBtn.addEventListener("click", () => {
     console.log("⚙️ settingsBtn clicked!"); 
     settingsPanel.classList.toggle("hidden");
-  });
+    });
+      const guessInput = document.getElementById("guessInput");
+      const messageEl  = document.getElementById("message");
+
+  if (guessInput && messageEl) {
+    const clearFeedback = () => {
+      messageEl.textContent = "";   // წაშლის წინა ტექსტს
+    };
+
+    guessInput.addEventListener("input", clearFeedback);
+    guessInput.addEventListener("focus", clearFeedback);
+  }
+  
 
 
 
@@ -551,6 +634,8 @@ function restartLevel() {
 
  
 function jumpToLevel(n) {
+  
+  goToLevel(n);
   level = n;
   localStorage.setItem("completedLevel", n - 1);
   document.getElementById("gameContainer").style.display = "none";
@@ -925,15 +1010,17 @@ function startLevel6Timer() {
     if (level6Time <= 0) {
       clearInterval(level6Timer);
 
-      level6Lives--;
-      document.getElementById("level6Lives").textContent = "❤️".repeat(Math.max(level6Lives, 0));
-      document.getElementById("level6Message").textContent = translations[currentLang].level6TimeUp;
+    level6Lives--;
 
-      if (level6Lives <= 0) {
-        document.getElementById("level6Message").textContent = translations[currentLang].level6GameOver;
-        showSummary();
-        return;
-      }
+// ეკრანზე არ ჩამოვარდეს უარყოფითზე
+document.getElementById("level6Lives").textContent = "❤️".repeat(Math.max(level6Lives, 0));
+
+// თუ უკვე 0 იყო და კიდევ ერთ შეცდომას ვამატებთ → Game Over
+if (level6Lives <=0) {
+  document.getElementById("level6Message").textContent = translations[currentLang].level6GameOver;
+  showSummary();
+  return;
+}
 
       setTimeout(() => {
         document.getElementById("level6Message").textContent = "";
@@ -983,17 +1070,19 @@ if (level6Wins >= LEVEL6_TARGET_WINS) {
 
 
 
-    if (level6Lives <= 0) {
-      document.getElementById("level6Message").textContent = translations[currentLang].level6GameOver;
- 
-      showSummary();
-    } else {
-document.getElementById("level6Message").textContent = translations[currentLang].level6Wrong;
-      setTimeout(() => {
-        document.getElementById("level6Message").textContent = "";
-        setupLevel6Round();
-      }, 1000);
-    }
+ // UI—ზე 0 გულიდან ქვემოთ ნუ ჩავარდებით
+document.getElementById("level6Lives").textContent = "❤️".repeat(Math.max(level6Lives, 0));
+
+if (level6Lives <=0) {  
+  document.getElementById("level6Message").textContent = translations[currentLang].level6GameOver;
+  showSummary();
+} else {
+  document.getElementById("level6Message").textContent = translations[currentLang].level6Wrong;
+  setTimeout(() => {
+    document.getElementById("level6Message").textContent = "";
+    setupLevel6Round();
+  }, 1000);
+}
   }
 }
 
@@ -1005,6 +1094,7 @@ function startLevel6() {
   
   level6Lives = 3;
   level6Score = 0; 
+  level6Wins  = 0; 
 
 
   document.getElementById("level6Lives").textContent = "❤️❤️❤️";
