@@ -335,6 +335,7 @@ const levelSounds = {
 
 };
    function startGame() {
+     restartGameFull(); 
   if (soundOn) clickSound.play();
 
   timeLeft = 50;
@@ -465,37 +466,51 @@ function updateBackground(level) {
     }
 
     function saveProgress() {
-      localStorage.setItem("highScore", score);
+     // localStorage.setItem("highScore", score);
       localStorage.setItem("lastLevel", level);
       localStorage.setItem("completedLevel", level - 1);
 
 
     }
 
-  function loadProgress() {
-  const savedScore = localStorage.getItem("highScore");
+ function loadProgress() {
+  // აღარ ვტვირთავთ highScore-ს
   const completedLevel = localStorage.getItem("completedLevel");
-
-  if (savedScore) {
-    score = parseInt(savedScore);
-   document.getElementById("score").innerHTML =
-   `${translations[currentLang].levelScoreLabel}: ${score}`;
-  }
 
   if (completedLevel) {
     level = parseInt(completedLevel) + 1;
     const data = getLevelData(level);
     maxNumber = data.max;
     randomNumber = Math.floor(Math.random() * maxNumber) + 1;
-  document.getElementById("levelTitle").innerText = getLevelData(level).title[currentLang];
-  document.getElementById("levelStory").innerText = translations[currentLang].guessRange(maxNumber);
 
-
+    document.getElementById("levelTitle").innerText = getLevelData(level).title[currentLang];
+    document.getElementById("levelStory").innerText = translations[currentLang].guessRange(maxNumber);
     document.getElementById("guessInput").setAttribute("max", maxNumber);
   }
 
-  
-   document.body.className = "menu";
+  // UI მენიუზე და საწყისი ქულა ეკრანზე 0
+  const sv = document.getElementById("scoreValue");
+  if (sv) sv.textContent = "0";
+
+  document.body.className = "menu";
+}
+
+
+function calculatePoints(level, attempts) {
+  if (level === 1) {
+    return (attempts <= 2) ? 20 : 10;
+  }
+  if (level === 2) {
+    return (attempts <= 2) ? 50 : 40;
+  }
+  if (level === 3) {
+    return (attempts <= 2) ? 100 : 80;
+  }
+  if (level === 4) {
+    return (attempts <= 2) ? 150 : 120;
+  }
+  // Level 5 და 6 – სურვილისამებრ, შეგიძლია აქეც დაამატო ცალკე ლოგიკა
+  return 10;
 }
     function checkGuess() {
       const userGuess = Number(document.getElementById("guessInput").value);
@@ -513,8 +528,10 @@ function updateBackground(level) {
         
         
         
-        const earnedPoints = Math.max(10 - attempts + 1, 1);
-        score += earnedPoints;
+        const earnedPoints = calculatePoints(level, attempts);
+            addPoints(earnedPoints, level);  // ქულა ჩაიწეროს state-ში
+    document.getElementById("scoreValue").textContent = String(getTotalScore()); 
+    score = getTotalScore(); // სურვილისამებრ, რომ score ცვლადიც იგივე იყოს
 
 
 
@@ -765,10 +782,18 @@ function renderLevel5Stage() {
   const level5Message = document.getElementById("level5Message");
 
   
-  function updateLevel5Score(points) {
-    level5Score += points;
-    document.getElementById("level5ScoreNum").innerText = String(level5Score);
-  }
+
+  
+ function updateLevel5Score(points) {
+         
+  addPoints(points, 5);         // საერთო state-ში ჩაიწეროს
+  document.getElementById("level5ScoreNum").innerText = String(getTotalScore()); // ეკრანზე – ჯამი
+
+  const total = getTotalScore();
+  const scoreValue = document.getElementById("scoreValue");
+  if (scoreValue) scoreValue.textContent = String(total);
+}
+  
 
   function renderOptions(start, end) {
     numberOptions.innerHTML = "";
@@ -840,6 +865,7 @@ function renderLevel5Stage() {
       updateLevel5Score(10);
 
       setTimeout(() => {
+        level5Message.textContent = "";
         
         if (rangeStart === 1) {
           rangeStart = 51; rangeEnd = 100;
@@ -873,6 +899,7 @@ function renderLevel5Stage() {
         showSummary();
       } else {
         setTimeout(() => {
+           level5Message.textContent = "";
           renderOptions(rangeStart, rangeEnd);
           startLevel5Timer();
         }, 1200);
@@ -892,8 +919,9 @@ function renderLevel5Stage() {
     rangeStart = 1; rangeEnd = 50;
     level5Lives = 3;
     level5Score = 0;
+    
     document.getElementById("level5Lives").textContent = "❤️❤️❤️";
-    document.getElementById("level5ScoreNum").innerText = "0";
+  document.getElementById("level5ScoreNum").innerText = String(getTotalScore());
     level5Message.textContent = "";
 
     renderOptions(rangeStart, rangeEnd);
@@ -913,7 +941,7 @@ function renderLevel5Stage() {
       try { clearInterval(level5TimerInterval); } catch (_) {}
       rangeStart = 1; rangeEnd = 50;
       level5Lives = 3;
-      level5Score = 0;
+      
       level = 5;
 
      
@@ -1039,8 +1067,8 @@ function checkLevel6Box(index, box) {
     box.textContent = level6Correct;
     box.style.color = "black";
 
-    level6Score += 10;
-   document.getElementById("level6ScoreNum").textContent = level6Score;
+ addPoints(10, 6);
+document.getElementById("level6ScoreNum").textContent = String(getTotalScore());
    level6Wins += 1;  
 if (level6Wins >= LEVEL6_TARGET_WINS) {
   document.getElementById("level6Message").textContent =
@@ -1109,13 +1137,22 @@ function startLevel6() {
 
 
 function showSummary() {
-  const score1to4 = level1Score + level2Score + level3Score + level4Score;
+  // გამოვიყენოთ state.levelScores, სადაც addPoints ინახავს ქულებს
+  const s = state.levelScores || {};
 
-  document.getElementById("level1Score").textContent = `${translations[currentLang].level1to4}: ${score1to4} pts`;
-  document.getElementById("level5Score").textContent = `${translations[currentLang].level5Label}: ${level5Score} pts`;
-  document.getElementById("level6FinalScore").textContent = `${translations[currentLang].level6Label}: ${level6Score} pts`;
-  document.getElementById("totalScore").textContent = `${translations[currentLang].total}: ${score1to4 + level5Score + level6Score} pts`;
-  
+  const score1to4 = (s[1]||0) + (s[2]||0) + (s[3]||0) + (s[4]||0);
+  const l5        = (s[5]||0);
+  const l6        = (s[6]||0);
+  const total     = getTotalScore();
+
+  document.getElementById("level1Score").textContent =
+    `${translations[currentLang].level1to4}: ${score1to4} pts`;
+  document.getElementById("level5Score").textContent =
+    `${translations[currentLang].level5Label}: ${l5} pts`;
+  document.getElementById("level6FinalScore").textContent =
+    `${translations[currentLang].level6Label}: ${l6} pts`;
+  document.getElementById("totalScore").textContent =
+    `${translations[currentLang].total}: ${total} pts`;
 
   document.getElementById("summaryModal").style.display = "block";
 }
@@ -1300,11 +1337,18 @@ document.addEventListener("DOMContentLoaded", () => {
       restartLevel(); 
     });
   }
-
   if (modalRestartGameBtn) {
     modalRestartGameBtn.addEventListener("click", () => {
       closeSummary();
-      resetProgress(); 
+      restartGameFull();
+      goToMainMenu();
+    
+    const start = document.getElementById("startScreen");
+    if (start) start.style.display = "block";
+
+    try { updateLevelLocks(); } catch(_) {}
+    try { applyTranslations(); } catch(_) {}
+      
     });
   }
 });
