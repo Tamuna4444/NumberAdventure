@@ -61,7 +61,9 @@ function restartGameFull(){
   saveState();
   setScoreUI(0);
 }
-
+// Level 1 – ერთიან ფროუდ (1–20 → 1–30 → 1–50 → 1–70), UI-ში სათაურების გარეშე
+const LEVEL1_PHASE_MAXES = [20, 30, 50, 70];
+let level1Phase = 0; // 0..3
 
 
 
@@ -190,13 +192,25 @@ function changeLanguage(lang) {
   });
 
   
+const t = document.getElementById("levelTitle");
+const s = document.getElementById("levelStory");
+if (level === 1) {
+  if (t) t.innerText = "";
+  if (s) s.innerText = translations[lang].guessRange(typeof maxNumber === "number" ? maxNumber : 20);
+} else {
+const t = document.getElementById("levelTitle");
+const s = document.getElementById("levelStory");
+if (level === 1) {
+  if (t) t.innerText = "";
+  if (s) s.innerText = translations[lang].guessRange(typeof maxNumber === "number" ? maxNumber : 20);
+} else {
   const dataNow = getLevelData(level);
   if (dataNow) {
-    const t = document.getElementById("levelTitle");
-    const s = document.getElementById("levelStory");
     if (t) t.innerText = dataNow.title[lang];
     if (s) s.innerText = dataNow.story[lang];
   }
+}
+}
 
   
   const l5 = getLevelData(5);
@@ -343,16 +357,19 @@ const levelSounds = {
   document.getElementById("startScreen").style.display = "none";
 
   level = 1;
-  const data = getLevelData(level);
-  maxNumber = data.max;
-  randomNumber = Math.floor(Math.random() * maxNumber) + 1;
-  attempts = 0;
-  lives = data.lives || 5;
-  timeLeft = data.time || 50;
+level1Phase = 0;
+maxNumber = LEVEL1_PHASE_MAXES[level1Phase];
+randomNumber = Math.floor(Math.random() * maxNumber) + 1;
+attempts = 0;
+lives = (getLevelData(1).lives || 5);
+timeLeft = (getLevelData(1).time || 50);
 
-  document.getElementById("gameContainer").style.display = "block";
-  document.getElementById("levelTitle").innerText = data.title[currentLang];
-  document.getElementById("levelStory").innerText = data.story[currentLang];
+document.getElementById("gameContainer").style.display = "block";
+// 🔕 სათაურები გავთიშოთ Level 1-ზე — ვაჩვენოთ მხოლოდ დიაპაზონი
+const tEl = document.getElementById("levelTitle");
+const sEl = document.getElementById("levelStory");
+if (tEl) tEl.innerText = "";
+if (sEl) sEl.innerText = translations[currentLang].guessRange(maxNumber);
   document.getElementById("guessInput").setAttribute("max", maxNumber);
   document.getElementById("guessInput").value = "";
   document.getElementById("message").innerHTML = "";
@@ -483,9 +500,18 @@ function updateBackground(level) {
     maxNumber = data.max;
     randomNumber = Math.floor(Math.random() * maxNumber) + 1;
 
-    document.getElementById("levelTitle").innerText = getLevelData(level).title[currentLang];
-    document.getElementById("levelStory").innerText = translations[currentLang].guessRange(maxNumber);
-    document.getElementById("guessInput").setAttribute("max", maxNumber);
+const t = document.getElementById("levelTitle");
+const s = document.getElementById("levelStory");
+if (level === 1) {
+  if (t) t.innerText = "";
+  if (s) s.innerText = translations[currentLang].guessRange(maxNumber);
+} else {
+  const dataNow = getLevelData(level);
+  if (dataNow) {
+    if (t) t.innerText = dataNow.title[currentLang];
+    if (s) s.innerText = dataNow.story[currentLang];
+  }
+}
   }
 
   // UI მენიუზე და საწყისი ქულა ეკრანზე 0
@@ -512,6 +538,14 @@ function calculatePoints(level, attempts) {
   // Level 5 და 6 – სურვილისამებრ, შეგიძლია აქეც დაამატო ცალკე ლოგიკა
   return 10;
 }
+function calculatePointsPhase(phase, attempts){
+  const lvl = phase + 1; // phase0≈ძველი L1, phase1≈L2, ...
+  if (lvl === 1) return (attempts <= 2) ? 20 : 10;
+  if (lvl === 2) return (attempts <= 2) ? 50 : 40;
+  if (lvl === 3) return (attempts <= 2) ? 100 : 80;
+  if (lvl === 4) return (attempts <= 2) ? 150 : 120;
+  return 10;
+}
     function checkGuess() {
       const userGuess = Number(document.getElementById("guessInput").value);
       const message = document.getElementById("message");
@@ -525,7 +559,53 @@ function calculatePoints(level, attempts) {
 
       if (userGuess === randomNumber) {
         clearInterval(timer);
-        
+          // === NEW: Level 1 – გაერთიანებული დინება (1–20 → 1–30 → 1–50 → 1–70) ===
+  if (level === 1) {
+    // ქულა ფაზის მიხედვით Level 1-ში ჩაიწეროს
+    const earnedPhasePoints = calculatePointsPhase(level1Phase, attempts);
+    addPoints(earnedPhasePoints, 1);
+
+    // მცირე მწვანე feedback
+    const msg = document.getElementById("message");
+    if (msg) { msg.innerHTML = translations[currentLang].correct(attempts); msg.style.color = "green"; }
+
+    // გადავიდეთ შემდეგ დიაპაზონზე თუ ეს ბოლო არაა
+    if (level1Phase < 3) {
+      setTimeout(() => {
+        level1Phase++;
+        maxNumber    = LEVEL1_PHASE_MAXES[level1Phase];
+        randomNumber = Math.floor(Math.random() * maxNumber) + 1;
+        attempts = 0;
+
+        // Level 1-ის პარამეტრები ხელახლა
+        const l1 = getLevelData(1);
+        timeLeft = l1.time || 50;
+        lives    = l1.lives || 5;
+        updateLivesDisplay();
+
+        // სათაურები ისევ არ გვინდა — მხოლოდ დიაპაზონი
+        const tEl = document.getElementById("levelTitle");
+        const sEl = document.getElementById("levelStory");
+        if (tEl) tEl.innerText = "";
+        if (sEl) sEl.innerText = translations[currentLang].guessRange(maxNumber);
+
+        const input = document.getElementById("guessInput");
+        if (input) { input.value = ""; input.setAttribute("max", maxNumber); }
+
+        document.getElementById("gameButton").disabled = false;
+        if (msg) msg.innerHTML = "";
+        startTimer();
+      }, 800);
+      return; // ვრჩებით Level 1-ში
+    }
+
+    // ბოლო დიაპაზონიც დასრულდა (1–70) → გადადი Level 2-ზე
+    setTimeout(() => {
+      jumpToLevel(2);
+    }, 800);
+    return; // მნიშვნელოვანია!
+  }
+  // === /NEW Level 1 handling ===
         
         
         const earnedPoints = calculatePoints(level, attempts);
@@ -575,10 +655,19 @@ if (level === 4) level4Score += earnedPoints;
      updateLevelLocks();
 
 
-     document.getElementById("levelTitle").innerText = next.title[currentLang];
-
-     document.getElementById("levelStory").textContent = next.story[currentLang];
-     
+     if (level === 1) {
+  // Level 1-ზე სათაურები გამორთულია — ვაჩვენოთ მხოლოდ დიაპაზონი
+  const tEl = document.getElementById("levelTitle");
+  const sEl = document.getElementById("levelStory");
+  if (tEl) tEl.innerText = "";
+  if (sEl) sEl.innerText = translations[currentLang].guessRange(maxNumber);
+} else {
+  // სხვა ლეველებზე შეგიძლია დარჩეს როგორც გაქვს, ან იგივე მინიმალისტური ტექსტი გაზარდო სურვილისამებრ
+  const tEl = document.getElementById("levelTitle");
+  const sEl = document.getElementById("levelStory");
+  if (tEl) tEl.innerText = next.title[currentLang];  // ან "" თუ საერთოდ არ გინდა სათაურები
+  if (sEl) sEl.innerText = next.story[currentLang];  // ან guessRange(next.max)
+}
 
    
      message.innerHTML = "";
