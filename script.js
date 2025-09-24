@@ -93,8 +93,8 @@ const translations = {
     level: "Level",
     level1: "Level 1",
     level2: "Level 2",
-    level5: "Level 5",
-    level6: "Level 6",
+    level3: "Level 3",
+    
     welcome: "Welcome to the Adventure!",
     tooHigh: "📉 Too high! Try again.",
     tooLow: "📈 Too low! Try again.",
@@ -141,9 +141,7 @@ const translations = {
     level1: "Уровень 1",
     level2: "Уровень 2",
     level3: "Уровень 3",
-    level4: "Уровень 4",
-    level5: "Уровень 5",
-    level6: "Уровень 6",
+  
     welcome: "Добро пожаловать в приключение!",
     tooHigh: "📉 Слишком много! Попробуй ещё раз.",
     tooLow: "📈 Слишком мало! Попробуй ещё раз.",
@@ -848,7 +846,17 @@ function goToMainMenu() {
   try { updateLevelLocks(); } catch(_) {}
   try { applyTranslations(); } catch(_) {}
 }
- 
+ // === FIX: Main Menu click handler ===
+function handleMainMenuClick(e) {
+  if (e) e.preventDefault();
+
+  // ნულდება ქულები და whole state
+  restartGameFull();   // ეს უშლის sessionStorage-ს და ქულებს
+  setScoreUI(0);       // UI-ზეც 0 აჩვენე
+
+  // გადადით მთავარ მენიუზე
+  goToMainMenu();
+}
   function completeLevel(currentLevel) {
     const nextLevel = currentLevel + 1;
     level = nextLevel;
@@ -984,9 +992,14 @@ function renderLevel5Stage() {
   // 101–200 დასრულდა → გადავდივართ Level 6-ზე
   level5Message.textContent = translations[currentLang].level5Passed || "🎉 You passed Level 2!";
   setTimeout(() => {
-    jumpToLevel(3);
-  }, 900);
+       level5Message.textContent = "";
+          const l5c = document.getElementById("level5Container");
+          if (l5c) l5c.style.display = "none";
+          jumpToLevel(3);         // ⬅️ Level 3 (სამი ფანჯარა)
+        }, 700)
+ 
   return;
+  
 
 } else {
   // უსაფრთხოების fallback (არ უნდა მოხდეს)
@@ -1337,8 +1350,8 @@ function getLevelData(level) {
       max: 20,
       lives: 5,
       title: {
-        en: "Level 1: The Beginning",
-        ru: "Уровень 1: Начало"
+        en: " The Beginning",
+        ru: " Начало"
       },
       story: {
         en: "Guess a number between 1 and 20",
@@ -1349,8 +1362,8 @@ function getLevelData(level) {
       max: 100,
       lives: 3,
       title: {
-        en: "Level 2: Follow the Intuition",
-        ru: "Уровень 2: Интуитивный выбор"
+        en: " Follow the Intuition",
+        ru: " Интуитивный выбор"
       },
       story: {
         en: "Choose the number that feels right",
@@ -1361,12 +1374,12 @@ function getLevelData(level) {
   max: 150,
   lives: 3,
   title: {
-    en: "Level 3: Advanced Guessing",
-    ru: "Уровень 3: Продвинутое угадывание"
+    en: " Advanced Guessing",
+    ru: " Продвинутое угадывание"
   },
   story: {
-    en: "Now guess a number between 1 and 150",
-    ru: "Теперь угадай число от 1 до 150"
+    en: "Choose the window that feels right",
+    ru: "Выберите правильное окно",
   }
 },
     5: {

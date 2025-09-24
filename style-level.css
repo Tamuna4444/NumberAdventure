@@ -9,13 +9,13 @@ body {
 
 /* Level 1 – The Beginning 🌱 */
 body.level-1 {
-  background: url(./image/begining.jpg)repeat-x;
+  background: url(https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmJuNDg0Mmp3MWNzdWw2bTVsMHRiM2I2dGFoMXQxZ2Z3bjF4aHU5byZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7aD6btergEqrn40U/giphy.gif)repeat-x;
    background-size: cover;
    color: white;
 }
 
 body.level-2 {
-  background: url(./image/level5.png);
+  background: url(https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZnQxdGYwdmt6YWJvbmM3dHFobm91N2xsNGFiaXZvNzZvZjhyODFzaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7aD2dXOnByGKr2da/giphy.gif);
     background-size: cover;
     background-position: center top;
   color: white;
@@ -82,7 +82,7 @@ button:hover {
   text-align: center;
 }
 body.level-3 {
-  background: url(./image/level6.png) no-repeat center top;
+  background: url(https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExNGs1bWVqd3NwazFkOW0zNDNnZWl1ZWE5MXo0OG1vMzl4Y3FyemJpMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3otWpngtqhDOzAQvhC/giphy.gif) no-repeat center top;
   background-size: cover;
   background-position: center top; 
   color: white;
