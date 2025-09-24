@@ -13,19 +13,16 @@
 
   
 
-<h1 data-i18n="title"></h1>
+<h1 data-i18n="title">Guess the Number</h1>
   <p data-i18n="welcome">Welcome to the Adventure!</p>
   <button onclick="startGame()" data-i18n="start">Start</button>
 
 
-  <div id="devTools">
-   <button class="levelBtn locked" data-level="1" onclick="jumpToLevel(1)"></button>
-    <button class="levelBtn locked" data-level="2" onclick="jumpToLevel(2)"></button>
-    <button class="levelBtn locked" data-level="3" onclick="jumpToLevel(3)"></button>
-    <button class="levelBtn locked" data-level="4" onclick="jumpToLevel(4)"></button>
-    <button class="levelBtn locked" data-level="5" onclick="jumpToLevel(5)"></button>
-    <button class="levelBtn locked" data-level="6" onclick="jumpToLevel(6)"></button>
-  </div>
+<div id="devTools">
+  <button class="levelBtn" data-level="1" onclick="jumpToLevel(1)">Level 1</button>
+  <button class="levelBtn" data-level="2" onclick="jumpToLevel(2)">Level 2</button>
+  <button class="levelBtn" data-level="3" onclick="jumpToLevel(3)">Level 3</button>
+</div>
   
 
 
@@ -77,7 +74,7 @@
   </div>
 
  <div id="level5Container" style="display: none;">
-  <h2 data-i18n="level5Title">Level 5: Follow the Intuition</h2>
+  <h2 data-i18n="level5Title">Level 2: Follow the Intuition</h2>
   <h3 data-i18n="level5Subtitle">Choose the number you feel is correct</h3>
 
   <div id="numberOptions"></div>

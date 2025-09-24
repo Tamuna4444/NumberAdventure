@@ -239,18 +239,7 @@ input[type="number"] {
   }
 }
 
-body.level-3 #message,
-body.level-3 #levelTitle,
-body.level-3 #levelStory,
-body.level-3 #timer,
-body.level-3 #score,
-body.level-3 h1,
-body.level-3 h2,
-body.level-3 h3,
-body.level-3 p {
-  color: white !important;
-  text-shadow: 1px 1px 2px black;
-}
+
 
 #settingsContainer {
   position: absolute;

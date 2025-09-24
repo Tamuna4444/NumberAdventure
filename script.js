@@ -35,9 +35,26 @@ function getTotalScore() {
   return Object.values(state.levelScores).reduce((a,b)=>a+(b||0),0);
 }
 
+// UI-ზე ჯამური ქულის გამოტანა (HUD + Level5/6 პატარა ქულები)
 function setScoreUI(total){
-  document.querySelectorAll('#scoreLabel, #totalScore, #scoreLabelL5, .scoreLabel')
-    .forEach(el => el.textContent = String(total));
+  try {
+    // მთავარი HUD:  <span id="scoreValue">...</span>
+    const sv = document.getElementById('scoreValue');
+    if (sv) sv.textContent = String(total);
+
+    // Level 5 ბლოკის პატარა ქულა (არსებობისას)
+    const l5 = document.getElementById('level5ScoreNum');
+    if (l5) l5.textContent = String(total);
+
+    // Level 6 ბლოკის პატარა ქულა (არსებობისას)
+    const l6 = document.getElementById('level6ScoreNum');
+    if (l6) l6.textContent = String(total);
+
+    // სურვილისამებრ: თუ სადმე გაქვს .scoreValue კლასი
+    document.querySelectorAll('.scoreValue').forEach(el => {
+      el.textContent = String(total);
+    });
+  } catch (e) {}
 }
 
 /* ქულების დამატება — ყოველთვის ინახავს sessionStorage-ში და აახლებს ჯამს */
@@ -45,7 +62,7 @@ function addPoints(points, lvl){
   const L = lvl || state.currentLevel;
   state.levelScores[L] = (state.levelScores[L] || 0) + (points||0);
   saveState();
-  setScoreUI(getTotalScore());
+  setScoreUI(getTotalScore()); // ← ეს ტოვი
 }
 
 /* ლეველზე გადასვლისას — მხოლოდ currentLevel ინახება. ქულებს არ ვეხებით. */
@@ -76,8 +93,6 @@ const translations = {
     level: "Level",
     level1: "Level 1",
     level2: "Level 2",
-    level3: "Level 3",
-    level4: "Level 4",
     level5: "Level 5",
     level6: "Level 6",
     welcome: "Welcome to the Adventure!",
@@ -219,11 +234,12 @@ if (level === 1) {
   if (l5 && l5t) l5t.innerText = l5.title[lang];
   if (l5 && l5s) l5s.innerText = l5.story[lang];
 
-  const l6 = getLevelData(6);
-  const l6t = document.getElementById("level6Title");
-  const l6s = document.getElementById("level6Story");
-  if (l6 && l6t) l6t.innerText = l6.title[lang];
-  if (l6 && l6s) l6s.innerText = l6.story[lang];
+  
+ const l3 = getLevelData(3);
+const l6t = document.getElementById("level6Title");
+const l6s = document.getElementById("level6Story");
+if (l3 && l6t) l6t.innerText = l3.title[lang];
+if (l3 && l6s) l6s.innerText = l3.story[lang];
 }
  
 function applyTranslations() {
@@ -249,9 +265,7 @@ const unlockedLevel = 999;
 
 
 let level1Score = 0;
-let level2Score = 0;
-let level3Score = 0;
-let level4Score = 0;
+
 let level5Score = 0;
 let level6Score = 0;
 
@@ -526,15 +540,7 @@ function calculatePoints(level, attempts) {
   if (level === 1) {
     return (attempts <= 2) ? 20 : 10;
   }
-  if (level === 2) {
-    return (attempts <= 2) ? 50 : 40;
-  }
-  if (level === 3) {
-    return (attempts <= 2) ? 100 : 80;
-  }
-  if (level === 4) {
-    return (attempts <= 2) ? 150 : 120;
-  }
+
   // Level 5 და 6 – სურვილისამებრ, შეგიძლია აქეც დაამატო ცალკე ლოგიკა
   return 10;
 }
@@ -619,7 +625,7 @@ function calculatePointsPhase(phase, attempts){
       
 
 if (level === 1) level1Score += earnedPoints;
-if (level === 2) level2Score += earnedPoints;
+if (level === 2) level5Score += earnedPoints;
 if (level === 3) level3Score += earnedPoints;
 if (level === 4) level4Score += earnedPoints;
 
@@ -631,7 +637,7 @@ if (level === 4) level4Score += earnedPoints;
 
       if (level === 4) {
     setTimeout(() => {
-      level = 5;
+      level = 2;
       document.getElementById("gameContainer").style.display = "none";
       renderLevel5Stage();
     }, 2000);
@@ -653,6 +659,7 @@ if (level === 4) level4Score += earnedPoints;
   localStorage.setItem("completedLevel", level - 1);
 
      updateLevelLocks();
+     
 
 
      if (level === 1) {
@@ -735,6 +742,9 @@ function restartLevel() {
   } catch (_) {}
   const msg = document.getElementById("message");
   if (msg) msg.innerHTML = "";
+   if (level === 1) {
+    level1Phase = 0;   // <<< დაამატე ეს
+  }
   jumpToLevel(level);
 }
 
@@ -744,17 +754,21 @@ function jumpToLevel(n) {
   goToLevel(n);
   level = n;
   localStorage.setItem("completedLevel", n - 1);
+
+    if (level === 1) {
+    level1Phase = 0;   
+  }
   document.getElementById("gameContainer").style.display = "none";
   document.getElementById("level5Container").style.display = "none";
   document.getElementById("level6Container").style.display = "none";
 
   
-  if (level === 5) {
+  if (level === 2) {
     document.getElementById("startScreen").style.display = "none";
     renderLevel5Stage();
     return;
   }
-  if (level === 6) {
+  if (level === 3) {
     document.getElementById("startScreen").style.display = "none";
     renderLevel6Stage();
     return;
@@ -858,11 +872,11 @@ function renderLevel5Stage() {
   document.getElementById("level6Container").style.display = "none";
   document.getElementById("level5Container").style.display = "block";
 
-  document.body.className = "level-5";
-  updateBackground(5);
+  document.body.className = "level-2";
+  updateBackground(2);
 
   
-  const data = getLevelData(5);
+  const data = getLevelData(2);
   document.querySelector('[data-i18n="level5Title"]').innerText = data.title[currentLang];
   document.querySelector('[data-i18n="level5Subtitle"]').innerText = data.story[currentLang];
 
@@ -875,7 +889,7 @@ function renderLevel5Stage() {
   
  function updateLevel5Score(points) {
          
-  addPoints(points, 5);         // საერთო state-ში ჩაიწეროს
+  addPoints(points, 2);         // საერთო state-ში ჩაიწეროს
   document.getElementById("level5ScoreNum").innerText = String(getTotalScore()); // ეკრანზე – ჯამი
 
   const total = getTotalScore();
@@ -957,18 +971,29 @@ function renderLevel5Stage() {
         level5Message.textContent = "";
         
         if (rangeStart === 1) {
-          rangeStart = 51; rangeEnd = 100;
-        } else if (rangeStart === 51) {
-          rangeStart = 101; rangeEnd = 200;
-         } else if (rangeStart === 101) {
-        if (level5Lives > 0) {
-          rangeStart = 1; rangeEnd = 50;
-        } else {
-          level5Message.textContent = translations[currentLang].level5GameOver;
-          showSummary();
-          return;
-        }
-      }
+  // 1–50 → 51–100
+  rangeStart = 51; 
+  rangeEnd   = 100;
+
+} else if (rangeStart === 51) {
+  // 51–100 → 101–200
+  rangeStart = 101; 
+  rangeEnd   = 200;
+
+} else if (rangeStart === 101) {
+  // 101–200 დასრულდა → გადავდივართ Level 6-ზე
+  level5Message.textContent = translations[currentLang].level5Passed || "🎉 You passed Level 2!";
+  setTimeout(() => {
+    jumpToLevel(3);
+  }, 900);
+  return;
+
+} else {
+  // უსაფრთხოების fallback (არ უნდა მოხდეს)
+  level5Message.textContent = translations[currentLang].level5GameOver;
+  showSummary();
+  return;
+}
 
         renderOptions(rangeStart, rangeEnd);
         startLevel5Timer();
@@ -1031,7 +1056,7 @@ function renderLevel5Stage() {
       rangeStart = 1; rangeEnd = 50;
       level5Lives = 3;
       
-      level = 5;
+      level = 2;
 
      
       numberOptions.innerHTML = "";
@@ -1059,10 +1084,10 @@ function renderLevel6Stage() {
   document.getElementById("level5Container").style.display = "none";
   document.getElementById("level6Container").style.display = "block";
 
-  document.body.className = "level-6";
-    updateBackground(6);
+  document.body.className = "level-3";
+    updateBackground(3);
 
-    const data = getLevelData(6);
+    const data = getLevelData(3);
     document.getElementById("level6Title").innerText = data.title[currentLang];
     document.getElementById("level6Story").innerText = data.story[currentLang];
 
@@ -1097,7 +1122,7 @@ function setupLevel6Round() {
   boxesContainer.innerHTML = "";
 
   // გამოიყენე Level 6-ის საკუთარი დიაპაზონი
-  const { max } = getLevelData(6);
+  const { max } = getLevelData(3);
   level6Correct = Math.floor(Math.random() * max) + 1;
 
   level6HiddenBoxIndex = Math.floor(Math.random() * 3);
@@ -1156,7 +1181,7 @@ function checkLevel6Box(index, box) {
     box.textContent = level6Correct;
     box.style.color = "black";
 
- addPoints(10, 6);
+ addPoints(10, 3);
 document.getElementById("level6ScoreNum").textContent = String(getTotalScore());
    level6Wins += 1;  
 if (level6Wins >= LEVEL6_TARGET_WINS) {
@@ -1229,17 +1254,18 @@ function showSummary() {
   // გამოვიყენოთ state.levelScores, სადაც addPoints ინახავს ქულებს
   const s = state.levelScores || {};
 
-  const score1to4 = (s[1]||0) + (s[2]||0) + (s[3]||0) + (s[4]||0);
-  const l5        = (s[5]||0);
-  const l6        = (s[6]||0);
+  const score1to4 = (s[1]||0) + (s[4]||0); // თუ 4 აღარ გვჭირდება, დატოვე მხოლოდ s[1]
+ const l2        = (s[2]||0);             // Level 2 = ინტუიციის დონე
+ const l3        = (s[3]||0);             // Level 3 = სამი ფანჯარა
+
   const total     = getTotalScore();
 
   document.getElementById("level1Score").textContent =
     `${translations[currentLang].level1to4}: ${score1to4} pts`;
   document.getElementById("level5Score").textContent =
-    `${translations[currentLang].level5Label}: ${l5} pts`;
-  document.getElementById("level6FinalScore").textContent =
-    `${translations[currentLang].level6Label}: ${l6} pts`;
+   `${(translations[currentLang].level2 || "Level 2")}: ${l2} pts`;
+ document.getElementById("level6FinalScore").textContent =
+   `${(translations[currentLang].level3 || "Level 3")}: ${l3} pts`;
   document.getElementById("totalScore").textContent =
     `${translations[currentLang].total}: ${total} pts`;
 
@@ -1277,18 +1303,21 @@ document.addEventListener("DOMContentLoaded", () => {
 // Main Menu buttons (Level 1 / Level 5 / Level 6)
 const mm1 = document.getElementById("mainMenuBtn1");
 if (mm1) mm1.addEventListener("click", () => {
+  e.preventDefault();
   restartGameFull();   // ქულების და state-ის განულება
   goToMainMenu();      // მთავარ მენიუზე დაბრუნება
 });
 
 const mm5 = document.getElementById("mainMenuBtn5");
 if (mm5) mm5.addEventListener("click", () => {
+  e.preventDefault();
   restartGameFull();
   goToMainMenu();
 });
 
 const mm6 = document.getElementById("mainMenuBtn6");
 if (mm6) mm6.addEventListener("click", () => {
+  e.preventDefault();
   restartGameFull();
   goToMainMenu();
 });
@@ -1317,42 +1346,29 @@ function getLevelData(level) {
       }
     },
     2: {
-      max: 30,
-      lives: 5,
-      time: 50,
+      max: 100,
+      lives: 3,
       title: {
-        en: "Level 2: Dark Forest",
-        ru: "Уровень 2: Тёмный лес"
+        en: "Level 2: Follow the Intuition",
+        ru: "Уровень 2: Интуитивный выбор"
       },
       story: {
-        en: "Guess a number between 1 and 30",
-        ru: "Угадай число от 1 до 30"
+        en: "Choose the number that feels right",
+        ru: "Выбери число, которому доверяешь"
       }
     },
     3: {
-      max: 50,
-      lives: 5,
-      title: {
-        en: "Level 3: Dragon's Den",
-        ru: "Уровень 3: Логово дракона"
-      },
-      story: {
-        en: "Beware the fire! Guess from 1 to 50",
-        ru: "Осторожно, дракон! Угадай от 1 до 50"
-      }
-    },
-    4: {
-      max: 70,
-      lives: 5,
-      title: {
-        en: "Level 4: Spooky Forest",
-        ru: "Уровень 4: Мистический лес"
-      },
-      story: {
-        en: "Can you find your way? Guess 1 to 70",
-        ru: "Найди путь! Угадай от 1 до 70"
-      }
-    },
+  max: 150,
+  lives: 3,
+  title: {
+    en: "Level 3: Advanced Guessing",
+    ru: "Уровень 3: Продвинутое угадывание"
+  },
+  story: {
+    en: "Now guess a number between 1 and 150",
+    ru: "Теперь угадай число от 1 до 150"
+  }
+},
     5: {
       max: 100,
       lives: 3,
@@ -1390,8 +1406,8 @@ function restartLevelTo(n) {
 
   attempts = 0;
 
-  if (n === 5) {
-    level = 5;
+  if (n === 2) {
+    level = 2;
     
     rangeStart  = 1;
     rangeEnd    = 50;
@@ -1409,11 +1425,15 @@ function restartLevelTo(n) {
     return;
   }
 
-  if (n === 6) {
-    level = 6;
+  if (n === 3) {
+    level = 3;
     level6Lives = 3;
     level6Score = 0;
-    renderLevel6Stage();
+     renderLevel6Stage();
+    requestAnimationFrame(() => {
+      const btn = document.getElementById("level6StartBtn");
+      if (btn) btn.click();  // ავტომატურად გაუშვას რაუნდი
+    });
     return;
   }
 
@@ -1426,57 +1446,43 @@ function restartLevelTo(n) {
 document.addEventListener("DOMContentLoaded", () => {
   const modalRestartLevelBtn = document.getElementById("restartLevelBtn");
   const modalRestartGameBtn  = document.getElementById("restartGameBtn");
+  const restartLevel5Btn     = document.getElementById("restartLevel5Btn");
+  const restartGame5Btn      = document.getElementById("restartGame5Btn");
 
   if (modalRestartLevelBtn) {
     modalRestartLevelBtn.addEventListener("click", () => {
       closeSummary();
-        if (typeof level !== "undefined" && level === 5) {
-      return restartLevelTo(5); 
-    }
-      restartLevel(); 
+      if (level === 2) return restartLevelTo(2);
+      if (level === 6) return restartLevelTo(6);
+      restartLevel();
     });
   }
+
   if (modalRestartGameBtn) {
-  modalRestartGameBtn.addEventListener("click", () => {
-    closeSummary();
-    restartGameFull();
-    goToMainMenu();
-  
-    const start = document.getElementById("startScreen");
-    if (start) start.style.display = "block";
+    modalRestartGameBtn.addEventListener("click", () => {
+      closeSummary();
+      restartGameFull();
+      goToMainMenu();
+      try { updateLevelLocks(); } catch(_) {}
+      try { applyTranslations(); } catch(_) {}
+    });
+  }
 
-    try { updateLevelLocks(); } catch(_) {}
-    try { applyTranslations(); } catch(_) {}
-  });
-}
+  if (restartLevel5Btn) {
+    restartLevel5Btn.addEventListener("click", () => {
+      closeSummary();
+      restartLevelTo(2);
+    });
+  }
 
-// Main Menu – საერთო ჰენდლერი სამი ღილაკისთვის
-function handleMainMenuClick(e) {
-  if (e) { e.preventDefault(); e.stopPropagation(); }
+  if (restartGame5Btn) {
+    restartGame5Btn.addEventListener("click", () => {
+      closeSummary();
+      restartGameFull();
+      goToMainMenu();
+    });
+  }
 
-  // გავაჩეროთ ტაიმერები
-  try { clearInterval(timer); } catch(_) {}
-  try { clearInterval(level5TimerInterval); } catch(_) {}
-  try { clearInterval(level6Timer); } catch(_) {}
-
-  // გავაჩეროთ ხმები
-  try {
-    Object.values(levelSounds).forEach(s => { s.pause(); s.currentTime = 0; });
-    startSound.pause(); startSound.currentTime = 0;
-    clickSound.pause(); clickSound.currentTime = 0;
-    failSound.pause();  failSound.currentTime  = 0;
-  } catch(_) {}
-
-  // ქულების განულება
-  restartGameFull();
-
-  // HUD-ის ქულა ნულზე
-  const sv = document.getElementById("scoreValue");
-  if (sv) sv.textContent = "0";
-
-  // მენიუზე დაბრუნება
-  goToMainMenu();
-}
 
 // მიამაგრე ღილაკებზე
 const mm1 = document.getElementById("mainMenuBtn1");

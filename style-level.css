@@ -13,35 +13,8 @@ body.level-1 {
    background-size: cover;
    color: white;
 }
-   
 
-
-/* Level 2 – The Dark Forest 🌲 */
 body.level-2 {
-  background: url(./image/dark\ forest.jpg)repeat-x;
-  background-size: cover;
-  color: white;
-}
-
-
-
-/* Level 3 – Dragon's Den 🔥 */
-body.level-3 {
-  background: url(https://s1.1zoom.me/big0/806/343129-sepik.jpg) repeat-x;
-  background-size: cover;
-
-  color: white;
-}
-
-
-
-body.level-4 {
-  background: url(https://img.freepik.com/free-photo/spooky-forest-mystery-dark-tree-branch-fantasy-generative-ai_188544-12556.jpg?semt=ais_hybrid&w=740)repeat-x;
-    background-size: cover;
-    background-position: center top;
-  color: white;
-}
-body.level-5 {
   background: url(./image/level5.png);
     background-size: cover;
     background-position: center top;
@@ -53,12 +26,7 @@ body.level-2 #message {
   color: white;
   text-shadow: 1px 1px 2px rgb(245, 242, 242);
 }
-body.level-4 #timer,
-body.level-4 #score,
-body.level-4 #message {
-  color: white;
-  text-shadow: 1px 1px 2px rgb(247, 246, 246);
-}
+
 
 body.level-2 #timer,
 body.level-2 #score,
@@ -90,9 +58,7 @@ button:hover {
   background-color: rgba(255, 255, 255, 0.2);
   transform: scale(1.05);
 }
-body.level-4 button {
-  color: white;
-}
+
 .option-btn {
   background-color: rgba(255, 255, 255, 0.1); 
   color: #ffffff; 
@@ -115,13 +81,13 @@ body.level-4 button {
   padding-top: 80px; 
   text-align: center;
 }
-body.level-6 {
+body.level-3 {
   background: url(./image/level6.png) no-repeat center top;
   background-size: cover;
   background-position: center top; 
   color: white;
 }
-#level6Container {
+#level3Container {
   padding-top: 60px; 
   text-align: center;
 }
