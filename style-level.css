@@ -11,20 +11,20 @@ body {
 body.level-1 {
   background: url("image/level1.gif")repeat-x;
    background-size: cover;
-   color: white;
+   color: black;
 }
 
 body.level-2 {
   background: url("image/level2.gif");
     background-size: cover;
     background-position: center top;
-  color: white;
+  color: black;
 }
 body.level-2 #timer,
 body.level-2 #score,
 body.level-2 #message {
-  color: white;
-  text-shadow: 1px 1px 2px rgb(245, 242, 242);
+  color: black;
+  text-shadow: 1px 1px 2px black;
 }
 
 
@@ -35,24 +35,15 @@ body.level-2 h1,
 body.level-2 h2,
 body.level-2 p,
 body.level-2 button {
-  color: white;
+  color: black;
 }
 
 
 body.level-2 button {
   background-color: rgba(255, 255, 255, 0.15);
-  border: 1px solid white;
+  border: 1px solid black;
 }
-button {
-  background-color: transparent;
-  color: white;
-  border: 2px solid white;
-  padding: 10px 16px;
-  font-size: 16px;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
+
 
 button:hover {
   background-color: rgba(255, 255, 255, 0.2);
@@ -61,8 +52,8 @@ button:hover {
 
 .option-btn {
   background-color: rgba(255, 255, 255, 0.1); 
-  color: #ffffff; 
-  border: 2px solid #ffffff; 
+  color: black;
+  border: 2px solid black;
   border-radius: 30px;
   padding: 15px 25px;
   font-size: 25px;
@@ -91,17 +82,7 @@ body.level-3 {
   padding-top: 60px; 
   text-align: center;
 }
-#summaryModal button {
-  display: inline-block;
-  background-color: #001F3F;
-  color: white;
-  padding: 10px 20px;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  margin-top: 20px;
-  cursor: pointer;
-}
+
 #summaryModal p {
   color: black !important;
 }
@@ -126,4 +107,28 @@ body.level-3 {
 }
 .langBtn:hover {
   background: rgba(255,255,255,0.2);
+}
+/* Level 1 – ტექსტი და ღილაკები შავი */
+body.level-1 {
+  color: black;
+}
+
+body.level-1 button {
+  background-color: transparent;
+  color: black;
+  border: 2px solid black;
+}
+
+/* Level 2 და Level 3 – ღილაკები თეთრი */
+body.level-2 button,
+body.level-3 button {
+  background-color: transparent;
+  color: white;
+  border: 2px solid white;
+}
+
+/* Hover ყველა ღილაკისთვის */
+button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
 }
