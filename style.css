@@ -12,11 +12,11 @@
   overflow-y: auto; /* scroll-ის ჩართვა */
   -webkit-overflow-scrolling: touch;
 
-  background-image: url(./image/happy\ animation\ GIF\ by\ POKOPANG\ \(3\).gif);
+  background-image: url("image/level0.gif");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-color: #001F3F;
+ 
 
   color: white;
   text-align: center;

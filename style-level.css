@@ -9,13 +9,13 @@ body {
 
 /* Level 1 – The Beginning 🌱 */
 body.level-1 {
-  background: url(./image/level1.gif)repeat-x;
+  background: url("image/level1.gif")repeat-x;
    background-size: cover;
    color: white;
 }
 
 body.level-2 {
-  background: url(./image/level2.gif);
+  background: url("image/level2.gif");
     background-size: cover;
     background-position: center top;
   color: white;
@@ -82,7 +82,7 @@ button:hover {
   text-align: center;
 }
 body.level-3 {
-  background: url(./image/level3.gif) no-repeat center top;
+  background: url("image/level3.gif") no-repeat center top;
   background-size: cover;
   background-position: center top; 
   color: white;
