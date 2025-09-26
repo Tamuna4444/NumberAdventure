@@ -41,15 +41,15 @@
   padding: 12px 20px;
   font-size: 16px;
   border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: 2px solid white;
+  background-color: white;
+  color: black;              /* მწვანე ტექსტი */
+  border: white;   
   cursor: pointer;
   transition: background 0.3s;
 }
 
 #startScreen button:hover {
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: white;
 }
 html, body {
   height: 100%;
@@ -113,7 +113,7 @@ input[type="number"] {
 }
 
 .modal-content {
-  background-color: white;
+  background-color: black;
   margin: 15% auto;
   padding: 30px;
   border-radius: 10px;
@@ -194,9 +194,10 @@ input[type="number"] {
     max-width: 180px;
   }
 
-
+/* სათაური */
   #startScreen h1 {
     font-size: 32px;
+    color: white;
   }
 
   #startScreen button[data-i18n="start"] {
@@ -206,8 +207,8 @@ input[type="number"] {
     height: 50px;
     border-radius: 10px;
     background-color: transparent;
-    border: 2px solid white;
-    color: white;
+    border: 2px solid black;
+    color: black;
     cursor: pointer;
   }
 }
@@ -313,7 +314,7 @@ input[type="number"] {
 .box {
   width: 80px;
   height: 80px;
-  background-color: white;
+  background-color: black;
   color: black;
   font-size: 32px;
   border: 2px solid black;
@@ -340,7 +341,7 @@ input[type="number"] {
   border: none;
   cursor: pointer;
 }
-#startBtn {
+#startBtn {       
   display: block;
   margin: 50px auto;
   padding: 12px 30px;
@@ -352,7 +353,7 @@ input[type="number"] {
   cursor: pointer;
 
 }
-
+ /* მეორე ლეველის start ღილაკი */
 .hidden {
   display: none;
 }
@@ -383,7 +384,7 @@ input[type="number"] {
 
 .level-6 {
   background: #222;
-  color: #fff;
+  color: black;
   
 }
 
