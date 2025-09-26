@@ -13,6 +13,11 @@ body.level-1 {
    background-size: cover;
    color: black;
 }
+   body.level-1 #timer,
+   body.level-1 #score {
+  color: black !important;
+}
+
 
 body.level-2 {
   background: url("image/level2.gif");
@@ -44,11 +49,6 @@ body.level-2 button {
   border: 1px solid black;
 }
 
-
-button:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  transform: scale(1.05);
-}
 
 .option-btn {
   background-color: rgba(255, 255, 255, 0.1); 
@@ -109,9 +109,7 @@ body.level-3 {
   background: rgba(255,255,255,0.2);
 }
 /* Level 1 – ტექსტი და ღილაკები შავი */
-body.level-1 {
-  color: black;
-}
+
 
 body.level-1 button {
   background-color: transparent;
@@ -119,16 +117,24 @@ body.level-1 button {
   border: 2px solid black;
 }
 
-/* Level 2 და Level 3 – ღილაკები თეთრი */
-body.level-2 button,
-body.level-3 button {
-  background-color: transparent;
-  color: white;
-  border: 2px solid white;
-}
+
+
 
 /* Hover ყველა ღილაკისთვის */
 button:hover {
   background-color: rgba(255, 255, 255, 0.2);
   transform: scale(1.05);
 }
+/* --- Summary Modal buttons: ყოველთვის შავი, რომ არ დაიფაროს level-ის წესებით --- */
+#summaryModal .modal-content button {
+  background: transparent !important;
+  color: black !important;
+  border: 2px solid black !important;
+  box-shadow: none !important;
+}
+#summaryModal .modal-content button:hover {
+  transform: translateY(0);       /* სურვილისამებრ */
+  filter: none;
+  opacity: 0.9;
+}
+

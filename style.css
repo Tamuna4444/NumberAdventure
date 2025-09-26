@@ -74,11 +74,11 @@ body {
   #timer {
     font-size: 50px;
     margin-top: 20px;
-    color:white;
+    color:black;
   }
   #score {
     font-size: 40px;
-    color: white;
+    color: black;
     margin-top: 20px;
   }
  button {
@@ -550,7 +550,11 @@ body.menu #summaryModal {
 body.menu #startScreen {
   display: flex !important;
 }
-
+#mainMenuBtn {
+  color: white !important;
+  border: 2px solid white !important;
+  background: transparent !important;
+}
   
   
 
