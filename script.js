@@ -265,6 +265,7 @@ const unlockedLevel = 999;
 let level1Score = 0;
 
 let level5Score = 0;
+let level5Part = 1; // 1=სამი ფანჯარა, 2=ოთხი ფანჯარა
 let level6Score = 0;
 
 
@@ -813,6 +814,7 @@ function jumpToLevel(n) {
 }
 function goToMainMenu() {
   // 1) გააჩერე ყველა ტაიმერი
+  
   try { clearInterval(timer); } catch(_) {}
   try { clearInterval(level5TimerInterval); } catch(_) {}
   try { clearInterval(level6Timer); } catch(_) {}
@@ -835,12 +837,7 @@ function goToMainMenu() {
     if (el) el.style.display = "none";
   });
 
-  // 5) აჩვენე მთავარი მენიუ
-  const start = document.getElementById("startScreen");
-  if (start) {
-    start.style.display = "block";
-    start.scrollTop = 0; // ზედა ნაწილში დაბრუნება
-  }
+ 
 
   // 6) ლოკები/ტექსტები განახლდეს ამჟამად არჩეული ენით
   try { updateLevelLocks(); } catch(_) {}
@@ -849,13 +846,42 @@ function goToMainMenu() {
  // === FIX: Main Menu click handler ===
 function handleMainMenuClick(e) {
   if (e) e.preventDefault();
+ restartGameFull();
+  resetLevel2UIAndState();
+  level5Part = 1;
 
-  // ნულდება ქულები და whole state
-  restartGameFull();   // ეს უშლის sessionStorage-ს და ქულებს
-  setScoreUI(0);       // UI-ზეც 0 აჩვენე
+    ["gameContainer","level5Container","level6Container","summaryModal"].forEach(id=>{
+    const el=document.getElementById(id);
+    if (el) el.style.display="none";
+  });
+  // გაჩერება ყველა ტაიმერის/ხმის
+  try { clearInterval(timer); } catch(_) {}
+  try { clearInterval(level5TimerInterval); } catch(_) {}
+  try { clearInterval(level6Timer); } catch(_) {}
+  try {
+    Object.values(levelSounds).forEach(s => { s.pause(); s.currentTime = 0; });
+    startSound.pause(); startSound.currentTime = 0;
+    clickSound.pause(); clickSound.currentTime = 0;
+    failSound.pause();  failSound.currentTime  = 0;
+  } catch(_) {}
 
-  // გადადით მთავარ მენიუზე
-  goToMainMenu();
+  // State reset
+  restartGameFull();
+  resetLevel2UIAndState();      // Level 2 UI/vars clean (გაქვს უკვე)
+
+
+  // დამალე ყველა კონტეინერი
+  ["gameContainer","level5Container","level6Container","summaryModal"].forEach(id=>{
+    const el=document.getElementById(id);
+    if (el) el.style.display="none";
+  });
+
+  // Body იყოს მენიუ და სტარტი გამოჩნდეს ცენტრში
+  document.body.className = "menu";
+ 
+
+  // Start ტექსტები განახლდეს არჩეული ენით
+  try { applyTranslations(); } catch(_) {}
 }
   function completeLevel(currentLevel) {
     const nextLevel = currentLevel + 1;
@@ -891,6 +917,7 @@ function renderLevel5Stage() {
  
   const numberOptions = document.getElementById("numberOptions");
   const level5Message = document.getElementById("level5Message");
+  
 
   
 
@@ -1120,13 +1147,6 @@ function renderLevel6Stage() {
   startBtn.onclick = startLevel6;
 }
 
-function startLevel6() {
-  document.getElementById("level6StartBtn").style.display = "none";
-  level6Lives = 3;
-  document.getElementById("level6Lives").textContent = "❤️❤️❤️";
-  document.getElementById("level6Message").textContent = "";
-  setupLevel6Round();
-}
 
 function setupLevel6Round() {
   try { clearInterval(level6Timer); } catch(_) {}
@@ -1312,28 +1332,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  
-// Main Menu buttons (Level 1 / Level 5 / Level 6)
-const mm1 = document.getElementById("mainMenuBtn1");
-if (mm1) mm1.addEventListener("click", () => {
-  e.preventDefault();
-  restartGameFull();   // ქულების და state-ის განულება
-  goToMainMenu();      // მთავარ მენიუზე დაბრუნება
-});
 
-const mm5 = document.getElementById("mainMenuBtn5");
-if (mm5) mm5.addEventListener("click", () => {
-  e.preventDefault();
-  restartGameFull();
-  goToMainMenu();
-});
 
-const mm6 = document.getElementById("mainMenuBtn6");
-if (mm6) mm6.addEventListener("click", () => {
-  e.preventDefault();
-  restartGameFull();
-  goToMainMenu();
-});
 
 document.querySelectorAll(".langBtn").forEach(btn => {
   btn.addEventListener("click", () => {
@@ -1431,10 +1431,7 @@ function restartLevelTo(n) {
     renderLevel5Stage();
 
     
-    requestAnimationFrame(() => {
-      const startBtn = document.getElementById("startBtn");
-      if (startBtn) startBtn.click();
-    });
+
     return;
   }
 
@@ -1443,10 +1440,7 @@ function restartLevelTo(n) {
     level6Lives = 3;
     level6Score = 0;
      renderLevel6Stage();
-    requestAnimationFrame(() => {
-      const btn = document.getElementById("level6StartBtn");
-      if (btn) btn.click();  // ავტომატურად გაუშვას რაუნდი
-    });
+  
     return;
   }
 
@@ -1507,3 +1501,43 @@ if (mm5) mm5.addEventListener("click", handleMainMenuClick);
 const mm6 = document.getElementById("mainMenuBtn6");
 if (mm6) mm6.addEventListener("click", handleMainMenuClick);
 });
+function resetLevel2UIAndState() {
+  try { clearInterval(level5TimerInterval); } catch (_) {}
+
+  // ცვლადები
+  rangeStart = 1; rangeEnd = 50;
+  level5Lives = 3;
+  level5Time  = 30;
+  level5Score = 0;
+
+  // UI გასუფთავება
+  const c = document.getElementById("level5Container");
+  if (c) c.style.display = "none";          // <<< დამალე მთლიანად
+
+  const opts = document.getElementById("numberOptions");
+  if (opts) opts.innerHTML = "";
+
+  const msg = document.getElementById("level5Message");
+  if (msg) msg.textContent = "";
+
+  const tEl = document.getElementById("level5Time");
+  if (tEl) tEl.textContent = "";
+
+  const livesEl = document.getElementById("level5Lives");
+  if (livesEl) livesEl.textContent = "";
+
+  const sBox = document.getElementById("level5ScoreValue");
+  if (sBox) { sBox.classList.add("hidden"); sBox.style.display = "none"; }
+  const sNum = document.getElementById("level5ScoreNum");
+  if (sNum) sNum.textContent = "0";
+
+  // Start ღილაკი ისევ გამოჩნდეს, როცა დაბრუნდები Level 2-ში
+  const startBtn = document.getElementById("startBtn");
+  if (startBtn) startBtn.style.display = "inline-block";
+
+  // რესტარტ ღილაკები დაიმალოს
+  const rL = document.getElementById("restartLevel5Btn");
+  if (rL) rL.classList.add("hidden");
+  const rG = document.getElementById("restartGame5Btn");
+  if (rG) rG.classList.add("hidden");
+}

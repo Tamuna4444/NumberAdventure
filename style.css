@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
-
+  gap: 15px;
   min-height: 100vh; /* height კი არა */
   width: 100vw;
   padding: 20px;
@@ -42,10 +42,11 @@
   font-size: 16px;
   border-radius: 10px;
   background-color: white;
-  color: black;              /* მწვანე ტექსტი */
+  color: black;              
   border: white;   
   cursor: pointer;
   transition: background 0.3s;
+  
 }
 
 #startScreen button:hover {
@@ -379,7 +380,8 @@ input[type="number"] {
   align-items: center;
   width: 80px;   
   height: 80px;
-  font-size: 60px;  
+  font-size: 60px; 
+   
 }
 
 .level-6 {
@@ -447,7 +449,7 @@ input[type="number"] {
   background-color: white;
   margin: 15% auto;
   padding: 30px;
-  border-radius: 10px;
+  border-radius: 20px;
   width: 80%;
   max-width: 400px;
   text-align: center;
@@ -550,11 +552,56 @@ body.menu #summaryModal {
 body.menu #startScreen {
   display: flex !important;
 }
-#mainMenuBtn {
+
+#mainMenuBtn1 {
+  background: transparent !important;
   color: white !important;
   border: 2px solid white !important;
-  background: transparent !important;
 }
-  
-  
+  #mainMenuBtn5 {
+  background: white !important;
+  color: black !important;
+  border: 2px solid white !important;
+  border-radius: 20px;   /* აქ ციფრით აკონტროლებ მომრგვალებას */
+  padding: 12px 24px;
+   display: block;        /* აღარ იქნება inline → აღარ ჩადგება Start-ის გვერდით */
+  margin: 12px auto 0;
+  }
+  /* --- Main Menu და Start ღილაკები მობილურზე --- */
+/* მობილურზე ჰორიზონტალური წაწევა რომ არ იყოს */
+html, body { overflow-x: hidden; }
+
+/* Level 3 კონტენტის გამსწორებელი */
+@media (max-width: 600px) {
+  #level3Container {
+    width: 100vw;           /* მთელ სიგანეზე */
+    max-width: 100%;
+    margin: 0 auto;         /* ცენტრში */
+    padding-left: 0;
+    padding-right: 0;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  /* თუ Level 3-ში არის რიცხვების რიგი */
+  #level3Container #numberBoxes,
+  #level3Container .row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;        /* რომ არ გადაისაროს მარჯვნივ */
+    margin: 10px auto;
+    width: 100%;
+  }
+
+  /* თავად რიცხვების ღილაკები/ბოქსები */
+  #level3Container .box,
+  #level3Container button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin: 8px auto !important;
+  }
+}
 
