@@ -1018,43 +1018,47 @@ function startLevel5Timer() {
   level5TimerInterval = setInterval(() => {
     level5Time--;
     if (timeEl) timeEl.innerText = `🕐 ${level5Time}s`;
+if (level5Time <= 0) {
+  clearInterval(level5TimerInterval);
 
-    if (level5Time <= 0) {
-      clearInterval(level5TimerInterval);
-if (level5Part === 1) {
-  // ⏱ Stage 1 დასრულდა დროთი → ყოველთვის გადავდივართ Stage 2-ზე
-  level5Part = 2;
+  if (level5Part === 1) {
+    // Stage 1 დასრულდა დროთი → πάντοτε გადავდივართ Stage 2-ზე
+    level5Part = 2;
 
-  // Stage2 სიცოცხლე = Stage1 ნაშთი + 4 (cap = 10), თუნდაც Stage1 დაიხურა 0-ზე
-  level5Lives = Math.min(L2_STAGE2_LIFE_CAP, (level5Lives || 0) + 4);
-  const livesEl = document.getElementById("level5Lives");
-  if (livesEl) livesEl.textContent = renderHearts(level5Lives);
+    // Stage2 სიცოცხლე = Stage1 ნაშთი + 4 (cap = 10)
+    level5Lives = Math.min(L2_STAGE2_LIFE_CAP, (level5Lives || 0) + 4);
+    const livesEl = document.getElementById("level5Lives");
+    if (livesEl) livesEl.textContent = renderHearts(level5Lives);
 
-  setTimeout(() => {
-    renderBlankOptions(4);
-    // Stage 2 – ახალი 40წმ ტაიმერი იწყება
-    renderOptions(rangeStart, rangeEnd, 4, startLevel5Timer);
-  }, 400);
-  return;
-} else {
-        // ✅ Stage 2: დროზე ამოწურვა → პირდაპირ Level 3-ზე (უსაფრთხოდ გადავიტანოთ სიცოცხლე)
-try { numberOptions.innerHTML = ""; } catch(_) {}
-level5Message.textContent = (translations[currentLang]?.level5Passed || "🎉 You passed Level 2!");
+    // ←← ჩამატებულია მკაფიო ინიციალიზაცია:
+    level5Time = 40; 
+    const timeEl = document.getElementById("level5Time");
+    if (timeEl) timeEl.innerText = `🕐 ${level5Time}s`;
 
-setTimeout(() => {
-  level5Message.textContent = "";
-  const l5c = document.getElementById("level5Container");
-  if (l5c) l5c.style.display = "none";
+    setTimeout(() => {
+      renderBlankOptions(4);
+      // і აქ მხოლოდ ამ კონკრეტულ გადასვლაზე ვრთავთ afterReveal-ით ტაიმერის სტარტს:
+      renderOptions(rangeStart, rangeEnd, 4, startLevel5Timer);
+    }, 400);
+    return;
+  } else {
+    // Stage 2 ჩაიწურა დროთი → გადავიდეთ Level 3-ზე
+    try { numberOptions.innerHTML = ""; } catch(_) {}
+    level5Message.textContent = (translations[currentLang]?.level5Passed || "🎉 You passed Level 2!");
 
-  //➡ Level 2-დან გადავიტანოთ დარჩენილი სიცოცხლე Level 3-ზე (cap = 10)
-  window.pendingLivesToL3 = Math.min(10, Math.max(0, level5Lives|0));
+    setTimeout(() => {
+      level5Message.textContent = "";
+      const l5c = document.getElementById("level5Container");
+      if (l5c) l5c.style.display = "none";
 
-  jumpToLevel(3);
-}, 400);
-return;
-        return;
-      }
-    }
+      // სიცოცხლე გადავიტანოთ Level 3-ზე (cap 10)
+      window.pendingLivesToL3 = Math.min(10, Math.max(0, level5Lives|0));
+      jumpToLevel(3);
+    }, 400);
+    return;
+  }
+}
+
   }, 1000);
 }
 function handleChoice(choice) {
@@ -1159,7 +1163,8 @@ if (l5LivesEl) l5LivesEl.textContent = renderHearts(level5Lives);
   }
 }
  
-
+let level6Part = 1;        // 1 = 3 ფანჯარა, 2 = 4 ფანჯარა
+const L3_LIFE_CAP = 10;
 let level6Lives = 3;
 let level6Time = 5; 
 let level6Timer;
@@ -1188,8 +1193,11 @@ function renderLevel6Stage() {
   document.getElementById("level6Boxes").innerHTML = "";
   document.getElementById("level6Lives").textContent = "";
   document.getElementById("level6Time").textContent = "";
-   const timeEl = document.getElementById("level6Time");
-  if (timeEl) { timeEl.textContent = ""; timeEl.style.display = "none"; }
+  const timeEl = document.getElementById("level6Time");
+if (timeEl) { 
+  timeEl.textContent = ""; 
+  timeEl.style.display = "inline-block"; // დრო თავიდანვე ჩანდეს
+}
 
   // score initially hidden (until start)
   document.getElementById("level6ScoreValue").style.display = "none";
@@ -1199,21 +1207,17 @@ function renderLevel6Stage() {
   startBtn.style.display = "inline-block";
   startBtn.onclick = startLevel6;
 }
-
-
 function setupLevel6Round() {
-  try { clearInterval(level6Timer); } catch(_) {}
-
   const boxesContainer = document.getElementById("level6Boxes");
   boxesContainer.innerHTML = "";
 
-  // გამოიყენე Level 6-ის საკუთარი დიაპაზონი
   const { max } = getLevelData(3);
   level6Correct = Math.floor(Math.random() * max) + 1;
 
-  level6HiddenBoxIndex = Math.floor(Math.random() * 3);
+  const boxCount = (level6Part === 2) ? 4 : 3;
+  level6HiddenBoxIndex = Math.floor(Math.random() * boxCount);
 
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < boxCount; i++) {
     const box = document.createElement("button");
     box.textContent = "";
     box.style.fontSize = "40px";
@@ -1222,125 +1226,128 @@ function setupLevel6Round() {
     box.onclick = () => checkLevel6Box(i, box);
     boxesContainer.appendChild(box);
   }
-
-  level6Time = 5;
-  startLevel6Timer(); // ← ეს ახლა ნამდვილად იარსებებს (შემდეგ ნაბიჯი)
 }
 function startLevel6Timer() {
   try { clearInterval(level6Timer); } catch (_) {}
 
-  document.getElementById("level6Time").textContent = `⏱️ ${level6Time}s`;
+  const timeEl = document.getElementById("level6Time");
+  if (timeEl) {
+    timeEl.style.display = "inline-block";
+    timeEl.textContent = `⏱️ ${level6Time}s`;
+  }
 
   level6Timer = setInterval(() => {
     level6Time--;
-    document.getElementById("level6Time").textContent = `⏱️ ${level6Time}s`;
+    if (timeEl) timeEl.textContent = `⏱️ ${level6Time}s`;
 
     if (level6Time <= 0) {
       clearInterval(level6Timer);
 
-    level6Lives--;
+      if (level6Part === 1) {
+        // Stage 1 დასრულდა → გადავდივართ Stage 2-ზე
+        level6Part = 2;
 
-// ეკრანზე არ ჩამოვარდეს უარყოფითზე
-document.getElementById("level6Lives").textContent = "❤️".repeat(Math.max(level6Lives, 0));
+        // სიცოცხლე: Stage1 ნაშთი +4 (მაქს. 10)
+        level6Lives = Math.min(10, (level6Lives || 0) + 4);
+        const lbox = document.getElementById("level6Lives");
+        if (lbox) lbox.textContent = renderHearts(level6Lives);
 
-// თუ უკვე 0 იყო და კიდევ ერთ შეცდომას ვამატებთ → Game Over
-if (level6Lives <=0) {
-  document.getElementById("level6Message").textContent = translations[currentLang].level6GameOver;
-  showSummary();
-  return;
-}
+        // ✅ Stage2-ის დრო — 40 წმ
+        level6Time = 40;
+        if (timeEl) timeEl.textContent = `⏱️ ${level6Time}s`;
 
+        setupLevel6Round();   // ახალი ვარიანტები
+        startLevel6Timer();   // ✅ ახალი ტაიმერი Stage2-ზე
+        return;
+      }
+
+      // Stage 2 დასრულდა დროთი → დასრულება ან შემდეგ ლეველზე გადასვლა
+      const boxes = document.getElementById("level6Boxes");
+      if (boxes) boxes.innerHTML = "";
+      const msg = document.getElementById("level6Message");
+      if (msg) msg.textContent = "✔️ Level 3 complete!";
       setTimeout(() => {
-        document.getElementById("level6Message").textContent = "";
-        level6Time = 5;
-        setupLevel6Round();
-      }, 800);
+        if (msg) msg.textContent = "";
+        showSummary(); // ან jumpToLevel(4);
+      }, 500);
     }
   }, 1000);
 }
 
-
 function checkLevel6Box(index, box) {
-  clearInterval(level6Timer);
-
-  if (index === level6HiddenBoxIndex) {
+if (index === level6HiddenBoxIndex) {
+    // სწორი: ვაჩვენოთ რიცხვი შავად, შენს სტილს არ ვეხებით
     box.textContent = level6Correct;
     box.style.color = "black";
 
- addPoints(10, 3);
-document.getElementById("level6ScoreNum").textContent = String(getTotalScore());
-   level6Wins += 1;  
-if (level6Wins >= LEVEL6_TARGET_WINS) {
-  document.getElementById("level6Message").textContent =
-    `${translations[currentLang].level6Correct} (${level6Wins}/${LEVEL6_TARGET_WINS})`;
-  setTimeout(() => {
-    showSummary();
-  }, 500);
-  return;
-}
-     document.getElementById("level6Message").textContent = translations[currentLang].level6Correct;
-  setTimeout(() => {
-    document.getElementById("level6Message").textContent = "";
-    setupLevel6Round();
-  }, 700);
+    // ქულა: Stage1=+20, Stage2=+30 (შენი სურვილით)
+    addPoints((level6Part === 2) ? 30 : 20, 3);
+    const l6num = document.getElementById("level6ScoreNum");
+    if (l6num) l6num.textContent = String(getTotalScore());
+
+    // Stage2-ზე სწორ პასუხზე +1 სიცოცხლე (cap 10)
+    if (level6Part === 2) {
+      level6Lives = Math.min(L3_LIFE_CAP, (level6Lives || 0) + 1);
+      const lbox = document.getElementById("level6Lives");
+      if (lbox) lbox.textContent = renderHearts(level6Lives);
+    }
+
+    const m = document.getElementById("level6Message");
+    if (m) m.textContent = translations[currentLang].level6Correct;
+
+    setTimeout(() => {
+      if (m) m.textContent = "";
+      setupLevel6Round();
+    }, 700);
   } else {
+    // არასწორი:  — ❌ და სწორი რიცხვის ჩვენება
     box.textContent = "❌";
     box.style.color = "red";
 
-    level6Lives--;
-  document.getElementById("level6Lives").textContent = "❤️".repeat(level6Lives);
+    level6Lives = Math.max(0, (level6Lives || 0) - 1);
+    const livesEl = document.getElementById("level6Lives");
+    if (livesEl) livesEl.textContent = renderHearts(level6Lives);
 
-  const allBoxes = document.querySelectorAll("#level6Boxes button");
-  const correctBox = allBoxes[level6HiddenBoxIndex];
-  correctBox.textContent = level6Correct;
-  correctBox.style.color = "black";
-  correctBox.style.border = "2px solid green";
+    // სწორ ფანჯარაზე რიცხვი შავად და პატარა ბორდერი
+    const allBoxes = document.querySelectorAll("#level6Boxes button");
+    const correctBox = allBoxes[level6HiddenBoxIndex];
+    correctBox.textContent = level6Correct;
+    correctBox.style.color = "black";
+    correctBox.style.border = "2px solid green";
 
+    // თამაშს სიცოცხლე აღარ ამთავრებს — უბრალოდ აგრძელებს დროის ამოწურვამდე
+    const m = document.getElementById("level6Message");
+    if (m) m.textContent = translations[currentLang].level6Wrong;
 
-
- // UI—ზე 0 გულიდან ქვემოთ ნუ ჩავარდებით
-document.getElementById("level6Lives").textContent = "❤️".repeat(Math.max(level6Lives, 0));
-
-if (level6Lives <=0) {  
-  document.getElementById("level6Message").textContent = translations[currentLang].level6GameOver;
-  showSummary();
-} else {
-  document.getElementById("level6Message").textContent = translations[currentLang].level6Wrong;
-  setTimeout(() => {
-    document.getElementById("level6Message").textContent = "";
-    setupLevel6Round();
-  }, 1000);
-}
+    setTimeout(() => {
+      if (m) m.textContent = "";
+      setupLevel6Round();
+    }, 900);
   }
 }
-
-
-
 function startLevel6() {
-  document.getElementById("level6StartBtn").style.display = "none";
-  
-  
- const baseL3Lives = (getLevelData(3)?.lives ?? 3);
+  const startBtn = document.getElementById("level6StartBtn");
+  if (startBtn) startBtn.style.display = "none";
 
-// თუ L2-დან გვაქვს pendingLivesToL3 → L3 იწყებს base + pendingLives (cap=10)
-if (typeof window.pendingLivesToL3 === "number") {
-  level6Lives = Math.min(10, baseL3Lives + (window.pendingLivesToL3|0));
-  window.pendingLivesToL3 = null; // გამოვიყენეთ
-} else {
-  level6Lives = baseL3Lives;
-}
+  level6Part = 1;
 
-level6Score = 0; 
-level6Wins  = 0; 
+  const l3Data = getLevelData(3);
+  const baseL3Lives = (l3Data?.lives ?? 3);
+  if (typeof window.pendingLivesToL3 === "number") {
+    level6Lives = Math.min(L3_LIFE_CAP, baseL3Lives + (window.pendingLivesToL3|0));
+    window.pendingLivesToL3 = null;
+  } else {
+    level6Lives = baseL3Lives;
+  }
+  const lbox = document.getElementById("level6Lives");
+  if (lbox) lbox.textContent = renderHearts(level6Lives);
 
-document.getElementById("level6Lives").textContent = renderHearts(level6Lives);
-  document.getElementById("level6Message").textContent = "";
+  const scoreBox = document.getElementById("level6ScoreValue");
+  if (scoreBox) scoreBox.style.display = "block";
 
-  
-  document.getElementById("level6ScoreValue").style.display = "block";
-  document.getElementById("level6ScoreNum").textContent = level6Score;
-
-  setupLevel6Round();
+  level6Time = 30;       // Stage 1 დრო აქ一次 დავაყენოთ
+  setupLevel6Round();    // ფანჯრები
+  startLevel6Timer();    // ტაიმერი
 }
 
 
