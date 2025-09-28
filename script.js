@@ -1021,42 +1021,37 @@ function startLevel5Timer() {
 
     if (level5Time <= 0) {
       clearInterval(level5TimerInterval);
+if (level5Part === 1) {
+  // ⏱ Stage 1 დასრულდა დროთი → ყოველთვის გადავდივართ Stage 2-ზე
+  level5Part = 2;
 
-      if (level5Part === 1) {
-        // ⏱ Stage 1 დასრულდა დროთი → გადავდივართ Stage 2-ზე
-        if (level5Lives > 0) {
-          level5Part = 2;
+  // Stage2 სიცოცხლე = Stage1 ნაშთი + 4 (cap = 10), თუნდაც Stage1 დაიხურა 0-ზე
+  level5Lives = Math.min(L2_STAGE2_LIFE_CAP, (level5Lives || 0) + 4);
+  const livesEl = document.getElementById("level5Lives");
+  if (livesEl) livesEl.textContent = renderHearts(level5Lives);
 
-          // რაც Stage 1-ში დაგრჩა, იმით გადადი Stage 2-ში (cap = 10)
-          level5Lives = carryLivesToNextStage(level5Lives, L2_STAGE2_LIFE_CAP);
-          const livesEl = document.getElementById("level5Lives");
-          if (livesEl) livesEl.textContent = renderHearts(level5Lives);
+  setTimeout(() => {
+    renderBlankOptions(4);
+    // Stage 2 – ახალი 40წმ ტაიმერი იწყება
+    renderOptions(rangeStart, rangeEnd, 4, startLevel5Timer);
+  }, 400);
+  return;
+} else {
+        // ✅ Stage 2: დროზე ამოწურვა → პირდაპირ Level 3-ზე (უსაფრთხოდ გადავიტანოთ სიცოცხლე)
+try { numberOptions.innerHTML = ""; } catch(_) {}
+level5Message.textContent = (translations[currentLang]?.level5Passed || "🎉 You passed Level 2!");
 
-          setTimeout(() => {
-            renderBlankOptions(4);
-            // Stage 2 – ახალი 40წმ ტაიმერი იწყება
-            renderOptions(rangeStart, rangeEnd, 4, startLevel5Timer);
-          }, 400);
-          return;
-        } else {
-          // უსაფრთხოება: თუ სიცოცხლე უკვე იყო 0
-          try { numberOptions.innerHTML = ""; } catch(_) {}
-          level5Message.textContent = translations[currentLang]?.level5GameOver || "💀 Game Over!";
-          showSummary();
-          return;
-        }
-      } else {
-        // ✅ Stage 2: დროზე ამოწურვა → სტეიჯის დასრულება
-        try { numberOptions.innerHTML = ""; } catch(_) {}
-        level5Message.textContent = (translations[currentLang]?.level5Passed || "🎉 You passed Level 2!");
+setTimeout(() => {
+  level5Message.textContent = "";
+  const l5c = document.getElementById("level5Container");
+  if (l5c) l5c.style.display = "none";
 
-        setTimeout(() => {
-          level5Message.textContent = "";
-          const l5c = document.getElementById("level5Container");
-          if (l5c) l5c.style.display = "none";
-          // თუ გინდა Summary პირდაპირ, შეცვალე შემდეგი ხაზი:
-          jumpToLevel(3);
-        }, 700);
+  //➡ Level 2-დან გადავიტანოთ დარჩენილი სიცოცხლე Level 3-ზე (cap = 10)
+  window.pendingLivesToL3 = Math.min(10, Math.max(0, level5Lives|0));
+
+  jumpToLevel(3);
+}, 400);
+return;
         return;
       }
     }
@@ -1325,12 +1320,20 @@ function startLevel6() {
   document.getElementById("level6StartBtn").style.display = "none";
   
   
-  level6Lives = 3;
-  level6Score = 0; 
-  level6Wins  = 0; 
+ const baseL3Lives = (getLevelData(3)?.lives ?? 3);
 
+// თუ L2-დან გვაქვს pendingLivesToL3 → L3 იწყებს base + pendingLives (cap=10)
+if (typeof window.pendingLivesToL3 === "number") {
+  level6Lives = Math.min(10, baseL3Lives + (window.pendingLivesToL3|0));
+  window.pendingLivesToL3 = null; // გამოვიყენეთ
+} else {
+  level6Lives = baseL3Lives;
+}
 
-  document.getElementById("level6Lives").textContent = "❤️❤️❤️";
+level6Score = 0; 
+level6Wins  = 0; 
+
+document.getElementById("level6Lives").textContent = renderHearts(level6Lives);
   document.getElementById("level6Message").textContent = "";
 
   
