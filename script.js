@@ -1,4 +1,4 @@
-/* === PERSISTENT SESSION STATE (scores/lives/level) === */
+/* === PERSISTENT SESSION STATE (sres/lives/level) === */
 const STATE_KEY = 'ng_state_v1';
 
 let state = {
@@ -1137,6 +1137,11 @@ function handleChoice(choice) {
 
   const startBtn = document.getElementById("startBtn");
 startBtn.onclick = () => {
+    try {
+    startSound.loop = true;
+    startSound.volume = 0.5;   // სურვილისამებრ
+    startSound.play().catch(err => console.warn("Autoplay blocked:", err));
+  } catch(e) { console.warn(e); }
   startBtn.style.display = "none";
   document.getElementById("level5Lives").classList.remove("hidden");
   document.getElementById("level5Time").classList.remove("hidden");
