@@ -287,6 +287,33 @@ let level5TimerInterval;
 document.addEventListener("DOMContentLoaded", () => {
   loadState();
   setScoreUI(getTotalScore());
+
+
+  // 🎶 ჩავრთოთ ფონის მუსიკა
+  try {
+    bgMusic.play().catch(() => {
+      // თუ ბრაუზერმა აუკრძალა autoplay,
+      // პირველივე კლიკზე ჩაირთვება
+      const resumeOnce = () => {
+        bgMusic.play().catch(()=>{});
+        document.removeEventListener('click', resumeOnce);
+      };
+      document.addEventListener('click', resumeOnce, { once: true });
+    });
+  } catch (_) {}
+ 
+  if (soundOn) {
+    startSound.loop = false;   // ერთხელ გაიშვება
+    startSound.play().catch(err => {
+      console.warn("Autoplay was blocked by browser:", err);
+    });
+  }
+  document.body.addEventListener("click", (e) => {
+    if (e.target.tagName === "BUTTON" && soundOn) {
+      clickSound.currentTime = 0; // თავიდან ჩართოს
+      clickSound.play().catch(() => {});
+    }
+  });
  
   const settingsBtn = document.getElementById('settingsBtn');
   const toggleSound = document.getElementById('toggleSound');
