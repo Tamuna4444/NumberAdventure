@@ -15,7 +15,7 @@ body.level-1 {
 }
    body.level-1 #timer,
    body.level-1 #score {
-  color: black !important;
+  color: white !important;
 }
 
 
@@ -51,22 +51,20 @@ body.level-2 button {
 
 
 .option-btn {
-  background-color: rgba(255, 255, 255, 0.1); 
-  color: black;
-  border: 2px solid black;
-  border-radius: 30px;
-  padding: 15px 25px;
-  font-size: 25px;
-  margin: 20px;
+  background-color: white;     /* თეთრი ფონი */
+  color: black;                /* შავი ტექსტი */
+  border: 2px solid black;     /* შავი ჩარჩო */
+  border-radius: 20px;         /* მომრგვალებული */
+  padding: 12px 20px;
+  font-size: 20px;
+  margin: 10px;
   cursor: pointer;
-  backdrop-filter: blur(6px); 
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .option-btn:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 16px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 #level5Container {
   padding-top: 80px; 
