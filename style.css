@@ -475,7 +475,7 @@ input[type="number"] {
   cursor: pointer;
 }
 .levelBtn {
-  font-size: 13px !important;
+  font-size: 18px !important;
   padding: 10px;
   width: 90px;
   height: 50px;
@@ -563,6 +563,7 @@ body.menu #startScreen {
   background:  white !important;
   color:black !important;
   border: 2px solid white !important;
+  
 }
   #mainMenuBtn5 {
   background: white !important;
@@ -572,6 +573,10 @@ body.menu #startScreen {
   padding: 12px 24px;
    display: block;        /* აღარ იქნება inline → აღარ ჩადგება Start-ის გვერდით */
   margin: 12px auto 0;
+   position: fixed;
+  bottom: 20px;       /* ქვემოდან მანძილი */
+  left: 50%;
+  transform: translateX(-50%);
   }
   /* --- Main Menu და Start ღილაკები მობილურზე --- */
 /* მობილურზე ჰორიზონტალური წაწევა რომ არ იყოს */
@@ -623,4 +628,10 @@ background-color: white;   /* თეთრი ფონი */
 #gameButton:hover {
   transform: scale(1.05);
   box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+#mainMenuBtn6 {
+  position: fixed;
+  bottom: 20px;       /* ქვემოდან მანძილი */
+  left: 50%;
+  transform: translateX(-50%); 
 }
