@@ -19,12 +19,36 @@ body.level-1 {
 }
 
 
+/* Level 2 – სრულად დაფაროს ეკრანი, არც ქვემოთ დარჩეს თეთრი */
+/* Level 2 – ფონად ვიყენებთ პსევდო-ელემენტს, რომ ბოლომდე დაფაროს */
 body.level-2 {
-  background: url("image/level2.gif");
-    background-size: cover;
-    background-position: center top;
+  min-height: 100svh;       /* mobile-safe viewport */
+  background: none;         /* ფონს ვიღებთ პსევდო-ელემენტზე */
   color: black;
 }
+
+body.level-2::before {
+  content: "";
+  position: fixed;
+  inset: 0;                 /* top/right/bottom/left: 0 */
+  background: url("image/level2.gif") center / cover no-repeat;
+  z-index: -1;              /* კონტენტის ქვემოთ */
+}
+
+/* Level 2-ის კონტეინერი აუცილებლად იყოს გამჭვირვალე და მთელი ეკრის სიმაღლეზე */
+#level5Container {
+  background: transparent !important;
+  min-height: 100dvh;
+  padding-top: 80px;
+  text-align: center;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
 body.level-2 #timer,
 body.level-2 #score,
 body.level-2 #message {
@@ -66,10 +90,7 @@ body.level-2 button {
   transform: scale(1.05);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
-#level5Container {
-  padding-top: 80px; 
-  text-align: center;
-}
+
 body.level-3 {
   background: url("image/level3.gif") no-repeat center top;
   background-size: cover;
@@ -80,16 +101,6 @@ body.level-3 {
   padding-top: 60px; 
   text-align: center;
 }
-
-#summaryModal p {
-  color: black !important;
-}
-#summaryModal h2 {
-  color: black !important;
-}
-  
-
-
 
 .langBtn {
   background: transparent;

@@ -564,6 +564,33 @@ function calculatePoints(level, attempts) {
   // Level 5 და 6 – სურვილისამებრ, შეგიძლია აქეც დაამატო ცალკე ლოგიკა
   return 10;
 }
+function getRankByTotal(total) {
+  // მოირგე ზღვარები სურვილისამებრ
+  if (total >= 600) {
+    return { title: " Grandmaster of Numbers",
+             desc:  "Flawless intuition, memory, and speed – every stage is yours!",
+             badge: "" };
+  }
+  if (total >= 400) {
+    return { title: " Master Strategist",
+             desc:  "Very high accuracy and excellent risk management.",
+             badge: "" };
+  }
+  if (total >= 200) {
+    return { title: " Sharp Guesser",
+             desc:  "Fast progress – with a little practice, you’ll be at the top!",
+             badge: "" };
+  }
+  if (total >= 100) {
+    return { title: " Rising Adventurer",
+             desc:  "A great start! Try to grasp the ranges more quickly.",
+             badge: "" };
+  }
+  return {   title: " New Explorer",
+             desc:  "The game is just beginning—try again and sharpen your accuracy!",
+             badge: "" };
+}
+
 // === L2 Stage2 config ===
 const L2_STAGE2_LIFE_CAP = 10;
 
@@ -1039,11 +1066,21 @@ function startLevel5Timer() {
   level5TimerInterval = setInterval(() => {
     level5Time--;
     if (timeEl) timeEl.innerText = `🕐 ${level5Time}s`;
+// ⏱ დრო ამოიწურა
 if (level5Time <= 0) {
   clearInterval(level5TimerInterval);
 
   if (level5Part === 1) {
-    // Stage 1 დასრულდა დროთი → πάντοτε გადავდივართ Stage 2-ზე
+    // ✅ NEW: თუ Stage1-ზე სიცოცხლე ნულია → ვასრულებთ ლეველს (Summary)
+    if ((level5Lives || 0) <= 0) {
+      try { numberOptions.innerHTML = ""; } catch(_) {}
+      const l5c = document.getElementById("level5Container");
+      if (l5c) l5c.style.display = "none";
+      showSummary();               // ← აქ დასრულება გვინდა, არა Stage 2
+      return;
+    }
+
+    // ✅ NEW: თუ სიცოცხლე დარჩა → გადავდივართ Stage 2-ზე
     level5Part = 2;
 
     // Stage2 სიცოცხლე = Stage1 ნაშთი + 4 (cap = 10)
@@ -1051,32 +1088,30 @@ if (level5Time <= 0) {
     const livesEl = document.getElementById("level5Lives");
     if (livesEl) livesEl.textContent = renderHearts(level5Lives);
 
-    // ←← ჩამატებულია მკაფიო ინიციალიზაცია:
-    level5Time = 40; 
-    const timeEl = document.getElementById("level5Time");
-    if (timeEl) timeEl.innerText = `🕐 ${level5Time}s`;
+    // Stage 2-ის დრო — 40 წმ
+    level5Time = 40;
+    const timeEl2 = document.getElementById("level5Time");
+    if (timeEl2) timeEl2.innerText = `🕐 ${level5Time}s`;
 
     setTimeout(() => {
       renderBlankOptions(4);
-      // і აქ მხოლოდ ამ კონკრეტულ გადასვლაზე ვრთავთ afterReveal-ით ტაიმერის სტარტს:
       renderOptions(rangeStart, rangeEnd, 4, startLevel5Timer);
     }, 400);
     return;
-  } else {
-    // Stage 2 ჩაიწურა დროთი → გადავიდეთ Level 3-ზე
-    // ... inside startLevel5Timer, when (level5Part !== 1) and level5Time <= 0
-try { numberOptions.innerHTML = ""; } catch(_) {}
-const l5c = document.getElementById("level5Container");
-if (l5c) l5c.style.display = "none";
-
-// სიცოცხლე გადავიტანოთ Level 3-ზე (cap 10)
-window.pendingLivesToL3 = Math.min(10, Math.max(0, level5Lives|0));
-
-// ❗ არავითარი ტექსტი/დაყოვნება — პირდაპირ გადასვლა
-jumpToLevel(3);
-return;
   }
+
+  // 🔚 Stage 2: დროზე ამოწურვა → გადასვლა Level 3-ზე
+  try { numberOptions.innerHTML = ""; } catch(_) {}
+  const l5c = document.getElementById("level5Container");
+  if (l5c) l5c.style.display = "none";
+
+  // სიცოცხლე გადავიტანოთ Level 3-ზე (cap 10)
+  window.pendingLivesToL3 = Math.min(10, Math.max(0, level5Lives|0));
+
+  jumpToLevel(3);
+  return;
 }
+
 
   }, 1000);
 }
@@ -1114,6 +1149,16 @@ function handleChoice(choice) {
 
     const wrongMsg = (translations[currentLang]?.level5Wrong || "❌ Wrong! Correct was: ");
     level5Message.textContent = wrongMsg + String(correct);
+// ✅ Stage 1-ზე თუ სიცოცხლე ნულზე ჩამოვიდა — ვასრულებთ Level 2-ს ახლავე
+if (level5Part === 1 && level5Lives <= 0) {
+  try { clearInterval(level5TimerInterval); } catch (_) {}
+  try { numberOptions.innerHTML = ""; } catch (_) {}
+  const l5c = document.getElementById("level5Container");
+  if (l5c) l5c.style.display = "none";
+  showSummary();
+  return; // აღარ ვაგრძელებთ რენდერს
+}
+    
 
     // Stage 1: თუ დაცავ 0-ზე დასრულებას, აქ ჩაამატე showSummary(); სურვილისამებრ
     // Stage 2: არ ვამთავრებთ სიცოცხლებით — სთეიჯი მთავრდება დროთი.
@@ -1407,29 +1452,46 @@ function startLevel6() {
   setupLevel6Round();    // ფანჯრები
   startLevel6Timer();    // ტაიმერი
 }
-
-
 function showSummary() {
-  // გამოვიყენოთ state.levelScores, სადაც addPoints ინახავს ქულებს
   const s = state.levelScores || {};
 
-  const score1to4 = (s[1]||0) + (s[4]||0); // თუ 4 აღარ გვჭირდება, დატოვე მხოლოდ s[1]
- const l2        = (s[2]||0);             // Level 2 = ინტუიციის დონე
- const l3        = (s[3]||0);             // Level 3 = სამი ფანჯარა
-
+  const score1to4 = (s[1]||0) + (s[4]||0);
+  const l2        = (s[2]||0);
+  const l3        = (s[3]||0);
   const total     = getTotalScore();
 
-  document.getElementById("level1Score").textContent =
+  // ქულების ტექსტები
+  const tL1 = document.getElementById("level1Score");
+  const tL2 = document.getElementById("level5Score");
+  const tL3 = document.getElementById("level6FinalScore");
+  const tT  = document.getElementById("totalScore");
+
+  if (tL1) tL1.textContent =
     `${translations[currentLang].level1to4}: ${score1to4} pts`;
-  document.getElementById("level5Score").textContent =
-   `${(translations[currentLang].level2 || "Level 2")}: ${l2} pts`;
- document.getElementById("level6FinalScore").textContent =
-   `${(translations[currentLang].level3 || "Level 3")}: ${l3} pts`;
-  document.getElementById("totalScore").textContent =
+  if (tL2) tL2.textContent =
+    `${(translations[currentLang].level2 || "Level 2")}: ${l2} pts`;
+  if (tL3) tL3.textContent =
+    `${(translations[currentLang].level3 || "Level 3")}: ${l3} pts`;
+  if (tT)  tT.textContent  =
     `${translations[currentLang].total}: ${total} pts`;
 
-  document.getElementById("summaryModal").style.display = "block";
+  // ► რეიტინგი ქულებით
+  try {
+    const rank = getRankByTotal(total);
+    const rt = document.getElementById("rankTitle");
+    const rd = document.getElementById("rankDesc");
+    const rb = document.getElementById("rankBadge");
+    if (rt) rt.textContent = rank.title;
+    if (rd) rd.textContent = rank.desc;
+    if (rb) rb.textContent = rank.badge;
+  } catch (_) {}
+
+  // მოდალის გახსნა
+  const modal = document.getElementById("summaryModal");
+  if (modal) modal.style.display = "block";
 }
+
+
 
 
 function closeSummary() {
@@ -1626,6 +1688,15 @@ if (mm5) mm5.addEventListener("click", handleMainMenuClick);
 
 const mm6 = document.getElementById("mainMenuBtn6");
 if (mm6) mm6.addEventListener("click", handleMainMenuClick);
+// NEW: Summary modal-ის Main Menu ღილაკი
+const mmSummary = document.getElementById("summaryMainMenuBtn");
+if (mmSummary) {
+  mmSummary.addEventListener("click", (e) => {
+    e.preventDefault();
+    closeSummary();         // დახურე მოდალი
+    handleMainMenuClick(e); // დაბრუნდეს მთავარ მენიუზე
+  });
+}
 });
 function resetLevel2UIAndState() {
   try { clearInterval(level5TimerInterval); } catch (_) {}
