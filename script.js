@@ -1393,36 +1393,42 @@ function checkLevel6Box(index, box) {
       // ტაიმერი Stage-ზე უკვე მუშაობს — თავიდან არ ვრთავთ
     }, 700);
 
-  } else {
-    // ❌ Wrong
-    box.textContent = "❌";
-    box.style.color = "red";
+ } else {
+  // ❌ Wrong
+  box.textContent = "❌";
+  box.style.color = "red";
 
-    level6Lives = Math.max(0, (level6Lives || 0) - 1);
-    const livesEl = document.getElementById("level6Lives");
-    if (livesEl) livesEl.textContent = renderHearts(level6Lives);
+  level6Lives = Math.max(0, (level6Lives || 0) - 1);
+  const livesEl = document.getElementById("level6Lives");
+  if (livesEl) livesEl.textContent = renderHearts(level6Lives);
 
-    const correctBox = all[level6HiddenBoxIndex];
-    correctBox.textContent = String(level6Correct);
-    correctBox.style.color = "black";
-    correctBox.style.border = "2px solid green";
+  const correctBox = all[level6HiddenBoxIndex];
+  correctBox.textContent = String(level6Correct);
+  correctBox.style.color = "black";
+  correctBox.style.border = "2px solid green";
 
-    // HYBRID: მხოლოდ Stage2-ზე სიცოცხლე == 0 → მაშინვე დასრულება
-    if (level6Part === 2 && level6Lives <= 0) {
-      endLevel3("💀 Out of lives — Level 3 over!");
-      return;
-    }
-
-    const m = document.getElementById("level6Message");
-    if (m) m.textContent = translations[currentLang]?.level6Wrong || "❌ Wrong!";
-
-    setTimeout(() => {
-      if (m) m.textContent = "";
-      if (level6Ended) return;
-      setupLevel6Round();
-      enableLevel6Buttons();
-    }, 900);
+  // 🔴 NEW: Stage 1-ზე თუ სიცოცხლე გათავდა → მთლიანად ვასრულებთ Level 3-ს
+  if (level6Part === 1 && level6Lives <= 0) {
+    endLevel3("💀 Out of lives — Level 3 over!");
+    return;
   }
+
+  // HYBRID: მხოლოდ Stage 2-ზე სიცოცხლე == 0 → მაშინვე დასრულება
+  if (level6Part === 2 && level6Lives <= 0) {
+    endLevel3("💀 Out of lives — Level 3 over!");
+    return;
+  }
+
+  const m = document.getElementById("level6Message");
+  if (m) m.textContent = translations[currentLang]?.level6Wrong || "❌ Wrong!";
+
+  setTimeout(() => {
+    if (m) m.textContent = "";
+    if (level6Ended) return;
+    setupLevel6Round();
+    enableLevel6Buttons();
+  }, 900);
+}
 }
 function startLevel6() {
   level6Ended = false;
