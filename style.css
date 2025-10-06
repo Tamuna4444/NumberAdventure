@@ -12,7 +12,7 @@
   overflow-y: auto; /* scroll-ის ჩართვა */
   -webkit-overflow-scrolling: touch;
 
-  background-image: url("image/level0.gif");
+  background-image: url("image/one.gif");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -73,7 +73,7 @@ body.level-2::before {
   content: "";
   position: fixed;
   inset: 0;
-  background: url("image/2level.gif") center / cover no-repeat;
+  background: url("image/one.gif") center / cover no-repeat;
   z-index: -1;                /* კონტენტის ქვემოთ */
 }
 
@@ -134,28 +134,6 @@ input[type="number"] {
   background-color: rgba(0,0,0,0.6);
 }
 
-.modal-content {
-  background-color: black;
-  margin: 15% auto;
-  padding: 30px;
-  border-radius: 10px;
-  width: 80%;
-  max-width: 400px;
-  text-align: center;
-  font-size: 18px;
-  box-shadow: 0 0 10px white;
-  color: black;
-  font-family: "Arial", sans-serif;
-}
-.modal-content h2 {
-  margin-top: 0;
-}
-.modal-content button {
-  margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 16px;
-  color:white;
-}
   @media (max-width: 600px) {
       .language-container {
         top: 10px;
