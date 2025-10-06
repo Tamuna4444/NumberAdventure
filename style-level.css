@@ -10,7 +10,7 @@ body {
 
 /* Level 1 – The Beginning 🌱 */
 body.level-1 {
-  background: url("image/one.gif");
+  background: url("image/");
    background-size: cover;
    color: white;
 }
@@ -94,7 +94,7 @@ body.level-2 button {
 }
 
 body.level-3 {
-  background: url("image/one.gif") no-repeat center top;
+  background: url("image/three.gif") no-repeat center top;
   background-size: cover;
   background-position: center top; 
   color: white;
