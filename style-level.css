@@ -18,7 +18,9 @@ body.level-1 {
    body.level-1 #score {
   color: white !important;
 }
-
+body.level-1 #lives{
+font-size: 24px;
+} 
 
 /* Level 2 – სრულად დაფაროს ეკრანი, არც ქვემოთ დარჩეს თეთრი */
 /* Level 2 – ფონად ვიყენებთ პსევდო-ელემენტს, რომ ბოლომდე დაფაროს */
@@ -148,4 +150,81 @@ button:hover {
   filter: none;
   opacity: 0.9;
 }
+/* Auto-hide helper for messages */
+#message, #level5Message, #level6Message { transition: opacity .3s ease; }
+
+.auto-hide { animation: msgFadeOut .4s ease 1.5s forwards; } /* 2.2s მერე ქრება */
+@keyframes msgFadeOut { to { opacity: 0; } }
+/* ===== Settings – clean card, no circle button (OVERRIDES) ===== */
+
+/* ღილაკი — პატარა პილა, მკვეთრი ფონით */
+.game-window #settingsBtn {
+  /* წაშლის ძველ პატარა ზომასა და წრეს */
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  min-width: 40px;            /* აღარ იქნება “10px” :) */
+  height: 36px;
+  border-radius: 40px;        /* პილა, არა წრე */
+  background: none;        /* მყარი თეთრი */
+  color: #111;
+  font-weight: 700;
+  font-size: 20px;
+  border: 1px solid rgba(0,0,0,0.12);
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: transform .08s ease, filter .15s ease, box-shadow .15s ease;
+}
+
+/* გუკს შეჩერდეს ეფექტურად, არა ტრიალი */
+.game-window #settingsBtn:hover { filter: brightness(0.96); }
+.game-window #settingsBtn:active { transform: translateY(1px); }
+
+/* პანელი — სუფთა ბარათი, გამჭვირვალეობის გარეშე */
+.game-window #settingsPanel {
+  position: absolute;
+  top: 52px;
+  right: 0;
+  background: #ffffff;                  /* მყარი თეთრი */
+  color: #111;
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+  backdrop-filter: none;                /* აღარ არის blur/glass */
+  min-width: 160px;
+}
+
+/* შიგნით ღილაკები — მყარ ფონზე, ჯანსაღი ფორმით */
+#settingsPanel .setting-option {
+  display: flex; gap: 4px; align-items: center; justify-content: flex-start;
+  padding: 4px 0;
+}
+
+/* ხმებიანი ღილაკი */
+#toggleSound {
+  all: unset;
+  background: #111;
+  color: #fff !important;
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-size: 13px;
+  cursor: pointer;
+}
+#toggleSound:hover { filter: brightness(1.05); }
+
+/* ენის ღილაკები — არ არის გამჭვირვალე */
+#settingsPanel .langBtn {
+  all: unset;
+  background: none;
+  color: #111;
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+#settingsPanel .langBtn:hover { filter: brightness(0.96); }
 

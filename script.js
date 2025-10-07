@@ -1525,10 +1525,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
-
-
-
-
 document.querySelectorAll(".langBtn").forEach(btn => {
   btn.addEventListener("click", () => {
     const lang = btn.getAttribute("data-lang");
@@ -1538,6 +1534,38 @@ document.querySelectorAll(".langBtn").forEach(btn => {
 });
 
 }); // აქ იხურება DOMContentLoaded
+// Auto-hide red messages after a short delay (no changes elsewhere required)
+(function () {
+  function attachAutoHide(el) {
+    if (!el) return;
+
+    // როცა ტექსტი შეიცვლება, დავიწყოთ "ქრობა"
+    const obs = new MutationObserver(() => {
+      const text = el.textContent.trim();
+      if (text) {
+        el.classList.remove('auto-hide');    // reset (თუ მომდევნო მესიჯია)
+        void el.offsetWidth;                 // reflow hack
+        el.classList.add('auto-hide');
+      }
+    });
+
+    obs.observe(el, { childList: true, characterData: true, subtree: true });
+
+    // ანიმაციის ბოლოს გავასუფთავოთ ელემენტი (რომ ადგილი აღარ დაიკავოს)
+    el.addEventListener('animationend', (e) => {
+      if (e.animationName === 'msgFadeOut') {
+        el.textContent = '';
+        el.style.opacity = '1';
+        el.classList.remove('auto-hide');
+      }
+    });
+  }
+
+  // ვუერთდებით სამივე მესიჯ-ელემენტს
+  attachAutoHide(document.getElementById('message'));        // Level 1
+  attachAutoHide(document.getElementById('level5Message'));  // Level 2
+  attachAutoHide(document.getElementById('level6Message'));  // Level 3
+})();
 function getLevelData(level) {
   const data = {
     1: {

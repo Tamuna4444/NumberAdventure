@@ -393,13 +393,14 @@ body.menu #startScreen {
   color: black !important;
   border: 2px solid white !important;
   border-radius: 20px;   /* აქ ციფრით აკონტროლებ მომრგვალებას */
-  padding: 12px 24px;
+  padding: 10px 10px;
    display: block;        /* აღარ იქნება inline → აღარ ჩადგება Start-ის გვერდით */
   margin: 12px auto 0;
    position: fixed;
   bottom: 20px;       /* ქვემოდან მანძილი */
   left: 50%;
   transform: translateX(-50%);
+  font-weight: normal;
   }
   /* --- Main Menu და Start ღილაკები მობილურზე --- */
 /* მობილურზე ჰორიზონტალური წაწევა რომ არ იყოს */
