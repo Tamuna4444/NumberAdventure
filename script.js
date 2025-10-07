@@ -120,6 +120,8 @@ const translations = {
     level1to4: "Level 1–4",
     level5Label: "Level 5",
     level6Label: "Level 6",
+    // en-ში სადმე labels-ის გვერდით
+    pts: "pts",
     total: "🏆 Total",
     check: "Check",
     reset: "Reset Game",
@@ -131,7 +133,29 @@ const translations = {
     guessRange: (max) => `Guess a number between 1 and ${max}`,
     restartLevel: "Restart Level",
     score: "Score",
-    mainMenu: " Main Menu"
+    mainMenu: " Main Menu",
+    summary: {
+      title: "🎉 Final Results",
+      level1to4: "Levels 1–4",
+      level2: "Level 2",
+      level3: "Level 3",
+      total: "🏆 Total Score",
+      ranks: {
+        grandmaster: "🏅Grandmaster of Numbers🏅",
+        master: "🥈Master Strategist🥈",
+        sharp: "🥉Sharp Guesser🥉",
+        rising: "⭐Rising Adventurer⭐",
+        new: "⭐New Explorer⭐",
+      },
+      rankDesc: {
+        grandmaster: "Flawless intuition, memory, and speed – every stage is yours!",
+        master: "Very high accuracy and excellent risk management.",
+        sharp: "Fast progress – with a little practice, you’ll be at the top!",
+        rising: "A great start! Try to grasp the ranges more quickly.",
+        new: "The game is just beginning—try again and sharpen your accuracy!",
+      },
+    },
+  
   },
 
   ru: {
@@ -167,6 +191,8 @@ const translations = {
     level1to4: "Уровни 1–4",
     level5Label: "Уровень 5",
     level6Label: "Уровень 6",
+    // ru-ში სადმე labels-ის გვერდით
+    pts: "очков",
     total: "🏆 Всего",
     check: "Проверить",
     reset: "Сбросить игру",
@@ -178,9 +204,32 @@ const translations = {
     guessRange: (max) => `Угадай число от 1 до ${max}`,
     restartLevel: "Сбросить уровень",
     score: "Очки",
-     mainMenu: "Главное меню"
-  }
+     mainMenu: "Главное меню",
+     summary: {
+      title: " Итоговый результат",
+      level1to4: "Уровни 1–4",
+      level2: "Уровень 2",
+      level3: "Уровень 3",
+      total: "🏆 Общий счёт",
+      ranks: {
+        grandmaster: "🏅Грандмастер чисел🏅",
+        master: "🥈 Мастер стратегии 🥈",
+        sharp: "🥉Проницательный игрок🥉",
+        rising: "⭐Восходящий искатель⭐",
+        new: "⭐Новый исследователь⭐",
+      },
+      rankDesc: {
+        grandmaster: "Безупречная интуиция, память и скорость – все этапы твои!",
+        master: "Отличная точность и управление рисками.",
+        sharp: "Быстрое продвижение – немного практики, и ты на вершине!",
+        rising: "Отличное начало! Попробуй угадывать диапазоны быстрее.",
+        new: "Игра только начинается — попробуй снова и улучшай точность!",
+      },
+    },
+  },
 };
+     
+  
 
 
 function changeLanguage(lang) {
@@ -565,30 +614,14 @@ function calculatePoints(level, attempts) {
   return 10;
 }
 function getRankByTotal(total) {
-  // მოირგე ზღვარები სურვილისამებრ
-  if (total >= 600) {
-    return { title: " Grandmaster of Numbers",
-             desc:  "Flawless intuition, memory, and speed – every stage is yours!",
-             badge: "" };
-  }
-  if (total >= 400) {
-    return { title: " Master Strategist",
-             desc:  "Very high accuracy and excellent risk management.",
-             badge: "" };
-  }
-  if (total >= 200) {
-    return { title: " Sharp Guesser",
-             desc:  "Fast progress – with a little practice, you’ll be at the top!",
-             badge: "" };
-  }
-  if (total >= 100) {
-    return { title: " Rising Adventurer",
-             desc:  "A great start! Try to grasp the ranges more quickly.",
-             badge: "" };
-  }
-  return {   title: " New Explorer",
-             desc:  "The game is just beginning—try again and sharpen your accuracy!",
-             badge: "" };
+  const ts = translations[currentLang].summary;
+  if (!ts) return { title: "", desc: "" };
+
+  if (total >= 600) return { title: ts.ranks.grandmaster, desc: ts.rankDesc.grandmaster };
+  if (total >= 400) return { title: ts.ranks.master,      desc: ts.rankDesc.master };
+  if (total >= 200) return { title: ts.ranks.sharp,       desc: ts.rankDesc.sharp };
+  if (total >= 100) return { title: ts.ranks.rising,      desc: ts.rankDesc.rising };
+  return { title: ts.ranks.new, desc: ts.rankDesc.new };
 }
 
 // === L2 Stage2 config ===
@@ -1460,43 +1493,49 @@ function startLevel6() {
 }
 function showSummary() {
   const s = state.levelScores || {};
+  const score1to4 = (s[1] || 0) + (s[4] || 0);
+  const l2 = (s[2] || 0);
+  const l3 = (s[3] || 0);
+  const total = getTotalScore ? getTotalScore() : ((score1to4 + l2 + l3) | 0);
 
-  const score1to4 = (s[1]||0) + (s[4]||0);
-  const l2        = (s[2]||0);
-  const l3        = (s[3]||0);
-  const total     = getTotalScore();
+  const t = translations[currentLang];     // ფესვი
+  const ts = t.summary || {};              // summary სექცია
+  const pts = t.pts || "pts";              // ერთეული
 
-  // ქულების ტექსტები
-  const tL1 = document.getElementById("level1Score");
-  const tL2 = document.getElementById("level5Score");
-  const tL3 = document.getElementById("level6FinalScore");
-  const tT  = document.getElementById("totalScore");
+  // სათაური
+  const st = document.getElementById("summaryTitle");
+  if (st) st.textContent = ts.title || t.finalScore || "Final Results";
 
-  if (tL1) tL1.textContent =
-    `${translations[currentLang].level1to4}: ${score1to4} pts`;
-  if (tL2) tL2.textContent =
-    `${(translations[currentLang].level2 || "Level 2")}: ${l2} pts`;
-  if (tL3) tL3.textContent =
-    `${(translations[currentLang].level3 || "Level 3")}: ${l3} pts`;
-  if (tT)  tT.textContent  =
-    `${translations[currentLang].total}: ${total} pts`;
+  // წოდება
+  const rank = getRankByTotal(total);      // დარწმუნდი, რომ თარგმანს იყენებს (ქვ. ქვეპუნქტი 2)
+  const rt = document.getElementById("rankTitle");
+  const rd = document.getElementById("rankDesc");
+  if (rt) rt.textContent = rank.title || "";
+  if (rd) rd.textContent = rank.desc || "";
 
-  // ► რეიტინგი ქულებით
-  try {
-    const rank = getRankByTotal(total);
-    const rt = document.getElementById("rankTitle");
-    const rd = document.getElementById("rankDesc");
-    const rb = document.getElementById("rankBadge");
-    if (rt) rt.textContent = rank.title;
-    if (rd) rd.textContent = rank.desc;
-    if (rb) rb.textContent = rank.badge;
-  } catch (_) {}
+  // ქულების ხაზები
+  const l14El = document.getElementById("level1Score");
+  const l2El  = document.getElementById("level5Score");
+  const l3El  = document.getElementById("level6FinalScore");
+  const totEl = document.getElementById("totalScore");
 
-  // მოდალის გახსნა
+  if (l14El) l14El.textContent = `${t.level1to4 || ts.level1to4 || "Levels 1–4"}: ${score1to4} ${pts}`;
+  if (l2El)  l2El.textContent  = `${t.level2 || ts.level2 || "Level 2"}: ${l2} ${pts}`;
+  if (l3El)  l3El.textContent  = `${t.level3 || ts.level3 || "Level 3"}: ${l3} ${pts}`;
+  if (totEl) totEl.textContent = `${t.total  || ts.total  || "Total"}: ${total} ${pts}`;
+
+  // ღილაკები
+  const rLevelBtn = document.getElementById("restartLevelBtn");
+  const rGameBtn  = document.getElementById("restartGameBtn");
+  const mainBtn   = document.getElementById("summaryMainMenuBtn");
+  if (rLevelBtn) rLevelBtn.textContent = t.restartLevel || "Restart Level";
+  if (rGameBtn)  rGameBtn.textContent  = t.reset || "Restart Game";
+  if (mainBtn)   mainBtn.textContent   = t.mainMenu || "Main Menu";
+
+  // გახსენება
   const modal = document.getElementById("summaryModal");
   if (modal) modal.style.display = "block";
 }
-
 
 
 
