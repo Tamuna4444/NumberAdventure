@@ -22,6 +22,8 @@ body.level-2 {
   background: url("image/three.gif")center/contain no-repeat;;
   background-size:cover;
   color: white;
+  overflow: hidden;
+  background-attachment: fixed;
 }
 
 
