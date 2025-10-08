@@ -1,12 +1,4 @@
 
-/* Default style */
-body {
-  margin: 0;
-  font-family: sans-serif;
-  color: #222;
-  transition: background 1s ease;
-  
-}
 
 /* Level 1 – The Beginning 🌱 */
 body.level-1 {
@@ -20,13 +12,15 @@ body.level-1 {
 }
 body.level-1 #lives{
 font-size: 24px;
+
 } 
 
 /* Level 2 – სრულად დაფაროს ეკრანი, არც ქვემოთ დარჩეს თეთრი */
 /* Level 2 – ფონად ვიყენებთ პსევდო-ელემენტს, რომ ბოლომდე დაფაროს */
 body.level-2 {
   min-height: 100svh;       /* mobile-safe viewport */
-  background: none;         /* ფონს ვიღებთ პსევდო-ელემენტზე */
+  background: url("image/three.gif")center/contain no-repeat;;
+  background-size:cover;
   color: white;
 }
 
@@ -39,19 +33,21 @@ body.level-2 {
   padding-top: 80px;
   text-align: center;
 }
-
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
+/* Level 2 — სიცოცხლე, დრო, ქულა: ფერი/ჩრდილი/ზომა */
+body.level-2 #level5Lives,
+body.level-2 #level5Time,
+body.level-2 #level5ScoreValue {
+  color: #fff !important;
+  font-size: 30px !important;
+  line-height: 1.2 !important;
 }
 
-body.level-2 #timer,
-body.level-2 #score,
-body.level-2 #message {
-  color: white;
-  text-shadow: 1px 1px 2px black;
+/* ქულის რიცხვის შიგნით span-ებიც გაბარდეს */
+body.level-2 #level5ScoreValue span,
+body.level-2 #level5ScoreNum {
+  font-size: 24px !important;
 }
+
 /* === Level 2 – ტექსტები და ელემენტები თეთრი === */
 body.level-2 #timer,
 body.level-2 #score,
@@ -60,7 +56,6 @@ body.level-2 h1,
 body.level-2 h2,
 body.level-2 p {
   color: white !important;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
 }
 
 /* Level 2 – ღილაკები თეთრი ჩარჩოთი და შავი ტექსტით */
@@ -69,7 +64,7 @@ body.level-2 button {
   color: black !important;
   border: 2px solid white !important;
   border-radius: 20px;
-  font-weight: 600;
+  font-weight: normal;
 }
 
 body.level-2 button {
@@ -92,7 +87,7 @@ body.level-2 button {
 
 .option-btn:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+ 
 }
 
 body.level-3 {
@@ -130,14 +125,6 @@ body.level-1 button {
   border: 2px solid black;
 }
 
-
-
-
-/* Hover ყველა ღილაკისთვის */
-button:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  transform: scale(1.05);
-}
 /* --- Summary Modal buttons: ყოველთვის შავი, რომ არ დაიფაროს level-ის წესებით --- */
 #summaryModal .modal-content button {
   background: transparent !important;
@@ -155,76 +142,67 @@ button:hover {
 
 .auto-hide { animation: msgFadeOut .4s ease 1.5s forwards; } /* 2.2s მერე ქრება */
 @keyframes msgFadeOut { to { opacity: 0; } }
-/* ===== Settings – clean card, no circle button (OVERRIDES) ===== */
 
-/* ღილაკი — პატარა პილა, მკვეთრი ფონით */
-.game-window #settingsBtn {
-  /* წაშლის ძველ პატარა ზომასა და წრეს */
-  all: unset;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  min-width: 40px;            /* აღარ იქნება “10px” :) */
-  height: 36px;
-  border-radius: 40px;        /* პილა, არა წრე */
-  background: none;        /* მყარი თეთრი */
-  color: #111;
-  font-weight: 700;
-  font-size: 20px;
-  border: 1px solid rgba(0,0,0,0.12);
+/* === L3 OVERRIDE — buttons bigger, highest priority === */
+body.level-3 #level6Boxes {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 1px !important;
+  margin: 50px auto 20px !important;
+}
+
+body.level-3 #level6Boxes button {
+  width: 60px !important;
+  height: 60px !important;
+  font-size: 24px !important;
+  border-radius: 24px !important;
+  background: white !important;
+  color: black !important;
+  border: 2px solid white !important;
+}
+body.level-3 #levelScoreLabel,#level6ScoreValue,#level6Time,#level6Lives{
+ font-size: 24px !important;
+}
+#level6StartBtn {
+  display: block;
+  margin: 120px auto;
+  padding: 12px 30px;      /* უფრო დიდი */
+  font-size: 30px;         /* ტექსტის ზომა გაიზარდა */
+  border-radius: 20px;
+  border: 2px solid white;
+  background: rgba(255,255,255,0.8);
+  color: black;
+  font-weight:normal;
+  letter-spacing: 1px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  transition: transform .08s ease, filter .15s ease, box-shadow .15s ease;
+  transition: transform 0.2s ease, background 0.3s ease;
 }
-
-/* გუკს შეჩერდეს ეფექტურად, არა ტრიალი */
-.game-window #settingsBtn:hover { filter: brightness(0.96); }
-.game-window #settingsBtn:active { transform: translateY(1px); }
-
-/* პანელი — სუფთა ბარათი, გამჭვირვალეობის გარეშე */
-.game-window #settingsPanel {
-  position: absolute;
-  top: 52px;
-  right: 0;
-  background: #ffffff;                  /* მყარი თეთრი */
-  color: #111;
-  border: 1px solid rgba(0,0,0,0.12);
-  border-radius: 14px;
-  padding: 12px;
-  box-shadow: 0 12px 28px rgba(0,0,0,0.18);
-  backdrop-filter: none;                /* აღარ არის blur/glass */
-  min-width: 160px;
+#level6StartBtn:hover {
+  transform: scale(1.05);
+  background: white;
 }
+/* 📱 Mobile: დააპატარავე ფანჯარა და დატოვე გიფი ხილული */
+@media (max-width: 768px) {
+  .game-window {
+    width: 78%;
+    max-width: 300px;
+    height: 500px !important;   /* აღარ ექნება ფიქსირებული სიმაღლე */
+    min-height: 340px;
+    margin: 48px auto;         /* ზემოთ/ქვემოთ ადგილი — გიფი ჩანდეს */
+    border-radius: 20px;
 
-/* შიგნით ღილაკები — მყარ ფონზე, ჯანსაღი ფორმით */
-#settingsPanel .setting-option {
-  display: flex; gap: 4px; align-items: center; justify-content: flex-start;
-  padding: 4px 0;
+  }
+
+  /* შიდა კონტეინერები გამჭვირვალე იყოს, რომ „ორმაგი პანელი“ არ გამოვიდეს */
+  #startScreen,
+  #gameContainer,
+  #level5Container,
+  #level6Container {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: 0 !important;
+  }
+
+  .window-body { padding: 14px; }  /* ოდნავ უფრო მჭიდრო შიგთავსი */
 }
-
-/* ხმებიანი ღილაკი */
-#toggleSound {
-  all: unset;
-  background: #111;
-  color: #fff !important;
-  border-radius: 10px;
-  padding: 6px 10px;
-  font-size: 13px;
-  cursor: pointer;
-}
-#toggleSound:hover { filter: brightness(1.05); }
-
-/* ენის ღილაკები — არ არის გამჭვირვალე */
-#settingsPanel .langBtn {
-  all: unset;
-  background: none;
-  color: #111;
-  border: 1px solid rgba(0,0,0,0.12);
-  border-radius: 10px;
-  padding: 6px 10px;
-  font-size: 12px;
-  cursor: pointer;
-}
-#settingsPanel .langBtn:hover { filter: brightness(0.96); }
-
