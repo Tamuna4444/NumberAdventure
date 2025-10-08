@@ -2,11 +2,22 @@
 
 /* Level 1 – The Beginning 🌱 */
 body.level-1 {
-  background: url("image/four.gif");
+  background: none;
    background-size: cover;
    color: white;
     height: 100vh;                 /* ეკრანის სიმაღლე */
   overflow: hidden; 
+  position: relative;
+}
+body.level-1::before {
+  content:"";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #e7c5c5 url("image/four.gif") center center / cover no-repeat;
+  z-index: -1;
 }
    body.level-1 #timer,
    body.level-1 #score {
