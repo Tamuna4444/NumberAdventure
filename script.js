@@ -1,9 +1,29 @@
-/* === PERSISTENT SESSION STATE (sres/lives/level) === */
+// --- Yandex Games SDK init ---
+YaGames.init().then(ysdk => {
+  window.ysdk = ysdk;
+  console.log("✅ Yandex SDK initialized");
+
+  // ვაცხადებთ, რომ ჩატვირთვა დასრულებულია (ეს აუცილებელია, თორემ კონსოლი იტყვის რომ SDK არ ჩანს)
+  try {
+    if (ysdk.features && ysdk.features.LoadingAPI) {
+      ysdk.features.LoadingAPI.ready();
+      console.log("✅ Yandex LoadingAPI ready");
+    }
+  } catch(e) {
+    console.warn("LoadingAPI not available", e);
+  }
+
+}).catch(err => {
+  console.error("❌ Yandex SDK error:", err);
+});
+
+
+// === Persistent Session State (score/lives/level) ===
 const STATE_KEY = 'ng_state_v1';
 
 let state = {
   currentLevel: 1,
-  lives: 3, // თუ იყენებ
+  lives: 3, // თუ იყენებ სიცოცხლეების სისტემას
   levelScores: { 1:0, 2:0, 3:0, 4:0, 5:0, 6:0 },
 };
 
