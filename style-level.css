@@ -5,6 +5,8 @@ body.level-1 {
   background: url("image/four.gif");
    background-size: cover;
    color: white;
+    height: 100vh;                 /* ეკრანის სიმაღლე */
+  overflow: hidden; 
 }
    body.level-1 #timer,
    body.level-1 #score {
@@ -32,7 +34,7 @@ body.level-2 {
 #level5Container {
   background: transparent !important;
   min-height: 100dvh;
-  padding-top: 80px;
+  padding-top: 24px;
   text-align: center;
 }
 /* Level 2 — სიცოცხლე, დრო, ქულა: ფერი/ჩრდილი/ზომა */
