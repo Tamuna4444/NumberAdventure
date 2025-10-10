@@ -392,8 +392,8 @@ background-color: white;   /* თეთრი ფონი */
   background: #ffffff;
   color: black;
   width: min(60vw, 300px);
-  margin: 10vh auto;
-  padding: 28px;
+  margin: 1vh auto;
+  padding: 23px;
   border-radius: 18px;
   box-shadow: none;
   text-align: center;
