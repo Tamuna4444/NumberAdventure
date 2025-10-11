@@ -402,7 +402,7 @@ body {
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255,255,255,0.08);
   box-shadow: 0 12px 40px rgba(0,0,0,0.55);
-  display: flex;
+ 
   flex-direction: column;
   overflow: hidden;
 }
@@ -626,5 +626,46 @@ body {
   position: relative;
   z-index: 5;
   margin-bottom: 10px;
+}
+/* 🌟 მთავარი გვერდის სათაური (Guess the Number) */
+#mainHomeScreen h2 {
+  color: white !important;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.6); /* მსუბუქი ელვარება */
+  font-weight: 700;
+  font-size: 40px;
+  text-align: center;
+  margin-bottom: 30px;
+  
+}
+/* 🏠 Home overlay – მობილურზე ავწიოთ ზემოთ */
+#mainHomeScreen{
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;                 /* ↑ იწყებს ზემოდან */
+  padding-top: 18vh;                           /* რამდენითაც გინდა ზემოთ აწევა */
+  background: url("image/four.gif") center/cover no-repeat;
+}
+
+/* iOS/მობილურის სპეციალური ფიქსი — სწორი სიმაღლე და მეტი აწევა */
+@media (max-width: 600px){
+  #mainHomeScreen{
+    min-height: 100svh;                        /* სწორი viewport სიმაღლე iOS-ზე */
+    padding-top: calc(env(safe-area-inset-top) + 20vh);
+  }
+
+  /* ზედმეტი დაშორებები არ დაგროვდეს */
+  #mainHomeScreen h1{ margin: 0 0 16px; }
+}
+
+/* სურვილისამებრ: თავად ღილაკიც ოდნავ დავაპატარავოთ, რომ ეკრანზე საიმედოდ ჩანდეს */
+@media (max-width: 600px){
+  #homeStartBtn{
+    width: 100px; height: 100px;               /* ადრე 120px იყო */
+    font-size: 20px;
+  }
 }
 
