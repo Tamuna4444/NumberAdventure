@@ -314,12 +314,7 @@ background-color: white;   /* თეთრი ფონი */
   transform: scale(1.05);
   box-shadow: 0 0 10px rgba(0,0,0,0.2);
 }
-#mainMenuBtn6 {
-  position: fixed;
-  bottom: 20px;       /* ქვემოდან მანძილი */
-  left: 50%;
-  transform: translateX(-50%); 
-}
+
 /* ===== Summary Modal – clean look ===== */
 #summaryModal.modal {
   display: none;
@@ -613,3 +608,23 @@ body {
     opacity: 1;
   }
 }
+/* LEVEL 6 ფონის სრული დაფარვა */
+#level6Container {
+  position: relative;
+  display: none;
+  width: 100%;
+  min-height: 100vh;                /* ფარავს მთელ ეკრანს */
+  background: url("image/level6.gif") center center / cover no-repeat; /* ჩასვი შენი რეალური GIF-ს ბილიკი */
+  background-attachment: fixed;     /* დაეხმარება სრულ დაფარვას დიდ ეკრანებზე */
+  overflow: hidden;
+  padding-bottom: 60px;             /* ადგილი ქვედა ღილაკებისთვის */
+  box-sizing: border-box;
+}
+
+/* Main Menu ღილაკი რომ არ გავიდეს ფონის მიღმა */
+#mainMenuBtn6 {
+  position: relative;
+  z-index: 5;
+  margin-bottom: 10px;
+}
+
