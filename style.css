@@ -1,3 +1,4 @@
+
 #startScreen {
   display: flex;
   flex-direction: column;
@@ -164,65 +165,6 @@ input[type="number"] {
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
   }
 }
-
-
-
-#settingsContainer {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 999;
-}
-
-
-#settingsBtn {
-  
-  background: transparent;     /* გამჭვირვალე */
-  border: none;                /* ჩარჩო აღარ ექნება */
-  border-radius: 0;            /* წრე აღარ იქნება */
-  width: auto;                 /* ტოლი ტექსტის ზომის */
-  height: auto;
-  color: white;
-  font-size: 18px;
-  cursor: pointer;
-  display: inline;             /* აღარ იქნება centered წრე */
-}
-  
-
-#settingsPanel {
-  margin-top: 20px;
-  padding: 20px;
-  background:none;
-  border: none;
-  border-radius: 10px;
-  
-  backdrop-filter: blur(6px);
-}
-
-
-.hidden {
-  display: none;
-}
-
-.setting-option button {
-  background: transparent;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: white;
-  transition: transform 0.2s ease;
-}
-
-.setting-option button:hover {
-  transform: scale(1.2);
-}
-#toggleSound {
-  color: black !important;
-  transition: transform 0.2s ease;
-
-}
-
-
 
 #numberBoxes {
   display: flex;
@@ -503,3 +445,171 @@ body {
 
 /* Settings panel must stay inside the window's corner */
 #settingsContainer { position: absolute; top: 10px; right: 10px; }
+/* 🌟 MAIN HOME PAGE */
+#mainHomeScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: url("image/four.gif") center center / cover no-repeat fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+#mainHomeScreen h1 {
+  color: white;
+  font-size: 42px;
+  font-weight: 700;
+  text-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+  margin-bottom: 80px;
+}
+
+#homeStartBtn {
+  background: white;
+  color: black;
+  font-size: 24px;
+  border: none;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  cursor: pointer;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  transition: 0.3s;
+}
+
+#homeStartBtn:hover {
+  transform: scale(1.05);
+  background-color: #f4f4f4;
+}
+/* ——— მხოლოდ Home Settings ——— */
+#homeSettings {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 10000;
+}
+#homeSettingsBtn {
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  color: white;
+  cursor: pointer;
+  text-shadow: 0 0 6px rgba(0,0,0,.4);
+}
+
+/* panel look */
+#homeSettingsPanel {
+  margin-top: 8px;
+  background: rgba(0,0,0,0.7);
+  color: white;
+  border-radius: 12px;
+  padding: 10px 12px;
+  min-width: 180px;
+  backdrop-filter: blur(6px);
+}
+#homeSettingsPanel.hidden { display: none; }
+#homeSettingsPanel .row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+}
+#homeSettingsPanel .langs {
+  display: flex;
+  gap: 8px;
+}
+#homeSettingsPanel button {
+  background: rgba(255,255,255,0.9);
+  color: black;
+  border: none;
+  border-radius: 8px;
+  padding: 5px 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* ❌ დამალე ძველი settings თამაშის სხვა გვერდებზე */
+.window-body #settingsContainer {
+  display: none !important;
+}
+
+ /*ეს არის 2 ლეველზე score იყო და დავმალე*/
+ .hidden {
+  display: none !important;
+}
+/* SUMMARY MODAL მცირე ფორმატით */
+#summaryModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.65); /* ნახევრად გამჭვირვალე ფონი */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+#summaryModal .modal-content {
+  background: white;
+  color: black;
+  border-radius: 18px;
+  padding: 20px 24px;
+  width: 85%;
+  max-width: 380px; /* მაქსიმუმ 380px სიგანე */
+  max-height: 75vh; /* ფანჯარა არასდროს გადააჭარბებს ეკრანის 75%-ს */
+  overflow-y: none;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  animation: popup 0.3s ease;
+}
+
+/* პატარა ტექსტი */
+#summaryModal h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+#summaryModal p {
+  font-size: 14px;
+}
+
+#createdByTamo {
+  margin-top: 10px;
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+/* ტელეფონისთვის ცოტა უფრო პატარა ზომა */
+@media (max-width: 600px) {
+  #summaryModal .modal-content {
+    width: 90%;
+    max-width: 320px;
+    padding: 15px 18px;
+  }
+
+  #summaryModal h2 {
+    font-size: 18px;
+  }
+
+  #createdByTamo {
+    font-size: 12px;
+  }
+}
+
+/* რბილი გახსნის ანიმაცია */
+@keyframes popup {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

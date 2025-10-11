@@ -1,3 +1,52 @@
+/* 🌟 Landing background */
+body.landing {
+  background: url("image/landing-bg.png") center center / cover no-repeat fixed;
+}
+
+/* Landing window look */
+#landingScreen .game-window {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  border-radius: 22px;
+  width: 380px;
+  height: 600px;
+  margin: 60px auto;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Landing text */
+#landingScreen .title {
+  font-size: 36px;
+  font-weight: bold;
+  color: white;
+  margin-top: 40px;
+}
+
+#landingScreen .subtitle {
+  font-size: 18px;
+  color: white;
+  margin-bottom: 40px;
+  opacity: 0.9;
+}
+
+/* Buttons */
+#landingScreen .btn.primary {
+  padding: 14px 28px;
+  font-size: 20px;
+  background: white;
+  color: black;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+#landingScreen .btn.primary:hover {
+  transform: scale(1.05);
+  background: #fffaf0;
+}
 
 
 /* Level 1 – The Beginning 🌱 */

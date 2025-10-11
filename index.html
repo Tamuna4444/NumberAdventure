@@ -11,24 +11,33 @@
 </head>
 
 <body class="menu">
-  <div class="game-window">
-    <div class="window-body">
+<!-- MAIN PAGE (Home Screen) -->
+<div id="mainHomeScreen">
+  <h1>Guess the Number</h1>
+ 
+  <button id="homeStartBtn" onclick="enterGame()" data-i18n="start">Start</button>
 
-      <!-- Settings – top-right -->
-      <div id="settingsContainer" class="floating-settings">
-        <button id="settingsBtn" class="settings-icon">⚙️</button>
-        <div id="settingsPanel" class="hidden">
-          <div class="setting-option"><button id="toggleSound">🔊</button></div>
-          <div class="setting-option">
-            <button class="langBtn" data-lang="en">ENG</button>
-            <button class="langBtn" data-lang="ru">RUS</button>
-          </div>
+  <!-- ⚙️ Settings მხოლოდ მთავარ გვერდზე -->
+  <div id="homeSettings">
+    <button id="homeSettingsBtn">⚙️</button>
+    <div id="homeSettingsPanel" class="hidden">
+      <div class="row">
+        <span>Sound</span>
+        <button id="homeToggleSound">🔊</button>
+      </div>
+      <div class="row">
+        <span>Language</span>
+        <div class="langs">
+          <button class="homeLang" data-lang="en">ENG</button>
+          <button class="homeLang" data-lang="ru">RUS</button>
         </div>
       </div>
-
+    </div>
+  </div>
+</div>
       <!-- START SCREEN -->
       <div id="startScreen" class="stack">
-        <h1 data-i18n="title">Guess the Number</h1>
+       
         <p data-i18n="welcome">Welcome to the Adventure!</p>
 
         <div id="devTools">
@@ -57,19 +66,23 @@
       </div>
 
       <div id="level5Container" style="display:none;">
-        <h2 data-i18n="level5Title">Level 2: Follow the Intuition</h2>
-        <h3 data-i18n="level5Subtitle">Choose the number you feel is correct</h3>
-        <div id="numberOptions"></div>
-        <div id="level5Lives" class="hidden">❤️❤️❤️</div>
-        <div id="level5Time" class="hidden">⏰ 30s</div>
-        <div id="level5ScoreValue" class="hidden">
-          <span data-i18n="levelScoreLabel">🏆 Score:</span> <span id="level5ScoreNum">0</span>
-        </div>
-        <button id="startBtn" data-i18n="start">Start</button>
-        <button id="mainMenuBtn5" data-i18n="mainMenu"></button>
-        <div id="level5Message"></div>
-      </div>
+  <h2 data-i18n="level5Title">Level 2: Follow the Intuition</h2>
+  <h3 data-i18n="level5Subtitle">Choose the number you feel is correct</h3>
 
+  <div id="numberOptions"></div>
+
+  <!-- ეს სამი თავიდან დამალულია -->
+  <div id="level5Lives" class="hidden">❤️❤️❤️</div>
+  <div id="level5Time" class="hidden">⏰ 30s</div>
+  <div id="level5ScoreValue" class="hidden">
+    <span data-i18n="levelScoreLabel">🏆 Score:</span>
+    <span id="level5ScoreNum">0</span>
+  </div>
+
+  <button id="startBtn" data-i18n="start">Start</button>
+  <button id="mainMenuBtn5" data-i18n="mainMenu"></button>
+  <div id="level5Message"></div>
+</div>
       <div id="level6Container" style="display:none;text-align:center;">
         <br>
         <h2 id="level6Title">Level 3: Hidden Choice</h2>

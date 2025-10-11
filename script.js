@@ -114,6 +114,7 @@ const translations = {
     level1: "Level 1",
     level2: "Level 2",
     level3: "Level 3",
+    start: "Start",
     
     welcome: "Welcome to the Adventure!",
     tooHigh: "📉 Too high! Try again.",
@@ -185,6 +186,7 @@ const translations = {
     level1: "Уровень 1",
     level2: "Уровень 2",
     level3: "Уровень 3",
+    start: "Старт",
   
     welcome: "Добро пожаловать в приключение!",
     tooHigh: "📉 Слишком много! Попробуй ещё раз.",
@@ -393,6 +395,23 @@ const settingsPanel = document.getElementById('settingsPanel');
   settingsBtn.addEventListener("click", () => {
     console.log("⚙️ settingsBtn clicked!");
     settingsPanel.classList.toggle("hidden");
+  });
+}
+if (toggleSound) {
+  toggleSound.addEventListener('click', () => {
+    soundOn = !soundOn;
+    toggleSound.textContent = soundOn ? '🔊' : '🔇';
+
+    if (!soundOn) {
+      try {
+        Object.values(levelSounds).forEach(s => { s.pause(); s.currentTime = 0; });
+        startSound.pause(); clickSound.pause(); failSound.pause();
+      } catch(_) {}
+    } else {
+      try {
+        if (levelSounds[level]) { levelSounds[level].loop = true; levelSounds[level].play(); }
+      } catch(_) {}
+    }
   });
 }
       const guessInput = document.getElementById("guessInput");
@@ -1834,4 +1853,58 @@ if (sNum) sNum.textContent = String(getTotalScore());
   if (rL) rL.classList.add("hidden");
   const rG = document.getElementById("restartGame5Btn");
   if (rG) rG.classList.add("hidden");
+}
+// 🌟 მთავარი გვერდის ლოგიკა
+// 🌟 Home Settings ფუნქციონალი
+document.addEventListener('DOMContentLoaded', () => {
+  const homeBtn = document.getElementById('homeSettingsBtn');
+  const homePanel = document.getElementById('homeSettingsPanel');
+  const soundBtn = document.getElementById('homeToggleSound');
+  const langBtns = document.querySelectorAll('.homeLang');
+
+  if (homeBtn && homePanel) {
+    homeBtn.addEventListener('click', () => {
+      homePanel.classList.toggle('hidden');
+    });
+  }
+
+  if (soundBtn) {
+    soundBtn.addEventListener('click', () => {
+      window.soundOn = !window.soundOn;
+      soundBtn.textContent = window.soundOn ? '🔊' : '🔇';
+    });
+  }
+
+  langBtns.forEach(b => {
+    b.addEventListener('click', () => {
+      const lang = b.dataset.lang;
+      if (typeof changeLanguage === 'function') changeLanguage(lang);
+    });
+  });
+});
+// HOME → GAME გადართვა
+document.addEventListener('DOMContentLoaded', () => {
+  const homeStart = document.getElementById('homeStartBtn');
+  if (homeStart) {
+    homeStart.addEventListener('click', () => {
+      document.body.classList.remove('home');   // ქრება Home overlay
+      // სურვილისამებრ შეგიძლია აქვე დაიწყოს Level 1:
+      // startGame();
+    });
+  }
+});
+// === MAIN HOME SCREEN → GAME ===
+function enterGame() {
+  // დამალე მთავარი ეკრანი
+  const home = document.getElementById('mainHomeScreen');
+  if (home) home.style.display = 'none';
+
+  // აჩვენე თამაშის ფანჯარა
+  const startScreen = document.getElementById('startScreen');
+  if (startScreen) {
+    startScreen.style.display = 'flex'; // აჩვენებს მთავარ სტარტ ეკრანს
+  }
+
+  // სურვილისამებრ შეგიძლია აქვე დაიწყოს თამაში:
+  // startGame();
 }
