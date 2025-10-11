@@ -614,7 +614,6 @@ body {
   display: none;
   width: 100%;
   min-height: 100vh;                /* ფარავს მთელ ეკრანს */
-  background: url("image/level6.gif") center center / cover no-repeat; /* ჩასვი შენი რეალური GIF-ს ბილიკი */
   background-attachment: fixed;     /* დაეხმარება სრულ დაფარვას დიდ ეკრანებზე */
   overflow: hidden;
   padding-bottom: 60px;             /* ადგილი ქვედა ღილაკებისთვის */

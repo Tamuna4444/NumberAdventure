@@ -115,6 +115,7 @@ const translations = {
     level2: "Level 2",
     level3: "Level 3",
     start: "Start",
+    mainTitle: "Guess the Number",
     
     welcome: "Welcome to the Adventure!",
     tooHigh: "📉 Too high! Try again.",
@@ -187,6 +188,7 @@ const translations = {
     level2: "Уровень 2",
     level3: "Уровень 3",
     start: "Старт",
+    mainTitle: "Угадай число",
   
     welcome: "Добро пожаловать в приключение!",
     tooHigh: "📉 Слишком много! Попробуй ещё раз.",
