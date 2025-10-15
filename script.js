@@ -277,13 +277,6 @@ function changeLanguage(lang) {
     btn.textContent = `${translations[lang].level} ${n}`;
   });
 
-  
-const t = document.getElementById("levelTitle");
-const s = document.getElementById("levelStory");
-if (level === 1) {
-  if (t) t.innerText = "";
-  if (s) s.innerText = translations[lang].guessRange(typeof maxNumber === "number" ? maxNumber : 20);
-} else {
 const t = document.getElementById("levelTitle");
 const s = document.getElementById("levelStory");
 if (level === 1) {
@@ -295,7 +288,7 @@ if (level === 1) {
     if (t) t.innerText = dataNow.title[lang];
     if (s) s.innerText = dataNow.story[lang];
   }
-}
+
 }
 
   
@@ -338,6 +331,8 @@ const unlockedLevel = 999;
 let level1Score = 0;
 
 let level5Score = 0;
+let level3Score = 0;
+let level4Score = 0;
 let level5Part = 1; // 1=სამი ფანჯარა, 2=ოთხი ფანჯარა
 let level6Score = 0;
 let carryLives = 0; // დაგროვილი სიცოცხლეების ბონუსი
@@ -427,29 +422,6 @@ if (toggleSound) {
     guessInput.addEventListener("input", clearFeedback);
     guessInput.addEventListener("focus", clearFeedback);
   }
-  
-
-
-
-  toggleSound.addEventListener('click', () => {
-    soundOn = !soundOn;
-    toggleSound.textContent = soundOn ? '🔊' : '🔇';
-   if (!soundOn) {
-    Object.values(levelSounds).forEach(sound => {
-      sound.pause();
-      sound.currentTime = 0;
-    });
-    startSound.pause();
-    clickSound.pause();
-    failSound.pause();
-  } else {
-    
-    if (levelSounds[level]) {
-      levelSounds[level].loop = true;
-      levelSounds[level].play();
-    }
-  } 
-  });
 
 
 });
@@ -468,10 +440,32 @@ const startSound = new Audio('./sounds/startgame.mp3');
 const clickSound = new Audio('./sounds/click-234708.mp3');
 const failSound  = new Audio('./sounds/spin-fail-295088.mp3');
 
+/* === Helpers ხმებისთვის === */
+function playSafe(audio, loop = false) {
+  if (!audio) return;
+  try {
+    audio.loop = loop;
+    audio.currentTime = 0;
+    audio.play().catch(() => {
+      const resume = () => {
+        audio.play().catch(() => {});
+        document.removeEventListener("click", resume);
+      };
+      document.addEventListener("click", resume, { once: true });
+    });
+  } catch (e) {
+    console.warn("Sound play error:", e);
+  }
+}
+function stopSafe(audio) {
+  try { audio.pause(); audio.currentTime = 0; } catch (_) {}
+}
+
+/* === ფონური ხმები თითო Level-ზე === */
 const levelSounds = {
-
-  6: new Audio('./sounds/level6.mp3')
-
+  1: new Audio('./sounds/startgame.mp3'),
+  2: new Audio('./sounds/level6.mp3'),
+  3: new Audio('./sounds/level6.mp3'),
 };
    function startGame() {
      restartGameFull(); 
@@ -549,17 +543,22 @@ if (sEl) sEl.innerText = translations[currentLang].guessRange(maxNumber);
 function updateBackground(level) {
   document.body.className = `level-${level}`;
 
-  Object.values(levelSounds).forEach(sound => {
-    sound.pause();
-    sound.currentTime = 0;
-  });
+  // გავაჩუმოთ სხვა level-ების ფონები
+  Object.values(levelSounds).forEach(s => { try{s.pause(); s.currentTime=0;}catch(_){}});
 
-  if (soundOn && levelSounds[level]) {
-    levelSounds[level].loop = true;
-    levelSounds[level].play().catch(err => {
-      console.warn("🔇 Level sound autoplay was blocked:", err);
-    });
+  // ჩავრთოთ მიმდინარე Level-ის ფონური ხმა (თუ გვაქვს და ხმა ჩართულია)
+  const bg = levelSounds[level];
+  if (soundOn && bg) {
+    try {
+      bg.loop = true;
+      bg.currentTime = 0;
+      bg.play().catch(() => {
+        const once = () => { bg.play().catch(()=>{}); document.removeEventListener('click', once); };
+        document.addEventListener('click', once, { once:true });
+      });
+    } catch(_) {}
   }
+
 
 
 
@@ -579,31 +578,26 @@ function updateBackground(level) {
         const timeLabel = translations[currentLang].timerLabel || "⏱️ Time left:";
         document.getElementById("timer").innerHTML = `${timeLabel} ${timeLeft}s`;
 
-        if (timeLeft <= 0) {
-          clearInterval(timer);
-        
+if (timeLeft <= 0) {
+  clearInterval(timer);
+  const message = document.getElementById("message");
 
-          
-          const message = document.getElementById("message");
-
-          if (lives <= 1) {
-            lives--;
-            updateLivesDisplay();
-
-            message.innerHTML = translations[currentLang].timeUp;
-            message.style.color = "orange";
-            timeLeft = 50; 
-            startTimer();
-          } else {
-            lives = 0;
-            updateLivesDisplay();
-    
-            message.innerHTML = translations[currentLang].gameOver(randomNumber);
-            message.style.color = "white";
-            document.getElementById("gameButton").disabled = true;
-            showSummary();
-          }
-        }
+  if (lives > 1) {            // იყო: if (lives <= 1)
+    lives--;
+    updateLivesDisplay();
+    message.innerHTML = translations[currentLang].timeUp;
+    message.style.color = "orange";
+    timeLeft = 50;
+    startTimer();
+  } else {
+    lives = 0;
+    updateLivesDisplay();
+    message.innerHTML = translations[currentLang].gameOver(randomNumber);
+    message.style.color = "white";
+    document.getElementById("gameButton").disabled = true;
+    showSummary();
+  }
+}
       }, 1000);
     }
 
@@ -625,18 +619,7 @@ function updateBackground(level) {
     maxNumber = data.max;
     randomNumber = Math.floor(Math.random() * maxNumber) + 1;
 
-const t = document.getElementById("levelTitle");
-const s = document.getElementById("levelStory");
-if (level === 1) {
-  if (t) t.innerText = "";
-  if (s) s.innerText = translations[currentLang].guessRange(maxNumber);
-} else {
-  const dataNow = getLevelData(level);
-  if (dataNow) {
-    if (t) t.innerText = dataNow.title[currentLang];
-    if (s) s.innerText = dataNow.story[currentLang];
-  }
-}
+
   }
 
  const sv = document.getElementById("scoreValue");
@@ -644,7 +627,7 @@ if (sv) sv.textContent = String(getTotalScore());
 
   document.body.className = "menu";
 }
-
+const t = document.getElementById("levelTitle");
 
 function calculatePoints(level, attempts) {
   if (level === 1) {
@@ -834,6 +817,10 @@ if (level === 4) level4Score += earnedPoints;
  } else {
         lives--;
         updateLivesDisplay();
+
+        if (soundOn) {
+    try { failSound.currentTime = 0; failSound.play().catch(()=>{}); } catch(_){}
+  }
 
         if (lives <= 0) {
           clearInterval(timer);
@@ -1218,6 +1205,10 @@ function handleChoice(choice) {
   } else {
     // ❌ არასწორი — დააკლე სიცოცხლე (ორივე სტეიჯში)
     level5Lives = Math.max(0, (level5Lives || 0) - 1);
+
+     if (soundOn) {
+    try { failSound.currentTime = 0; failSound.play().catch(()=>{}); } catch(_){}
+  }
     const livesEl = document.getElementById("level5Lives");
     if (livesEl) livesEl.textContent = renderHearts(level5Lives);
 
@@ -1471,6 +1462,10 @@ function checkLevel6Box(index, box) {
   // ❌ Wrong
   box.textContent = "❌";
   box.style.color = "red";
+
+   if (soundOn) {
+    try { failSound.currentTime = 0; failSound.play().catch(()=>{}); } catch(_){}
+  }
 
   level6Lives = Math.max(0, (level6Lives || 0) - 1);
   const livesEl = document.getElementById("level6Lives");
@@ -1870,12 +1865,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (soundBtn) {
-    soundBtn.addEventListener('click', () => {
-      window.soundOn = !window.soundOn;
-      soundBtn.textContent = window.soundOn ? '🔊' : '🔇';
-    });
-  }
+ // ერთი წყარო სიმართლისთვის — იგივე soundOn ცვლადს ვიყენებთ ყველგან
+if (soundBtn) {
+  soundBtn.addEventListener('click', () => {
+    soundOn = !soundOn;            // <- იგივე ცვლადი!
+    soundBtn.textContent = soundOn ? '🔊' : '🔇';
+    if (!soundOn) {
+      // თუ გავთიშეთ — გავაჩუმოთ ფონური ხმები
+      Object.values(levelSounds || {}).forEach(s => { try{s.pause(); s.currentTime=0;}catch(_){} });
+      try{ startSound.pause(); startSound.currentTime=0; }catch(_){}
+      try{ clickSound.pause(); clickSound.currentTime=0; }catch(_){}
+      try{ failSound.pause();  failSound.currentTime=0;  }catch(_){}
+    } else {
+      // ჩავრთოთ აქტიური ლეველის ფონური ხმა
+      try { updateBackground(level); } catch(_) {}
+    }
+  });
+}
 
   langBtns.forEach(b => {
     b.addEventListener('click', () => {
