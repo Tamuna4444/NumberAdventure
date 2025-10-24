@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+   <meta name="format-detection" content="telephone=no">
+  <title>Угадай число</title>
+<link rel="stylesheet" href="style.css?v=6">
+<link rel="stylesheet" href="style-level.css?v=6">
+
+
+</head>
+
+<body class=" home menu">
+ 
+  <div class="game-window">
+    <div class="window-body">
+<!-- MAIN PAGE (Home Screen) -->
+<div id="mainHomeScreen">
+  
+  
+  <h1 data-i18n="gameName">Guess the Number</h1>
+  <button id="homeStartBtn" onclick="enterGame()" data-i18n="start">Start</button>
+
+  <!-- ⚙️ Settings მხოლოდ მთავარ გვერდზე -->
+  <div id="homeSettings">
+    <button id="homeSettingsBtn">⚙️</button>
+    <div id="homeSettingsPanel" class="hidden">
+      <div class="row">
+        <span></span>
+        <button id="homeToggleSound">🔊</button>
+      </div>
+      <div class="row">
+        
+        <div class="langs">
+          <button class="homeLang" data-lang="en">ENG</button>
+          <button class="homeLang" data-lang="ru">RUS</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <!-- START SCREEN -->
+      <div id="startScreen" class="stack">
+       
+        <p data-i18n="welcome">Welcome to the Adventure!</p>
+
+        <div id="devTools">
+          <button class="levelBtn" data-level="1" onclick="jumpToLevel(1)">Level 1</button>
+          <button class="levelBtn" data-level="2" onclick="jumpToLevel(2)">Level 2</button>
+          <button class="levelBtn" data-level="3" onclick="jumpToLevel(3)">Level 3</button>
+        </div>
+      </div>
+
+      <!-- GAME CONTAINERS (უდენო) -->
+            <!-- 🎮 GAME CONTAINERS -->
+      <div id="gameContainer" style="display:none; background:url('image/one.gif') center/cover no-repeat;">
+        <div class="level-window">
+          <h1 data-i18n="gameTitle">Guess the Number!</h1>
+          <h1 id="levelTitle" data-i18n="levelTitle">Level 1: The Beginning</h1>
+          <h4 id="levelStory" data-i18n="levelStory"></h4>
+
+          <input type="tel" id="guessInput" autocomplete="off">
+          <br>
+          <button id="gameButton" onclick="checkGuess()" data-i18n="check">Check</button>
+
+          <p id="message"></p>
+          <div id="lives">🤎🤎🤎🤎🤎</div>
+          <p id="timer"><span data-i18n="timerLabel">⏱️</span> <span id="timeValue">50s</span></p>
+          <p id="score"><span data-i18n="scoreLabel">🏆</span> <span id="scoreValue">0</span></p>
+  
+          <button id="mainMenuBtn1" data-i18n="mainMenu">Main Menu</button>
+        </div>
+      </div>
+
+      <div id="level5Container" style="display:none; background:url('image/four.gif') center/cover no-repeat;">
+        <div class="level-window">
+          <h2 data-i18n="level5Title">Level 2: Follow the Intuition</h2>
+          <h3 data-i18n="level5Subtitle">Choose the number you feel is correct</h3>
+          <div id="numberOptions"></div>
+          <div id="level5Lives" class="hidden">❤️❤️❤️</div>
+          <div id="level5Time" class="hidden">⏰ 30s</div>
+          <div id="level5ScoreValue" class="hidden">
+            <span data-i18n="levelScoreLabel">🏆</span> <span id="level5ScoreNum">0</span>
+          </div>
+          <button id="startBtn" data-i18n="start">Start</button>
+          <button id="mainMenuBtn5" data-i18n="mainMenu">Main Menu</button>
+          <div id="level5Message"></div>
+        </div>
+      </div>
+
+      <div id="level6Container" style="display:none; background:url('image/five.gif') center/cover no-repeat;">
+        <div class="level-window">
+          <h2 id="level6Title" data-i18n="level6Title">Level 3: Hidden Choice</h2>
+          <h3 id="level6Story" data-i18n="level6Story">Find the Hidden Number</h3>
+          <button id="level6StartBtn" data-i18n="start">Start</button>
+          <div id="level6Boxes"></div>
+          <p id="level6Message"></p>
+          <div id="level6Lives"></div>
+          <div id="level6Time">⏱️</div>
+          <div id="level6ScoreValue" style="display:none;">
+            <span data-i18n="levelScoreLabel">🏆</span>
+            <span id="level6ScoreNum">0</span>
+          </div>
+          <button id="mainMenuBtn6" data-i18n="mainMenu">Main Menu</button>
+        </div>
+      </div>
+
+      <!-- SUMMARY -->
+      <div id="summaryModal" class="modal">
+        <div class="modal-content">
+          <h2 data-i18n="finalResultsTitle" style="margin:0 0 8px 0;">💥Final Results💥</h2>
+          <div id="rankWrap" style="display:flex;align-items:center;gap:10px;margin:6px 0 5px;">
+            <div id="rankBadge" style="font-size:40px;line-height:1;"></div>
+            <div>
+              <div id="rankTitle" style="font-weight:700;font-size:20px;">—</div>
+              <div id="rankDesc" style="opacity:.9;">—</div>
+            </div>
+          </div>
+          <div id="scoresWrap" style="margin:10px 0;">
+            <p id="level1Score">Level 1–4: 0 pts</p>
+            <p id="level5Score">Level 2: 0 pts</p>
+            <p id="level6FinalScore">Level 3: 0 pts</p>
+            <hr/>
+            <p id="totalScore" style="font-weight:700;">Total: 0 pts</p>
+            
+          </div>
+          <div class="modal-actions" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:12px;">
+            <button id="restartLevelBtn" class="btn btn-primary">Restart Level</button>
+            <button id="restartGameBtn" class="btn btn-primary">Restart Game</button>
+            <button id="summaryMainMenuBtn" class="btn btn-secondary">Main Menu</button>
+          </div>
+           <br>
+            <p id="createdByTamo">꧁ᬊᬁT4MOᬊ᭄꧂</p>
+        </div>
+      </div>
+
+    </div> <!-- /window-body -->
+  </div>   <!-- /game-window -->
+  <script defer src="script.js?v=6"></script>
+  <script src="https://yandex.ru/games/sdk/v2"></script>
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+  // კონტექსტური მენიუს დაბლოკვა
+  document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+  // ტექსტის მონიშვნის დაბლოკვა
+  document.addEventListener('selectstart', (e) => e.preventDefault());
+
+  const opts = { passive: false };
+
+  // აკრძალვა long-press და gesture მოქმედებების
+  ['touchstart','touchend','touchmove','gesturestart','dblclick'].forEach(evt => {
+    document.addEventListener(evt, (e) => {
+      const tag = e.target.tagName;
+      const editable = e.target.isContentEditable;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || editable) return;
+      e.preventDefault();
+    }, opts);
+  });
+});
+</script>
+</body>
+
+
+
+
+</html>
