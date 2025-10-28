@@ -6,10 +6,10 @@ YaGames.init().then(ysdk => {
 
   // ვაცხადებთ, რომ ჩატვირთვა დასრულებულია
   try {
-    if (ysdk.features && ysdk.features.LoadingAPI) {
-      ysdk.features.LoadingAPI.ready();
-      console.log("✅ Yandex LoadingAPI ready");
-    }
+  // if (ysdk.features && ysdk.features.LoadingAPI) {
+      // ysdk.features.LoadingAPI.ready();
+      // console.log("✅ Yandex LoadingAPI ready");
+    // }
   } catch(e) {
     console.warn("LoadingAPI not available", e);
   }
@@ -52,6 +52,23 @@ YaGames.init().then(ysdk => {
 }).catch(err => {
   console.error("❌ Yandex SDK error:", err);
 });
+// --- Auto-start flags for Level 2 & 3 ---
+const AUTO_START_L2 = true;
+const AUTO_START_L3 = true;
+
+// --- GameReady Once helper ---
+let __gameReadySent = false;
+function sendGameReadyOnce() {
+  if (!__gameReadySent && window.ysdk?.features?.LoadingAPI) {
+    try {
+      ysdk.features.LoadingAPI.ready();
+      __gameReadySent = true;
+      console.log("✅ GameReady sent (UI visible)");
+    } catch (e) {
+      console.warn("GameReady send failed:", e);
+    }
+  }
+}
 
 
 // === Persistent Session State (score/lives/level) ===
@@ -1178,7 +1195,7 @@ AudioBus.stopAll();
     updateLivesDisplay();
 
 function renderLevel5Stage() {
-  
+  // --- UI toggle ---
   document.getElementById("startScreen").style.display = "none";
   document.getElementById("gameContainer").style.display = "none";
   document.getElementById("level6Container").style.display = "none";
@@ -1187,14 +1204,62 @@ function renderLevel5Stage() {
   document.body.className = "level-2";
   updateBackground(2);
 
-  
+  // --- Texts ---
   const data = getLevelData(2);
   document.querySelector('[data-i18n="level5Title"]').innerText = data.title[currentLang];
   document.querySelector('[data-i18n="level5Subtitle"]').innerText = data.story[currentLang];
 
- 
-  const numberOptions = document.getElementById("numberOptions");
-  const level5Message = document.getElementById("level5Message");
+  // --- Grab HUD elements once ---
+  const livesEl   = document.getElementById("level5Lives");
+  const timeEl    = document.getElementById("level5Time");
+  const scoreBox  = document.getElementById("level5ScoreValue");
+  const msgEl     = document.getElementById("level5Message");
+  const optionsEl = document.getElementById("numberOptions");
+
+  // --- Reset containers ---
+  if (optionsEl) optionsEl.innerHTML = "";
+  if (msgEl)     msgEl.textContent = "";
+
+  // --- Ensure HUD is visible (could be hidden before) ---
+  [livesEl, timeEl, scoreBox].forEach(el => {
+    if (!el) return;
+    el.classList?.remove("hidden");
+    // lives/time ინახება ჰედერივით — მივანიჭოთ inline-block
+    el.style.display = (el === scoreBox) ? "block" : "inline-block";
+  });
+
+  // --- GameReady: UI already visible ---
+  sendGameReadyOnce();
+
+  // --- Autostart ---
+  AudioBus.play('start', { loop:true, volume:0.5 });
+
+  // Params
+  rangeStart   = 1;
+  rangeEnd     = 50;
+  level5Part   = 1;
+  level5Score  = 0;
+
+  // Lives (base + carry, cap 10)
+  const baseL2Lives = (getLevelData(2)?.lives ?? 3);
+  level5Lives = Math.min(L2_STAGE2_LIFE_CAP, baseL2Lives + (carryLives || 0));
+  carryLives  = 0;
+
+  // ⏱ Init time BEFORE starting timer (Stage1 = 30s)
+  level5Time = 30;
+
+  // --- Paint initial HUD values ---
+  if (livesEl) livesEl.textContent = renderHearts(level5Lives);
+  if (timeEl)  timeEl.textContent  = `🕐 ${level5Time}s`;
+  if (scoreBox){ scoreBox.style.display = "block"; } // პატარა ქულის ყუთი თუ გაქვს
+
+  // Build choices and start timer (once!)
+  renderOptions(rangeStart, rangeEnd, 3);
+  startLevel5Timer();
+
+
+  
+
   
 // ჯერ ცარიელი ღილაკები (count = 3 ან 4), გათიშული
 function renderBlankOptions(count) {
@@ -1371,41 +1436,7 @@ if (level5Part === 1 && level5Lives <= 0) {
     return;
   }
 }
-
-
-  const startBtn = document.getElementById("startBtn");
-startBtn.onclick = () => {
-  AudioBus.play('start', { loop:true, volume:0.5 });
-  
-  startBtn.style.display = "none";
-  document.getElementById("level5Lives").classList.remove("hidden");
-  document.getElementById("level5Time").classList.remove("hidden");
-  const scoreBox = document.getElementById("level5ScoreValue");
-  if (scoreBox) { scoreBox.classList.remove("hidden"); scoreBox.style.display = "block"; }
-
-  rangeStart = 1; rangeEnd = 50;
-  level5Part  = 1;                 // Stage 1 (3 ფანჯარა)
-  level5Score = 0;
-
- // Level 2 იწყებს: თავის ბეის lives + Level 1-ის ბონუსი; cap = 10
-const baseL2Lives = (getLevelData(2)?.lives ?? 3);
-level5Lives = Math.min(L2_STAGE2_LIFE_CAP, baseL2Lives + (carryLives || 0));
-carryLives = 0; // გამოვიყენეთ – გავანულოთ, რომ ორჯერ არ დაემატოს
-
-const l5LivesEl = document.getElementById("level5Lives");
-if (l5LivesEl) l5LivesEl.textContent = renderHearts(level5Lives);
-
-
-  
-  level5Message.textContent = "";
-
-  renderOptions(rangeStart, rangeEnd, 3);
-  startLevel5Timer();
-};
-
-
-  
-  const restartLevel5Btn = document.getElementById("restartLevel5Btn");
+const restartLevel5Btn = document.getElementById("restartLevel5Btn");
   if (restartLevel5Btn) {
     restartLevel5Btn.type = "button";
     restartLevel5Btn.classList.remove("hidden");
@@ -1488,10 +1519,8 @@ function renderLevel6Stage() {
   if (timeEl) { timeEl.style.display = "inline-block"; timeEl.textContent = ""; }
 
   document.getElementById("level6ScoreValue").style.display = "none";
-
-  const startBtn = document.getElementById("level6StartBtn");
-  startBtn.style.display = "inline-block";
-  startBtn.onclick = startLevel6;
+sendGameReadyOnce(); // UI უკვე ჩანს → ახლა ვაგზავნით GameReady-ს
+startLevel6();       // ავტოსტარტი L3-ზე
 }
 function setupLevel6Round() {
   if (level6Ended) return;
@@ -1631,8 +1660,7 @@ function checkLevel6Box(index, box) {
 function startLevel6() {
   level6Ended = false;
 
-  const startBtn = document.getElementById("level6StartBtn");
-  if (startBtn) startBtn.style.display = "none";
+ 
 
   level6Part = 1;
 
@@ -1717,6 +1745,7 @@ function showSummary() {
     modal.style.display = "flex";
     try { applyTranslations(); } catch(_) {}
   }
+  
 }
 
 function closeSummary() {
@@ -1997,9 +2026,7 @@ const sNum = document.getElementById("level5ScoreNum");
 // გადავწეროთ ჯამური ქულით, რომ 1 ლეველიდან გადმოყოლილი ჩანდა
 if (sNum) sNum.textContent = String(getTotalScore());
 
-  // Start ღილაკი ისევ გამოჩნდეს, როცა დაბრუნდები Level 2-ში
-  const startBtn = document.getElementById("startBtn");
-  if (startBtn) startBtn.style.display = "inline-block";
+ 
 
   // რესტარტ ღილაკები დაიმალოს
   const rL = document.getElementById("restartLevel5Btn");

@@ -75,26 +75,31 @@
       </div>
 
       <div id="level5Container" style="display:none; background:url('image/four.gif') center/cover no-repeat;">
-        <div class="level-window">
-          <h2 data-i18n="level5Title">Level 2: Follow the Intuition</h2>
-          <h3 data-i18n="level5Subtitle">Choose the number you feel is correct</h3>
-          <div id="numberOptions"></div>
-          <div id="level5Lives" class="hidden">❤️❤️❤️</div>
-          <div id="level5Time" class="hidden">⏰ 30s</div>
-          <div id="level5ScoreValue" class="hidden">
-            <span data-i18n="levelScoreLabel">🏆</span> <span id="level5ScoreNum">0</span>
-          </div>
-          <button id="startBtn" data-i18n="start">Start</button>
-          <button id="mainMenuBtn5" data-i18n="mainMenu">Main Menu</button>
-          <div id="level5Message"></div>
-        </div>
+  <div class="level-window">
+    <h2 data-i18n="level5Title">Level 2: Follow the Intuition</h2>
+    <h3 data-i18n="level5Subtitle">Choose the number you feel is correct</h3>
+
+    <div id="numberOptions"></div>
+
+    <!-- NEW: HUD wrapper -->
+    <div id="level5Hud">
+      <div id="level5Lives">❤️❤️❤️</div>
+      <div id="level5Time">⏰ 30s</div>
+      <div id="level5ScoreValue">
+        <span data-i18n="levelScoreLabel">🏆</span> <span id="level5ScoreNum">0</span>
       </div>
+    </div>
+    <!-- /HUD -->
+    
+<button id="mainMenuBtn5" class="btn" data-i18n="mainMenu" onclick="goToMainMenu()"></button>
+  </div>
+</div>
 
       <div id="level6Container" style="display:none; background:url('image/five.gif') center/cover no-repeat;">
         <div class="level-window">
           <h2 id="level6Title" data-i18n="level6Title">Level 3: Hidden Choice</h2>
           <h3 id="level6Story" data-i18n="level6Story">Find the Hidden Number</h3>
-          <button id="level6StartBtn" data-i18n="start">Start</button>
+         
           <div id="level6Boxes"></div>
           <p id="level6Message"></p>
           <div id="level6Lives"></div>
@@ -103,7 +108,7 @@
             <span data-i18n="levelScoreLabel">🏆</span>
             <span id="level6ScoreNum">0</span>
           </div>
-          <button id="mainMenuBtn6" data-i18n="mainMenu">Main Menu</button>
+<button id="mainMenuBtn6" class="btn main-bottom-btn" data-i18n="mainMenu" onclick="goToMainMenu()">Главное меню</button>
         </div>
       </div>
 

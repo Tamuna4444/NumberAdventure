@@ -100,9 +100,9 @@ body.level-2 {
 body.level-2 #level5Lives,
 body.level-2 #level5Time,
 body.level-2 #level5ScoreValue {
-  color: #fff !important;
-  font-size: 30px !important;
-  line-height: 1.2 !important;
+  display: block;         /* თითო ცალკე ხაზზე */
+  text-align: center;
+  margin: 6px 0;
 }
 
 /* ქულის რიცხვის შიგნით span-ებიც გაბარდეს */
@@ -134,6 +134,26 @@ body.level-2 button {
   background-color: white;
   border: 1px solid white;
 }
+/* Level 2 HUD stacked neatly */
+#level5Hud{
+  display: flex;
+  flex-direction: column;    /* ვაწყობთ სვეტად */
+  align-items: center;
+  gap: 10px;                 /* შუა დაშორება */
+  margin-top: 8px;
+}
+
+#level5Hud > #level5Lives,
+#level5Hud > #level5Time,
+#level5Hud > #level5ScoreValue{
+  display: block;            /* იძულებით ბლოკად */
+  line-height: 1.2;
+  text-align: center;
+  font-size: 22px;
+}
+
+#level5ScoreValue span,
+#level5ScoreNum{ font-size: 24px; }
 
 
 .option-btn {
@@ -269,3 +289,18 @@ body.level-3 #levelScoreLabel,#level6ScoreValue,#level6Time,#level6Lives{
 
   .window-body { padding: 14px; }  /* ოდნავ უფრო მჭიდრო შიგთავსი */
 }
+/* Level 3 – Главное меню ღილაკი ქვემოთ, ზუსტად Level 2-ის მსგავსად */
+#level6Container .level-window {
+  position: relative;
+  padding-bottom: 90px; /* ადგილი ღილაკისთვის */
+}
+
+#mainMenuBtn6 {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  width: 140px;
+  text-align: center;
+}
+

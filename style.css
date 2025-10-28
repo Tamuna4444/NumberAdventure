@@ -635,12 +635,7 @@ body {
   box-sizing: border-box;
 }
 
-/* Main Menu ღილაკი რომ არ გავიდეს ფონის მიღმა */
-#mainMenuBtn6 {
-  position: relative;
-  z-index: 5;
-  margin-bottom: 10px;
-}
+
 /* 🌟 მთავარი გვერდის სათაური (Guess the Number) */
 #mainHomeScreen h2 {
   color: white !important;
