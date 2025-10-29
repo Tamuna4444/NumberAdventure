@@ -32,7 +32,7 @@ YaGames.init().then(ysdk => {
     }
 
     // ამოვიღოთ უკვე შენახული ან SDK-ით დადგენილი
-    const currentLang = localStorage.getItem('lang') || detected;
+currentLang = localStorage.getItem('lang') || detected;
 
     // html-ში ჩავწეროთ ენა
     document.documentElement.setAttribute('lang', currentLang);
@@ -400,7 +400,8 @@ let level3Score = 0;
 let level4Score = 0;
 let level5Part = 1; // 1=სამი ფანჯარა, 2=ოთხი ფანჯარა
 let level6Score = 0;
-let carryLives = 0; // დაგროვილი სიცოცხლეების ბონუსი
+let carryLives = 0;
+let level5Correct = null; // დაგროვილი სიცოცხლეების ბონუსი
 
 
 
@@ -1248,55 +1249,99 @@ function renderLevel5Stage() {
   // ⏱ Init time BEFORE starting timer (Stage1 = 30s)
   level5Time = 30;
 
-  // --- Paint initial HUD values ---
-  if (livesEl) livesEl.textContent = renderHearts(level5Lives);
-  if (timeEl)  timeEl.textContent  = `🕐 ${level5Time}s`;
-  if (scoreBox){ scoreBox.style.display = "block"; } // პატარა ქულის ყუთი თუ გაქვს
+  // ... თქვენი UI reset ლოგიკა ზემოთ ...
 
-  // Build choices and start timer (once!)
-  renderOptions(rangeStart, rangeEnd, 3);
-  startLevel5Timer();
+// Autostart (ვაფიქსირებთ HUD-ს მნიშვნელობებს)
+if (livesEl) livesEl.textContent = renderHearts(level5Lives);
+if (timeEl)  timeEl.textContent  = `🕐 ${level5Time}s`;
+if (scoreBox){ scoreBox.style.display = "block"; }
 
+// ▶️ ავტოსტარტი Stage1
+renderOptions(1, 50, 3);
+startLevel5Timer();
 
+function endLevel2(reasonText) {
+  try { clearInterval(level5TimerInterval); } catch(_) {}
   
+  // გავთიშოთ ღილაკები, რომ ორჯერ არ დააჭირონ
+  try {
+    const no = document.getElementById("numberOptions");
+    if (no) no.querySelectorAll("button").forEach(b => b.disabled = true);
+  } catch(_) {}
 
-  
-// ჯერ ცარიელი ღილაკები (count = 3 ან 4), გათიშული
+  // დავმალოთ Level 2 კონტეინერი
+  const l5c = document.getElementById("level5Container");
+  if (l5c) l5c.style.display = "none";
+
+  // სურვილისამებრ ტექსტიც დავწეროთ
+  const msg = document.getElementById("level5Message");
+  if (msg && reasonText) msg.textContent = reasonText;
+
+  // ვაჩვენოთ საბოლოო ანგარიში
+  showSummary();
+}
+// === Level 2 helpers (PUT after renderLevel5Stage) ===
 function renderBlankOptions(count) {
-  numberOptions.innerHTML = "";
+  const wrap = document.getElementById("numberOptions");
+  if (!wrap) return;
+  wrap.innerHTML = "";
+  wrap.style.display = "grid";
+  wrap.style.gridTemplateColumns = `repeat(${count}, minmax(60px, 1fr))`;
+  wrap.style.gap = "12px";
   for (let i = 0; i < count; i++) {
+    const b = document.createElement("button");
+    b.className = "option-btn";
+    b.disabled = true;
+    b.textContent = " ";
+    b.style.height = "60px";
+    wrap.appendChild(b);
+  }
+}
+
+function renderOptions(start, end, count, onAfterRender) {
+  const wrap = document.getElementById("numberOptions");
+  if (!wrap) return;
+
+  // ავაგოთ ყველა შესაძლო მნიშვნელობა და ავარჩიოთ სწორი/არასწორები
+  const pool = [];
+  for (let n = start; n <= end; n++) pool.push(n);
+
+  // ერთი სწორი
+  const correctVal = pool[Math.floor(Math.random() * pool.length)];
+ level5Correct = Number(correctVal);
+
+  // შევაგროვოთ უნიკალური „მიმართული“ რიცხვები
+  const set = new Set([correctVal]);
+  while (set.size < count) {
+    set.add(pool[Math.floor(Math.random() * pool.length)]);
+  }
+  const values = Array.from(set);
+
+  // დავაშფოთოთ, რომ სწორი ყოველთვის სხვადასხვა პოზიციაზე იყოს
+  for (let i = values.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [values[i], values[j]] = [values[j], values[i]];
+  }
+
+  wrap.innerHTML = "";
+  wrap.style.display = "grid";
+  wrap.style.gridTemplateColumns = `repeat(${count}, minmax(60px, 1fr))`;
+  wrap.style.gap = "12px";
+
+  values.forEach((val) => {
     const btn = document.createElement("button");
-    btn.classList.add("option-btn");
-    btn.textContent = "";   // ცარიელი
-    btn.disabled = true;    // ჯერ არაა აქტიური
-    numberOptions.appendChild(btn);
-  }
+    btn.className = "option-btn";
+    btn.textContent = String(val);
+    btn.style.height = "60px";
+    btn.onclick = () => handleChoice(val);
+    wrap.appendChild(btn);
+  });
+
+  if (typeof onAfterRender === "function") onAfterRender();
 }
 
-// 300ms-ის შემდეგ ჩავანაცვლოთ ციფრებით და ჩავრთოთ კლიკები
-function renderOptions(start, end, count, afterReveal) {
-  renderBlankOptions(count);
 
-  // უნიკალური რიცხვები (ერთ-ერთი იქნება correct)
-  const options = new Set();
-  correct = Math.floor(Math.random() * (end - start + 1)) + start;
-  options.add(correct);
-  while (options.size < count) {
-    options.add(Math.floor(Math.random() * (end - start + 1)) + start);
-  }
-  const shuffled = Array.from(options).sort(() => Math.random() - 0.5);
 
-  setTimeout(() => {
-    const btns = numberOptions.querySelectorAll("button");
-    btns.forEach((btn, idx) => {
-      const num = shuffled[idx];
-      btn.textContent = num;
-      btn.disabled = false;
-      btn.onclick = () => handleChoice(num);
-    });
-    if (typeof afterReveal === "function") afterReveal();
-  }, 300);
-}
 function updateLevel5Score(points) {
   // დაამატე ქულა Level 2-ს (state-ში)
   addPoints(points, 2);
@@ -1376,87 +1421,94 @@ if (level5Time <= 0) {
   }, 1000);
 }
 function handleChoice(choice) {
-  // თავიდან დავბლოკოთ ღილაკები, რომ ორჯერ არ დააჭირონ
-  try { numberOptions.querySelectorAll("button").forEach(b => b.disabled = true); } catch(_) {}
+  const numberOptions   = document.getElementById("numberOptions");
+  const level5Message   = document.getElementById("level5Message");
 
-  if (choice === correct) {
-    // ✅ სწორი — ქულა სტეიჯის მიხედვით (Stage1=20, Stage2=30)
+  // დავბლოკოთ ორმაგი კლიკი
+  if (numberOptions) {
+    numberOptions.querySelectorAll("button").forEach(b => (b.disabled = true));
+  }
+
+  if (Number(choice) === Number(level5Correct)) {
+    // ✅ სწორი პასუხი
     const pts = (level5Part === 2) ? 30 : 20;
-    level5Message.textContent = translations[currentLang].level5Correct + String(correct);
-    updateLevel5Score(pts);
 
-    // Stage 2 – სწორისას სიცოცხლე +1 (cap = 10)
+    if (level5Message) {
+      const ok = translations[currentLang]?.level5Correct || "✅ Correct! The number was ";
+      level5Message.textContent = ok + String(level5Correct);
+    }
+
+    try { updateLevel5Score(pts); } catch(_) {}
+
     if (level5Part === 2) {
       level5Lives = Math.min(L2_STAGE2_LIFE_CAP, (level5Lives || 0) + 1);
       const livesEl = document.getElementById("level5Lives");
       if (livesEl) livesEl.textContent = renderHearts(level5Lives);
     }
 
-    // სწრაფი რეფრეში — ტაიმერი არ ვაწყდეთ თავიდან!
     setTimeout(() => {
-      level5Message.textContent = "";
+      if (level5Message) level5Message.textContent = "";
       const count = (level5Part === 2 ? 4 : 3);
       renderBlankOptions(count);
-      renderOptions(rangeStart, rangeEnd, count);
+      renderOptions(rangeStart, rangeEnd, count); // აქ renderOptions შიგნით განახლდება level5Correct
     }, 400);
     return;
 
   } else {
-    // ❌ არასწორი — დააკლე სიცოცხლე (ორივე სტეიჯში)
+    // ❌ არასწორი
     level5Lives = Math.max(0, (level5Lives || 0) - 1);
+    if (soundOn) { try { failSound.currentTime = 0; failSound.play().catch(()=>{}); } catch(_) {} }
 
-     if (soundOn) {
-    try { failSound.currentTime = 0; failSound.play().catch(()=>{}); } catch(_){}
-  }
     const livesEl = document.getElementById("level5Lives");
     if (livesEl) livesEl.textContent = renderHearts(level5Lives);
 
-    const wrongMsg = (translations[currentLang]?.level5Wrong || "❌ Wrong! Correct was: ");
-    level5Message.textContent = wrongMsg + String(correct);
-// ✅ Stage 1-ზე თუ სიცოცხლე ნულზე ჩამოვიდა — ვასრულებთ Level 2-ს ახლავე
-if (level5Part === 1 && level5Lives <= 0) {
-  try { clearInterval(level5TimerInterval); } catch (_) {}
-  try { numberOptions.innerHTML = ""; } catch (_) {}
-  const l5c = document.getElementById("level5Container");
-  if (l5c) l5c.style.display = "none";
-  showSummary();
-  return; // აღარ ვაგრძელებთ რენდერს
-}
-    
+    const wrongMsg = translations[currentLang]?.level5Wrong || "❌ Wrong! Correct was: ";
+    if (level5Message) level5Message.textContent = wrongMsg + String(level5Correct);
 
-    // Stage 1: თუ დაცავ 0-ზე დასრულებას, აქ ჩაამატე showSummary(); სურვილისამებრ
-    // Stage 2: არ ვამთავრებთ სიცოცხლებით — სთეიჯი მთავრდება დროთი.
+    if (level5Part === 1 && level5Lives <= 0) {
+      try { clearInterval(level5TimerInterval); } catch (_) {}
+      if (numberOptions) numberOptions.innerHTML = "";
+      const l5c = document.getElementById("level5Container");
+      if (l5c) l5c.style.display = "none";
+      showSummary();
+      return;
+    }
 
     setTimeout(() => {
-      level5Message.textContent = "";
+      if (level5Message) level5Message.textContent = "";
       const count = (level5Part === 2 ? 4 : 3);
       renderBlankOptions(count);
-      renderOptions(rangeStart, rangeEnd, count);
+      renderOptions(rangeStart, rangeEnd, count); // განახლდება ახალი round-თვის level5Correct
     }, 700);
-    return;
   }
+
+
+
 }
 const restartLevel5Btn = document.getElementById("restartLevel5Btn");
-  if (restartLevel5Btn) {
-    restartLevel5Btn.type = "button";
-    restartLevel5Btn.classList.remove("hidden");
-    restartLevel5Btn.style.display = "inline-block";
-    restartLevel5Btn.onclick = (e) => {
-      e.preventDefault();
+if (restartLevel5Btn) {
+  restartLevel5Btn.type = "button";
+  restartLevel5Btn.classList.remove("hidden");
+  restartLevel5Btn.style.display = "inline-block";
+  restartLevel5Btn.onclick = (e) => {
+    e.preventDefault();
 
-      
-      
-      rangeStart = 1; rangeEnd = 50;
-      level5Lives = 3;
-      
-      level = 2;
+    // ←←← აი აქ ჩასვი ეს 4 ხაზი:
+    const box = document.getElementById("numberOptions");
+    const msg = document.getElementById("level5Message");
+    if (box) box.innerHTML = "";
+    if (msg) msg.textContent = "";
 
-     
-      numberOptions.innerHTML = "";
-      level5Message.textContent = "";
-      renderLevel5Stage();
-    };
-  }
+    rangeStart = 1; rangeEnd = 50;
+    level5Lives = 3;
+
+    level = 2;
+
+    renderLevel5Stage();
+    renderOptions(rangeStart, rangeEnd, 3);
+    startLevel5Timer();
+  };
+}
 }
  
 let level6Part = 1;        // 1 = 3 ფანჯარა, 2 = 4 ფანჯარა
