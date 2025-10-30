@@ -248,7 +248,7 @@ const translations = {
     level1: "Уровень 1",
     level2: "Уровень 2",
     level3: "Уровень 3",
-    start: "Старт",
+    start: "Начать",
     mainTitle: "Угадай число",
   
     welcome: "Добро пожаловать в приключение!",
@@ -2130,6 +2130,28 @@ document.addEventListener("visibilitychange", () => {
     if (soundOn) AudioBus.resumeBg(level);
   }
 });
+// === PATCH A: TOUCH → CLICK shim (mobile control fix) ===
+(function () {
+  const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  if (!isTouch) return;
+
+  // iOS-ს რომ :active იმუშაოს (ტაჩზე რეაგირება)
+  document.body.setAttribute('ontouchstart', '');
+
+  // ნებისმიერი ღილაკისთვის/ლინკისთვის tap == click
+  document.addEventListener('touchend', (e) => {
+    // არ ჩავერიოთ ტექსტურ ველებში (ინპუტებში)
+    if (e.target.closest('input, textarea, [contenteditable="true"]')) return;
+
+    const tappable = e.target.closest('button, [role="button"], a[href], .option-btn, #gameButton, #startBtn, #level6StartBtn');
+    if (!tappable) return;
+    if (tappable.disabled) return;
+
+    // მყისიერი click — არც დაყოვნება, არც ghost-click
+    tappable.click();
+    e.preventDefault();
+  }, { passive: false });
+})();
 // HOME → GAME გადართვა
 document.addEventListener('DOMContentLoaded', () => {
   const homeStart = document.getElementById('homeStartBtn');

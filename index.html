@@ -12,7 +12,7 @@
 
 </head>
 
-<body class=" home menu">
+<body class="home menu">
  
   <div class="game-window">
     <div class="window-body">
@@ -20,7 +20,7 @@
 <div id="mainHomeScreen">
   
   
-  <h1 data-i18n="gameName">Guess the Number</h1>
+  <h1 data-i18n="gameName">Угадай число</h1>
   <button id="homeStartBtn" onclick="enterGame()" data-i18n="start">Start</button>
 
   <!-- ⚙️ Settings მხოლოდ მთავარ გვერდზე -->
@@ -144,28 +144,71 @@
 
     </div> <!-- /window-body -->
   </div>   <!-- /game-window -->
-  <script defer src="script.js?v=6"></script>
-  <script src="https://yandex.ru/games/sdk/v2"></script>
-  <script>
-document.addEventListener('DOMContentLoaded', () => {
-  // კონტექსტური მენიუს დაბლოკვა
-  document.addEventListener('contextmenu', (e) => e.preventDefault());
+ <!-- ჩასვი SDK პირველი (defer), მერე შენი აპის სკრიპტი (defer) -->
+<script src="https://yandex.ru/games/sdk/v2" defer></script>
+<script src="script.js?v=6" defer></script>
+<script>
+/* === MOBILE UX FIX PACK === */
+(function () {
+  const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
-  // ტექსტის მონიშვნის დაბლოკვა
-  document.addEventListener('selectstart', (e) => e.preventDefault());
+  // 4.1 iOS tap highlight off + რეჟიმები
+  const style = document.createElement('style');
+  style.textContent = `
+    * { -webkit-tap-highlight-color: rgba(0,0,0,0); }
+    html, body { overscroll-behavior: none; }
+    #startScreen, #gameContainer, #level5Container, #level6Container, #summaryModal {
+      -webkit-user-select: none !important; user-select: none !important;
+      -webkit-touch-callout: none !important; touch-action: manipulation !important;
+    }
+    /* input/textarea-ში ნებადართულია არჩევა */
+    #startScreen input, #gameContainer input, #level5Container input, #level6Container input, #summaryModal input,
+    #startScreen textarea, #gameContainer textarea, #level5Container textarea, #level6Container textarea, #summaryModal textarea {
+      -webkit-user-select: text !important; user-select: text !important;
+      -webkit-touch-callout: default !important;
+    }
+  `;
+  document.head.appendChild(style);
 
-  const opts = { passive: false };
-
-  // აკრძალვა long-press და gesture მოქმედებების
-  ['touchstart','touchend','touchmove','gesturestart','dblclick'].forEach(evt => {
-    document.addEventListener(evt, (e) => {
-      const tag = e.target.tagName;
-      const editable = e.target.isContentEditable;
-      if (tag === 'INPUT' || tag === 'TEXTAREA' || editable) return;
+  // 4.2 აკრძალე კონტექსტური მენიუ და selectstart მხოლოდ თამაშის ვიუებში (არა ინპუტებში)
+  const blockEvents = ['contextmenu', 'selectstart', 'dragstart'];
+  blockEvents.forEach(type => {
+    document.addEventListener(type, (e) => {
+      if (e.target.closest('input, textarea, [contenteditable="true"]')) return;
       e.preventDefault();
-    }, opts);
+    }, { capture: true });
   });
-});
+
+  // 4.3 images/links/video არ გადაითრიოს
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('img, a, video').forEach(el => {
+      el.setAttribute('draggable', 'false');
+      el.style.webkitUserDrag = 'none';
+      el.style.userDrag = 'none';
+    });
+  });
+
+  // 4.4 Touch → Click shim (ღილაკებზე მყისიერი რეაგირება)
+  if (isTouch) {
+    document.body.setAttribute('ontouchstart', ''); // iOS :active გააქტიურდეს
+
+    document.addEventListener('touchend', (e) => {
+      // ინპუტებში/ტექსტურებში ნუ ჩავერევით
+      if (e.target.closest('input, textarea, [contenteditable="true"]')) return;
+
+      // დაუშვი ღილაკები და ლინკები
+      const tappable = e.target.closest(
+        'button, [role="button"], a[href], .option-btn, #gameButton, #startBtn, #level6StartBtn, #homeStartBtn'
+      );
+      if (!tappable) return;
+      if (tappable.disabled) return;
+
+      tappable.click();
+      e.preventDefault(); // გავაუქმოთ ბრაუზერის ნაგულისხმევი „delay/ghost“
+    }, { passive: false });
+  }
+})();
+</script>
 </script>
 </body>
 
