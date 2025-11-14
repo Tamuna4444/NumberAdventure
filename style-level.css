@@ -1,0 +1,306 @@
+/* 🌟 Landing background */
+body.landing {
+  background: url("image/landing-bg.png") center center / cover no-repeat fixed;
+}
+
+/* Landing window look */
+#landingScreen .game-window {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  border-radius: 22px;
+  width: 380px;
+  height: 600px;
+  margin: 60px auto;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Landing text */
+#landingScreen .title {
+  font-size: 36px;
+  font-weight: bold;
+  color: white;
+  margin-top: 40px;
+}
+
+#landingScreen .subtitle {
+  font-size: 18px;
+  color: white;
+  margin-bottom: 40px;
+  opacity: 0.9;
+}
+
+/* Buttons */
+#landingScreen .btn.primary {
+  padding: 14px 28px;
+  font-size: 20px;
+  background: white;
+  color: black;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+#landingScreen .btn.primary:hover {
+  transform: scale(1.05);
+  background: #fffaf0;
+}
+
+
+/* Level 1 – The Beginning 🌱 */
+body.level-1 {
+  background: none;
+   background-size: cover;
+   color: white;
+  overflow: hidden; 
+  position: relative;
+}
+body.level-1::before {
+  content:"";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #e7c5c5 url("image/four.gif") center center / cover no-repeat;
+  z-index: -1;
+}
+   body.level-1 #timer,
+   body.level-1 #score {
+  color: white !important;
+}
+body.level-1 #lives{
+font-size: 24px;
+
+} 
+
+/* Level 2 – სრულად დაფაროს ეკრანი, არც ქვემოთ დარჩეს თეთრი */
+/* Level 2 – ფონად ვიყენებთ პსევდო-ელემენტს, რომ ბოლომდე დაფაროს */
+body.level-2 {
+  min-height: 100svh;       /* mobile-safe viewport */
+  background: url("image/three.gif")center/contain no-repeat;;
+  background-size:cover;
+  color:black;
+  overflow: hidden;
+  background-attachment: fixed;
+}
+
+
+
+/* Level 2-ის კონტეინერი აუცილებლად იყოს გამჭვირვალე და მთელი ეკრის სიმაღლეზე */
+#level5Container {
+  background: transparent !important;
+  min-height: 100dvh;
+  padding-top: 24px;
+  text-align: center;
+}
+/* Level 2 — სიცოცხლე, დრო, ქულა: ფერი/ჩრდილი/ზომა */
+body.level-2 #level5Lives,
+body.level-2 #level5Time,
+body.level-2 #level5ScoreValue {
+  display: block;         /* თითო ცალკე ხაზზე */
+  text-align: center;
+  margin: 6px 0;
+}
+
+/* ქულის რიცხვის შიგნით span-ებიც გაბარდეს */
+body.level-2 #level5ScoreValue span,
+body.level-2 #level5ScoreNum {
+  font-size: 24px !important;
+}
+
+/* === Level 2 – ტექსტები და ელემენტები თეთრი === */
+body.level-2 #timer,
+body.level-2 #score,
+body.level-2 #message,
+body.level-2 h1,
+body.level-2 h2,
+body.level-2 p {
+  color: black !important;
+}
+
+/* Level 2 – ღილაკები თეთრი ჩარჩოთი და შავი ტექსტით */
+body.level-2 button {
+  background-color: white !important;
+  color: black !important;
+  border: 2px solid white !important;
+  border-radius: 20px;
+  font-weight: normal;
+}
+
+body.level-2 button {
+  background-color: white;
+  border: 1px solid white;
+}
+/* Level 2 HUD stacked neatly */
+#level5Hud{
+  display: flex;
+  flex-direction: column;    /* ვაწყობთ სვეტად */
+  align-items: center;
+  gap: 10px;                 /* შუა დაშორება */
+  margin-top: 8px;
+}
+
+#level5Hud > #level5Lives,
+#level5Hud > #level5Time,
+#level5Hud > #level5ScoreValue{
+  display: block;            /* იძულებით ბლოკად */
+  line-height: 1.2;
+  text-align: center;
+  font-size: 22px;
+}
+
+#level5ScoreValue span,
+#level5ScoreNum{ font-size: 24px; }
+
+
+.option-btn {
+  background-color: white;     /* თეთრი ფონი */
+  color: black;                /* შავი ტექსტი */
+  border: 2px solid black;     /* შავი ჩარჩო */
+  border-radius: 20px;         /* მომრგვალებული */
+  padding: 12px 20px;
+  font-size: 20px;
+  margin: 10px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.option-btn:hover {
+  transform: scale(1.05);
+ 
+}
+
+body.level-3 {
+  background: url("image/five.gif") no-repeat center top;
+  background-size: cover;
+  background-position: center top; 
+  color: white;
+}
+#level3Container {
+  padding-top: 60px; 
+  text-align: center;
+}
+
+.langBtn {
+  background: transparent;
+  border: 2px solid white;
+  color: white;
+  font-size: 10px;
+  padding: 6px 12px;
+  margin: 5px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  width: 80px;
+}
+.langBtn:hover {
+  background: rgba(255,255,255,0.2);
+}
+/* Level 1 – ტექსტი და ღილაკები შავი */
+
+
+body.level-1 button {
+  background-color: transparent;
+  color: black;
+  border: 2px solid black;
+}
+
+/* --- Summary Modal buttons: ყოველთვის შავი, რომ არ დაიფაროს level-ის წესებით --- */
+#summaryModal .modal-content button {
+  background: transparent !important;
+  color: black !important;
+  border: 2px solid black !important;
+  box-shadow: none !important;
+}
+#summaryModal .modal-content button:hover {
+  transform: translateY(0);       /* სურვილისამებრ */
+  filter: none;
+  opacity: 0.9;
+}
+/* Auto-hide helper for messages */
+#message, #level5Message, #level6Message { transition: opacity .3s ease; }
+
+.auto-hide { animation: msgFadeOut .4s ease 1.5s forwards; } /* 2.2s მერე ქრება */
+@keyframes msgFadeOut { to { opacity: 0; } }
+
+/* === L3 OVERRIDE — buttons bigger, highest priority === */
+body.level-3 #level6Boxes {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 1px !important;
+  margin: 50px auto 20px !important;
+}
+
+body.level-3 #level6Boxes button {
+  width: 60px !important;
+  height: 60px !important;
+  font-size: 24px !important;
+  border-radius: 24px !important;
+  background: white !important;
+  color: black !important;
+  border: 2px solid white !important;
+}
+body.level-3 #levelScoreLabel,#level6ScoreValue,#level6Time,#level6Lives{
+ font-size: 24px !important;
+}
+#level6StartBtn {
+  display: block;
+  margin: 120px auto;
+  padding: 12px 30px;      /* უფრო დიდი */
+  font-size: 30px;         /* ტექსტის ზომა გაიზარდა */
+  border-radius: 20px;
+  border: 2px solid white;
+  background: rgba(255,255,255,0.8);
+  color: black;
+  font-weight:normal;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+#level6StartBtn:hover {
+  transform: scale(1.05);
+  background: white;
+}
+/* 📱 Mobile: დააპატარავე ფანჯარა და დატოვე გიფი ხილული */
+@media (max-width: 768px) {
+  .game-window {
+    width: 78%;
+    max-width: 300px;
+    height: 500px !important;   /* აღარ ექნება ფიქსირებული სიმაღლე */
+    min-height: 340px;
+    margin: 48px auto;         /* ზემოთ/ქვემოთ ადგილი — გიფი ჩანდეს */
+    border-radius: 20px;
+
+  }
+
+  /* შიდა კონტეინერები გამჭვირვალე იყოს, რომ „ორმაგი პანელი“ არ გამოვიდეს */
+  #startScreen,
+  #gameContainer,
+  #level5Container,
+  #level6Container {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: 0 !important;
+  }
+
+  .window-body { padding: 14px; }  /* ოდნავ უფრო მჭიდრო შიგთავსი */
+}
+/* Level 3 – Главное меню ღილაკი ქვემოთ, ზუსტად Level 2-ის მსგავსად */
+#level6Container .level-window {
+  position: relative;
+  padding-bottom: 90px; /* ადგილი ღილაკისთვის */
+}
+
+#mainMenuBtn6 {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  width: 140px;
+  text-align: center;
+}
+

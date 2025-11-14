@@ -1,0 +1,740 @@
+
+#startScreen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  gap: 15px;
+  min-height: 100vh; /* height კი არა */
+  width: 100vw;
+  padding: 20px;
+  gap: 15px;
+
+  color: white;
+  text-align: center;
+
+  box-sizing: border-box;
+}
+ 
+#startScreen h1 {
+ margin-top: 20px; 
+}
+#startScreen p {
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+#startScreen button {
+  width: 80%;
+  max-width: 200px;
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 15px;
+  background-color: white;
+  color: black;              
+  border: white;   
+  cursor: pointer;
+  transition: background 0.3s;
+  
+}
+
+#startScreen button:hover {
+  background-color: white;
+}
+html, body {
+  height: 100%;
+}
+body {
+  font-family: sans-serif;
+  text-align: center;
+  margin-top: 50px;
+  background-color: #f8f9fa;
+}
+
+  #message {
+    color: black;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px black; 
+  }
+  
+
+  #timer {
+    font-size: 20px;
+    margin-top: 20px;
+    
+  }
+  #score {
+    font-size: 20px;
+    margin-top: 20px;
+  }
+ button {
+  margin: 10px;
+  padding: 10px 10px;
+  font-size: 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  background-color: white;
+  color: black; 
+}
+button:hover {
+  transform: scale(1.05);
+}
+input[type="number"] {
+  padding: 12px 16px;
+  font-size: 15px;
+  width: 50px;
+  border-radius: 6px;
+}
+#guessInput {
+  padding: 12px 16px;
+  font-size: 20px;
+  width: 80px;
+  border-radius: 8px;
+
+}
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+}
+
+  @media (max-width: 600px) {
+      .language-container {
+        top: 10px;
+        left: 10px;
+        right: auto;
+      }
+
+      .language-label {
+        font-size: 12px;
+      }
+
+      .language-select {
+        width: 100px;
+        font-size: 13px;
+        padding: 5px 8px;
+      }
+    
+
+
+  h1, h2, p {
+    font-size: 22px;
+    margin: 15px 0;
+  }
+.modal-content {
+    width: 90%;
+    padding: 50px;
+    font-size: 16px;
+  }
+
+
+
+ 
+
+/* სათაური */
+  #startScreen h1 {
+    font-size: 32px;
+    color: white;
+  }
+
+  #startScreen button[data-i18n="start"] {
+    font-size: 13px;
+    padding: 10px 20px;
+    width: 120px;
+    height: 50px;
+    border-radius: 10px;
+    background-color: transparent;
+    border: 2px solid black;
+    color: black;
+    cursor: pointer;
+  }
+}
+
+@media (min-width: 700px) {
+  .desktop-title {
+    display: block;
+    font-size: 32px;
+    margin-bottom: 10px;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+  }
+}
+
+#numberBoxes {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 20px;
+}
+
+.box {
+  width: 80px;
+  height: 80px;
+  background-color: black;
+  color: black;
+  font-size: 32px;
+  border: 2px solid black;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.box:hover {
+  background-color: lightgray;
+}
+
+.buttons button {
+  padding: 12px 24px;
+  font-size: 18px;
+  margin: 10px;
+  border-radius: 10px;
+  
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+#startBtn {       
+  display: block;
+  margin: 50px auto;
+  padding: 12px 30px;
+  font-size: 30px;
+  border: none;
+  border-radius: 20px;
+  background-color:white;
+  color: rgb(12, 12, 12);
+  cursor: pointer;
+font-weight: normal;
+}
+
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+}
+
+.levelBtn {
+  font-size: 18px !important;
+  padding: 10px;
+  width: 90px;
+  height: 50px;
+}
+.levelBtn.locked {
+  opacity: 0.5;
+  pointer-events: none;
+  position: relative;
+}
+
+.levelBtn.locked::after {
+  content: "🔒";
+  position: absolute;
+  top: 5px;
+  right: 6px;
+  font-size: 14px;
+}
+
+
+
+
+
+/* აუცილებლად გამოჩნდეს ჩვენი სტარტ ეკრანი თავისი განლაგებით */
+body.menu #startScreen {
+  display: flex !important;
+}
+
+#mainMenuBtn1 {
+  background:  white !important;
+  color:black !important;
+  border: 2px solid black;
+   position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  z-index: 50;
+  
+}
+input, textarea, select { font-size: 16px; }
+input[type="tel"] {
+  -webkit-text-size-adjust: 100%;
+}
+  #mainMenuBtn5 {
+  background: white !important;
+  color: black !important;
+  border: 2px solid white !important;
+  border-radius: 20px;   /* აქ ციფრით აკონტროლებ მომრგვალებას */
+  padding: 10px 10px;
+   display: block;        /* აღარ იქნება inline → აღარ ჩადგება Start-ის გვერდით */
+  margin: 12px auto 0;
+   position: fixed;
+  bottom: 20px;       /* ქვემოდან მანძილი */
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: normal;
+  }
+  /* --- Main Menu და Start ღილაკები მობილურზე --- */
+/* მობილურზე ჰორიზონტალური წაწევა რომ არ იყოს */
+html, body { overflow-x: hidden; }
+
+/* Level 3 კონტენტის გამსწორებელი */
+@media (max-width: 600px) {
+  #level3Container {
+    width: 100vw;           /* მთელ სიგანეზე */
+    max-width: 100%;
+    margin: 0 auto;         /* ცენტრში */
+    padding-left: 0;
+    padding-right: 0;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+ 
+
+}
+#gameButton {
+background-color: white;   /* თეთრი ფონი */
+  color: black;              /* შავი წარწერა */
+  border: none;   /* შავი ჩარჩო */
+  border-radius: 20px;       /* მომრგვალებული კუთხეები */
+  padding: 10px 20px;
+  margin: 20px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+#gameTitle{
+  margin: 80px;
+}
+#gameButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+/* ===== Summary Modal – clean look ===== */
+#summaryModal.modal {
+  display: none;
+  position: fixed;
+  z-index: 2000;                    /* მაღლა ყველაფერზე */
+  inset: 0;
+  background: white;
+  backdrop-filter: blur(6px);
+}
+
+#summaryModal .modal-content {
+  background: #ffffff;
+  color: black;
+  width: min(60vw, 300px);
+  margin: 1vh auto;
+  padding: 23px;
+  border-radius: 18px;
+  box-shadow: none;
+  text-align: center;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+#summaryModal .modal-content h2 {
+  margin: 0 0 12px;
+  font-size: 22px;
+  font-weight: 700;
+  color: black;
+}
+
+#summaryModal .modal-content p {
+  margin: 6px 0;
+  font-size: 16px;
+  color: black;
+}
+
+
+#summaryModal .summary-actions .btn {
+  background: #000;        /* შავი ფონით, თეთრი შრიფტი */
+  color: black;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .08s ease, filter .15s ease, opacity .15s ease;
+}
+
+#summaryModal .summary-actions .btn:hover {
+  filter: brightness(1.06);
+}
+
+#summaryModal .summary-actions .btn:active {
+  transform: translateY(1px);
+}
+
+/* პატარა ეკრანებზე */
+@media (max-width: 420px) {
+  #summaryModal .modal-content { padding: 22px; }
+  #summaryModal .summary-actions { flex-direction: column; }
+}
+/* === GAME WINDOW (new) === */
+
+:root { --vh: 100vh; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+   touch-action: none;
+  overscroll-behavior: none; /* სქროლი გაქრება */
+}
+body {
+  margin: 0 !important;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url("image/four.gif") center/cover no-repeat;
+  background-attachment: fixed;
+}
+
+.game-window {
+  width: 380px;
+  height: 650px;
+  border-radius: 22px;
+  background: rgba(141, 126, 131, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.55);
+ padding: 16px 14px 96px;
+  flex-direction: column;
+  overflow: hidden;
+  max-height: calc(var(--vh) - 140px);
+}
+
+.window-header {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  background: linear-gradient(180deg, #2b2b31, #1a1a1e);
+  border-bottom: 1px solid rgba(255,255,255,0.10);
+}
+.window-title { color:#eaeaea; font-size:14px; margin-left:6px; letter-spacing:.3px; }
+
+.dot{width:12px;height:12px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.3);}
+.red{background:#ff5f56;} .yellow{background:#ffbd2e;} .green{background:#27c93f;}
+
+.window-body {
+  flex: 1; padding: 18px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-start;
+  overflow: hidden;
+}
+
+/* Override old full-screen startScreen */
+#startScreen{
+  background: none !important;
+  min-height: auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Settings panel must stay inside the window's corner */
+#settingsContainer { position: absolute; top: 10px; right: 10px; }
+/* 🌟 MAIN HOME PAGE */
+#mainHomeScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: url("image/four.gif") center center / cover no-repeat fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+#mainHomeScreen h1 {
+  color: white;
+  font-size: 42px;
+  font-weight: 700;
+  text-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+  margin-bottom: 80px;
+}
+
+#homeStartBtn {
+  background: white;
+  color: black;
+  font-size: 24px;
+  border: none;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  cursor: pointer;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  transition: 0.3s;
+}
+
+#homeStartBtn:hover {
+  transform: scale(1.05);
+  background-color: #f4f4f4;
+}
+/* ——— მხოლოდ Home Settings ——— */
+#homeSettings {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 10000;
+}
+#homeSettingsBtn {
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  color: white;
+  cursor: pointer;
+  text-shadow: 0 0 6px rgba(0,0,0,.4);
+}
+
+/* panel look */
+#homeSettingsPanel {
+  margin-top: 8px;
+  background: rgba(0,0,0,0.7);
+  color: white;
+  border-radius: 12px;
+  padding: 10px 12px;
+  min-width: 180px;
+  backdrop-filter: blur(6px);
+}
+#homeSettingsPanel.hidden { display: none; }
+#homeSettingsPanel .row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+}
+#homeSettingsPanel .langs {
+  display: flex;
+  gap: 8px;
+}
+#homeSettingsPanel button {
+  background: rgba(255,255,255,0.9);
+  color: black;
+  border: none;
+  border-radius: 8px;
+  padding: 5px 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* ❌ დამალე ძველი settings თამაშის სხვა გვერდებზე */
+.window-body #settingsContainer {
+  display: none !important;
+}
+
+ /*ეს არის 2 ლეველზე score იყო და დავმალე*/
+ .hidden {
+  display: none !important;
+}
+/* SUMMARY MODAL მცირე ფორმატით */
+#summaryModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.65); /* ნახევრად გამჭვირვალე ფონი */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+#summaryModal .modal-content {
+  background: white;
+  color: black;
+  border-radius: 18px;
+  padding: 20px 24px;
+  width: 85%;
+  max-width: 380px; /* მაქსიმუმ 380px სიგანე */
+  max-height: 75vh; /* ფანჯარა არასდროს გადააჭარბებს ეკრანის 75%-ს */
+  overflow-y: none;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  animation: popup 0.3s ease;
+}
+
+/* პატარა ტექსტი */
+#summaryModal h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+#summaryModal p {
+  font-size: 14px;
+}
+
+#createdByTamo {
+  margin-top: 10px;
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+/* ტელეფონისთვის ცოტა უფრო პატარა ზომა */
+@media (max-width: 600px) {
+  #summaryModal .modal-content {
+    width: 90%;
+    max-width: 320px;
+    padding: 15px 18px;
+  }
+
+  #summaryModal h2 {
+    font-size: 18px;
+  }
+
+  #createdByTamo {
+    font-size: 12px;
+  }
+}
+
+/* რბილი გახსნის ანიმაცია */
+@keyframes popup {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+/* LEVEL 6 ფონის სრული დაფარვა */
+#level6Container {
+  position: relative;
+  display: none;
+  width: 100%;
+  min-height: 100vh;                /* ფარავს მთელ ეკრანს */
+  background-attachment: fixed;     /* დაეხმარება სრულ დაფარვას დიდ ეკრანებზე */
+  overflow: hidden;
+  padding-bottom: 60px;             /* ადგილი ქვედა ღილაკებისთვის */
+  box-sizing: border-box;
+}
+
+
+/* 🌟 მთავარი გვერდის სათაური (Guess the Number) */
+#mainHomeScreen h2 {
+  color: white !important;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.6); /* მსუბუქი ელვარება */
+  font-weight: 700;
+  font-size: 40px;
+  text-align: center;
+  margin-bottom: 30px;
+  
+}
+/* 🏠 Home overlay – მობილურზე ავწიოთ ზემოთ */
+#mainHomeScreen{
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;                 /* ↑ იწყებს ზემოდან */
+  padding-top: 18vh;                           /* რამდენითაც გინდა ზემოთ აწევა */
+  background: url("image/four.gif") center/cover no-repeat;
+}
+
+/* iOS/მობილურის სპეციალური ფიქსი — სწორი სიმაღლე და მეტი აწევა */
+@media (max-width: 600px){
+  #mainHomeScreen{
+    min-height: 100svh;                        /* სწორი viewport სიმაღლე iOS-ზე */
+    padding-top: calc(env(safe-area-inset-top) + 20vh);
+  }
+
+  /* ზედმეტი დაშორებები არ დაგროვდეს */
+  #mainHomeScreen h1{ margin: 0 0 16px; }
+}
+
+/* სურვილისამებრ: თავად ღილაკიც ოდნავ დავაპატარავოთ, რომ ეკრანზე საიმედოდ ჩანდეს */
+@media (max-width: 600px){
+  #homeStartBtn{
+    width: 100px; height: 100px;               /* ადრე 120px იყო */
+    font-size: 20px;
+  }
+}
+html, body, #gameArea, #root {
+  -webkit-user-select: none;   /* iOS-ზე ტექსტის მონიშვნა იკრძალება */
+  -ms-user-select: none;       /* ძველი Edge */
+  user-select: none;           /* სხვა ბრაუზერებისთვის */
+  -webkit-touch-callout: none; /* აკრძალავს “Copy / Paste” მენიუს iOS-ზე */
+  -webkit-tap-highlight-color: transparent; /* ტაპზე შავი ჩარჩოს მოცილება */
+  touch-action: manipulation;  /* ზუმის და სხვა ჟესტების აკრძალვა */
+}
+
+/* ყველა ინტერაქტიული ელემენტისთვის (ღილაკები, სურათები და ა.შ.) */
+canvas, img, svg, button, a, .btn, .tile, .cell, .game-button {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* თუ სადმე გაქვს ტექსტის შესაყვანი ველი, მას დავუტოვოთ მონიშვნის უფლება */
+input, textarea, [contenteditable="true"] {
+  -webkit-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
+  touch-action: auto;
+}
+/* ===== Portrait-only mode + rotate overlay ===== */
+
+/* Overlay სტილი */
+#rotateOverlay {
+  position: fixed;
+  inset: 0;
+  display: none;               /* ნაგულისხმევად დამალულია */
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.7);
+  z-index: 9999;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+#rotateOverlay .card {
+  background: rgba(0,0,0,0.85);
+  color: #fff;
+  border-radius: 18px;
+  padding: 16px 20px;
+  max-width: 320px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+/* 📱 მობილურზე ლენდსქეიპში – ვმალავთ თამაშს და ვაჩვენებთ ტექსტს */
+@media (orientation: landscape) and (max-width: 1024px) {
+  #app {
+    display: none !important;      /* თამაშის UI ქრება */
+  }
+
+  #rotateOverlay {
+    display: flex;                 /* ჩნდება ბნელი overlay ტექსტით */
+  }
+}
