@@ -23,15 +23,16 @@ YaGames.init().then(ysdk => {
   window.ysdk = ysdk;
   console.log("✅ Yandex SDK initialized");
 
-  // ვაცხადებთ, რომ ჩატვირთვა დასრულებულია
   try {
-  // if (ysdk.features && ysdk.features.LoadingAPI) {
-      // ysdk.features.LoadingAPI.ready();
-      // console.log("✅ Yandex LoadingAPI ready");
-    // }
-  } catch(e) {
+    if (ysdk.features && ysdk.features.LoadingAPI) {
+      ysdk.features.LoadingAPI.ready();
+      console.log("✅ Yandex LoadingAPI ready");
+    }
+  } catch (e) {
     console.warn("LoadingAPI not available", e);
   }
+
+  // აქვე შეგიძლია ენის ავტომატური არჩევაც, როგორც უკვე გაქვს დაგეგმილი
 
   // 🔹 აქ ჩასვი ენის ავტომატური განსაზღვრა SDK-დან
   try {
@@ -1268,8 +1269,8 @@ function renderLevel5Stage() {
     el.style.display = (el === scoreBox) ? "block" : "inline-block";
   });
 
-  // --- GameReady: UI already visible ---
-  sendGameReadyOnce();
+ 
+  
 
   // --- Autostart ---
   
