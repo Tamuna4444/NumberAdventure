@@ -270,7 +270,7 @@ body.level-3 #levelScoreLabel,#level6ScoreValue,#level6Time,#level6Lives{
   .game-window {
     width: 78%;
     max-width: 300px;
-    height: 500px !important;   /* აღარ ექნება ფიქსირებული სიმაღლე */
+    height: 500px;   /* აღარ ექნება ფიქსირებული სიმაღლე */
     min-height: 340px;
     margin: 48px auto;         /* ზემოთ/ქვემოთ ადგილი — გიფი ჩანდეს */
     border-radius: 20px;
@@ -278,9 +278,7 @@ body.level-3 #levelScoreLabel,#level6ScoreValue,#level6Time,#level6Lives{
   }
 
   /* შიდა კონტეინერები გამჭვირვალე იყოს, რომ „ორმაგი პანელი“ არ გამოვიდეს */
-  #startScreen,
-  #gameContainer,
-  #level5Container,
+ 
   #level6Container {
     background: transparent !important;
     box-shadow: none !important;
@@ -303,4 +301,21 @@ body.level-3 #levelScoreLabel,#level6ScoreValue,#level6Time,#level6Lives{
   width: 140px;
   text-align: center;
 }
+/* 📱 FIX: Level 2 – ფანჯარა ძალიან წვრილია მობილურზე */
+@media (max-width: 768px) {
+  /* გავაფართოვოთ game-window მხოლოდ Level 2-ზე */
+  body.level-2 .game-window {
+    width: 80vw;          /* თითქმის მთელ ეკრანზე */
+    max-width: 420px;     /* ზედა ზღვარი დიდ ეკრანზე */
+    height: auto;         /* აღარ ვაიძულებთ ფიქსირებულ სიმაღლეს */
+    max-height: calc(var(--vh) - 40px);
+    margin: 0px auto;
+    border-radius: 20px;
+  }
 
+  /* Level 2-ის შიდა კონტეინერი ზედმეტად აღარ გაიწელოს */
+  body.level-2 #level5Container {
+    min-height: auto;
+    padding-top: 12px;
+  }
+}

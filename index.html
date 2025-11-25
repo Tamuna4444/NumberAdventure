@@ -205,9 +205,11 @@
       if (e.target.closest('input, textarea, [contenteditable="true"]')) return;
 
       // დაუშვი ღილაკები და ლინკები
-      const tappable = e.target.closest(
-        'button, [role="button"], a[href], .option-btn, #gameButton, #startBtn, #level6StartBtn, #homeStartBtn'
-      );
+     const tappable = e.target.closest(
+  'button, [role="button"], a[href], .option-btn, #gameButton, \
+   #startBtn, #level6StartBtn, #homeStartBtn, #homeSettingsBtn, \
+   #homeSettingsPanel button, .homeLang, #homeToggleSound'
+);
       if (!tappable) return;
       if (tappable.disabled) return;
 

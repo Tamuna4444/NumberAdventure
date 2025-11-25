@@ -324,67 +324,7 @@ background-color: white;   /* თეთრი ფონი */
   box-shadow: 0 0 10px rgba(0,0,0,0.2);
 }
 
-/* ===== Summary Modal – clean look ===== */
-#summaryModal.modal {
-  display: none;
-  position: fixed;
-  z-index: 2000;                    /* მაღლა ყველაფერზე */
-  inset: 0;
-  background: white;
-  backdrop-filter: blur(6px);
-}
 
-#summaryModal .modal-content {
-  background: #ffffff;
-  color: black;
-  width: min(60vw, 300px);
-  margin: 1vh auto;
-  padding: 23px;
-  border-radius: 18px;
-  box-shadow: none;
-  text-align: center;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-}
-
-#summaryModal .modal-content h2 {
-  margin: 0 0 12px;
-  font-size: 22px;
-  font-weight: 700;
-  color: black;
-}
-
-#summaryModal .modal-content p {
-  margin: 6px 0;
-  font-size: 16px;
-  color: black;
-}
-
-
-#summaryModal .summary-actions .btn {
-  background: #000;        /* შავი ფონით, თეთრი შრიფტი */
-  color: black;
-  border: none;
-  border-radius: 12px;
-  padding: 10px 16px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform .08s ease, filter .15s ease, opacity .15s ease;
-}
-
-#summaryModal .summary-actions .btn:hover {
-  filter: brightness(1.06);
-}
-
-#summaryModal .summary-actions .btn:active {
-  transform: translateY(1px);
-}
-
-/* პატარა ეკრანებზე */
-@media (max-width: 420px) {
-  #summaryModal .modal-content { padding: 22px; }
-  #summaryModal .summary-actions { flex-direction: column; }
-}
 /* === GAME WINDOW (new) === */
 
 :root { --vh: 100vh; }
@@ -552,14 +492,15 @@ body {
   display: none !important;
 }
 /* SUMMARY MODAL მცირე ფორმატით */
+/* SUMMARY MODAL მცირე ფორმატით */
 #summaryModal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.65); /* ნახევრად გამჭვირვალე ფონი */
-  display: flex;
+  background: rgba(0, 0, 0, 0.65);
+  display: none;   /* ✔ Reload-ზე დამალული */
   align-items: center;
   justify-content: center;
   z-index: 9999;
@@ -570,10 +511,10 @@ body {
   color: black;
   border-radius: 18px;
   padding: 20px 24px;
-  width: 85%;
-  max-width: 380px; /* მაქსიმუმ 380px სიგანე */
-  max-height: 75vh; /* ფანჯარა არასდროს გადააჭარბებს ეკრანის 75%-ს */
-  overflow-y: none;
+  width: min(90vw, 380px);   /* 🔥 აქ ვაკეთებთ ფართო, მაგრამ შეზღუდულს */
+  max-width: 380px;
+  max-height: 75vh;          /* ფანჯარა არასდროს გადააჭარბებს ეკრანის 75%-ს */
+  overflow-y: auto;          /* თუ ტექსტი ბევრია, შიგნით სქროლი */
   box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
   text-align: center;
   animation: popup 0.3s ease;
@@ -598,8 +539,8 @@ body {
 /* ტელეფონისთვის ცოტა უფრო პატარა ზომა */
 @media (max-width: 600px) {
   #summaryModal .modal-content {
-    width: 90%;
-    max-width: 320px;
+    width: 90vw;
+    max-width: 340px;
     padding: 15px 18px;
   }
 
@@ -610,6 +551,10 @@ body {
   #createdByTamo {
     font-size: 12px;
   }
+}
+body.level-2 #summaryModal .modal-content {
+  width: 95vw;
+  max-width: 480px;
 }
 
 /* რბილი გახსნის ანიმაცია */
@@ -738,3 +683,8 @@ input, textarea, [contenteditable="true"] {
     display: flex;                 /* ჩნდება ბნელი overlay ტექსტით */
   }
 }
+/* === SUMMARY MODAL – საბოლოო ზომები ყველა ლეველზე === */
+
+
+
+

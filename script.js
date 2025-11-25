@@ -251,7 +251,7 @@ const translations = {
         new: "⭐New Explorer⭐",
       },
       rankDesc: {
-        grandmaster: "Flawless intuition, memory, and speed – every stage is yours!",
+        grandmaster: "Perfect feel for numbers – every stage is yours!",
         master: "Very high accuracy and excellent risk management.",
         sharp: "Fast progress – with a little practice, you’ll be at the top!",
         rising: "A great start! Try to grasp the ranges more quickly.",
@@ -330,7 +330,7 @@ const translations = {
         new: "⭐Новый исследователь⭐",
       },
       rankDesc: {
-        grandmaster: "Безупречная интуиция, память и скорость – все этапы твои!",
+        grandmaster: "Идеальное чувство чисел – все этапы твои!",
         master: "Отличная точность и управление рисками.",
         sharp: "Быстрое продвижение – немного практики, и ты на вершине!",
         rising: "Отличное начало! Попробуй угадывать диапазоны быстрее.",
