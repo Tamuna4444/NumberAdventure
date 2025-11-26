@@ -329,13 +329,16 @@ background-color: white;   /* თეთრი ფონი */
 
 :root { --vh: 100vh; }
 
+/* 🔒 Final anti-scroll lock for Yandex */
 html, body {
-  margin: 0;
-  padding: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100%;
   height: 100%;
-  overflow: hidden;
-   touch-action: none;
-  overscroll-behavior: none; /* სქროლი გაქრება */
+  max-height: 100vh;
+  overflow: hidden !important;
+  touch-action: none !important;
+  overscroll-behavior: none !important;
 }
 body {
   margin: 0 !important;

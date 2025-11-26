@@ -1,4 +1,15 @@
-// ჩასვი script.js-ის დასაწყისში
+let loadingReadySent = false;
+
+function sendGameReady() {
+  if (loadingReadySent) return;
+  if (window.ysdk && ysdk.features && ysdk.features.LoadingAPI) {
+    ysdk.features.LoadingAPI.ready();
+    console.log("✅ Yandex LoadingAPI GameReady sent from game");
+    loadingReadySent = true;
+  }
+}
+
+
 let audioCtx;
 try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
 
@@ -23,50 +34,37 @@ YaGames.init().then(ysdk => {
   window.ysdk = ysdk;
   console.log("✅ Yandex SDK initialized");
 
-  try {
-    if (ysdk.features && ysdk.features.LoadingAPI) {
-      ysdk.features.LoadingAPI.ready();
-      console.log("✅ Yandex LoadingAPI ready");
-    }
-  } catch (e) {
-    console.warn("LoadingAPI not available", e);
-  }
 
   // აქვე შეგიძლია ენის ავტომატური არჩევაც, როგორც უკვე გაქვს დაგეგმილი
 
   // 🔹 აქ ჩასვი ენის ავტომატური განსაზღვრა SDK-დან
+   // 🔹 Автоопределение языка ЧЕРЕЗ SDK при загрузке
   try {
-    // 1) ვიღებთ SDK-დან ენის კოდს
-    const sdkLang = ysdk?.environment?.i18n?.lang; // напр. "ru", "en", "tr-TR"
-    // 2) სარეზერვო ვარიანტი ბრაუზერიდან
-    const navLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
-    // 3) უბრალოდ ორი ენა გვაინტერესებს — ru / en
-    const normalize = (l) => (l || '').slice(0,2);
-    const detected = ({ ru:'ru', en:'en' }[ normalize(sdkLang) ]) 
-                  || ({ ru:'ru', en:'en' }[ normalize(navLang) ])
-                  || 'en';
+    const sdkLangRaw =
+      ysdk && ysdk.environment && ysdk.environment.i18n
+        ? ysdk.environment.i18n.lang
+        : null;
 
-    // პირველად გაშვებისას ვაწესებთ ავტომატურად SDK-ის ენას
-    if (!localStorage.getItem('lang')) {
-      localStorage.setItem('lang', detected);
-    }
+    const navLang = (navigator.language || navigator.userLanguage || "en").toLowerCase();
+    const normalize = (l) => (l || "").slice(0, 2);
 
-    // ამოვიღოთ უკვე შენახული ან SDK-ით დადგენილი
-currentLang = localStorage.getItem('lang') || detected;
+    // Поддерживаем только ru / en
+    const detected =
+      { ru: "ru", en: "en" }[normalize(sdkLangRaw)] ||
+      { ru: "ru", en: "en" }[normalize(navLang)] ||
+      "en";
 
-    // html-ში ჩავწეროთ ენა
-    document.documentElement.setAttribute('lang', currentLang);
+    // всегда берем язык из SDK/браузера, а не из localStorage
+    currentLang = detected;
 
-    // UI-ის თარგმნა და სათაურის განახლება
-    if (typeof changeLanguage === 'function') changeLanguage(currentLang);
-    if (typeof updateDocumentTitle === 'function') updateDocumentTitle(currentLang);
+    document.documentElement.setAttribute("lang", currentLang);
 
-    console.log('🌐 Language set by SDK:', sdkLang, '→ using:', currentLang);
-  } catch(err) {
-    console.warn('Language autodetect failed, fallback to EN', err);
-    document.documentElement.setAttribute('lang', 'en');
-    if (typeof changeLanguage === 'function') changeLanguage('en');
-    if (typeof updateDocumentTitle === 'function') updateDocumentTitle('en');
+    if (typeof changeLanguage === "function") changeLanguage(currentLang);
+    if (typeof updateDocumentTitle === "function") updateDocumentTitle(currentLang);
+
+    console.log("🌐 Language set by SDK:", sdkLangRaw, "→ using:", currentLang);
+  } catch (e) {
+    console.warn("Failed to set language from SDK", e);
   }
 
 }).catch(err => {
@@ -180,8 +178,7 @@ let level1Phase = 0; // 0..3
 
 
 
-// ენა აღარ ვაყენებთ ხელით აქ — SDK განსაზღვრავს
-let currentLang = localStorage.getItem("lang") || null;
+let currentLang = 'en';
 
 const translations = {
   en: {
@@ -348,18 +345,16 @@ const translations = {
 
 function changeLanguage(lang) {
   currentLang = lang;
-  localStorage.setItem("lang", lang);
 
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     const key = el.getAttribute("data-i18n");
-
-    
     if (key === "levelTitle" || key === "levelStory") return;
 
     const tr = translations[lang][key];
     if (typeof tr === "function") el.textContent = tr(0);
     else if (tr) el.textContent = tr;
   });
+
 
  
   document.querySelectorAll(".levelBtn").forEach((btn) => {
@@ -1887,12 +1882,11 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 document.querySelectorAll(".langBtn").forEach(btn => {
   btn.addEventListener("click", () => {
-    const lang = btn.getAttribute("data-lang");
-    currentLang = (lang === 'ru') ? 'ru' : 'en';
+    const lang = btn.getAttribute("data-lang") === "ru" ? "ru" : "en";
+    currentLang = lang;
     changeLanguage(currentLang);
-    localStorage.setItem("lang", currentLang);
-    document.documentElement.setAttribute('lang', currentLang);
-    if (typeof updateDocumentTitle === 'function') updateDocumentTitle(currentLang);
+    document.documentElement.setAttribute("lang", currentLang);
+    if (typeof updateDocumentTitle === "function") updateDocumentTitle(currentLang);
   });
 });
 // DOMContentLoaded-ის ბოლოს:
@@ -2220,7 +2214,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 // === MAIN HOME SCREEN → GAME ===
 function enterGame() {
-  // დამალე მთავარი ეკრანი
   const home = document.getElementById('mainHomeScreen');
   if (home) home.style.display = 'none';
 
@@ -2229,9 +2222,7 @@ function enterGame() {
   if (startScreen) {
     startScreen.style.display = 'flex'; // აჩვენებს მთავარ სტარტ ეკრანს
   }
-
-  // სურვილისამებრ შეგიძლია აქვე დაიწყოს თამაში:
-  // startGame();
+sendGameReady();
 }
 // რეალური vh კლავიატურისასაც
 (function fixViewportHeight(){
