@@ -1464,30 +1464,31 @@ function handleChoice(choice) {
     numberOptions.querySelectorAll("button").forEach(b => (b.disabled = true));
   }
 
-  if (Number(choice) === Number(level5Correct)) {
-    // ✅ სწორი პასუხი
-    const pts = (level5Part === 2) ? 30 : 20;
+if (Number(choice) === Number(level5Correct)) {
+  // ✅ სწორი პასუხი
+  const pts = (level5Part === 2) ? 30 : 20;
 
-    if (level5Message) {
-      const ok = translations[currentLang]?.level5Correct || "✅ Correct! The number was ";
-      level5Message.textContent = ok + String(level5Correct);
-    }
+  if (level5Message) {
+    const ok = translations[currentLang]?.level5Correct || "✅ Correct! The number was ";
+    level5Message.textContent = ok + String(level5Correct);
+  }
 
-    try { updateLevel5Score(pts); } catch(_) {}
+  try { updateLevel5Score(pts); } catch(_) {}
 
-    if (level5Part === 2) {
-      level5Lives = Math.min(L2_STAGE2_LIFE_CAP, (level5Lives || 0) + 1);
-      const livesEl = document.getElementById("level5Lives");
-      if (livesEl) livesEl.textContent = renderHearts(level5Lives);
-    }
+  // 💚 სიცოცხლე ყოველთვის ემატება სწორ პასუხზე (+1, max 10)
+  level5Lives = Math.min(L2_STAGE2_LIFE_CAP, (level5Lives || 0) + 1);
+  const livesEl = document.getElementById("level5Lives");
+  if (livesEl) livesEl.textContent = renderHearts(level5Lives);
 
-    setTimeout(() => {
-      if (level5Message) level5Message.textContent = "";
-      const count = (level5Part === 2 ? 4 : 3);
-      renderBlankOptions(count);
-      renderOptions(rangeStart, rangeEnd, count); // აქ renderOptions შიგნით განახლდება level5Correct
-    }, 400);
-    return;
+  setTimeout(() => {
+    if (level5Message) level5Message.textContent = "";
+    const count = (level5Part === 2 ? 4 : 3);
+    renderBlankOptions(count);
+    renderOptions(rangeStart, rangeEnd, count);
+  }, 400);
+
+  return;
+
 
   } else {
     // ❌ არასწორი
@@ -1685,24 +1686,22 @@ function checkLevel6Box(index, box) {
 
   const all = document.querySelectorAll("#level6Boxes button");
 
-  if (index === level6HiddenBoxIndex) {
-    // ✅ Correct
-    box.textContent = String(level6Correct);
-    box.style.color = "black";
+if (index === level6HiddenBoxIndex) {
+  // ✅ Correct
+  box.textContent = String(level6Correct);
+  box.style.color = "black";
 
-    addPoints((level6Part === 2) ? 30 : 20, 3);
-    const l6num = document.getElementById("level6ScoreNum");
-    if (l6num) l6num.textContent = String(getTotalScore());
+  addPoints((level6Part === 2) ? 30 : 20, 3);
+  const l6num = document.getElementById("level6ScoreNum");
+  if (l6num) l6num.textContent = String(getTotalScore());
 
-    // Stage2-ზე სწორისას +1 სიცოცხლე (cap 10)
-    if (level6Part === 2) {
-      level6Lives = Math.min(L3_LIFE_CAP, (level6Lives || 0) + 1);
-      const lbox = document.getElementById("level6Lives");
-      if (lbox) lbox.textContent = renderHearts(level6Lives);
-    }
+  // 💚 სიცოცხლე ყოველთვის ემატება სწორ პასუხზე (+1, max 10)
+  level6Lives = Math.min(L3_LIFE_CAP, (level6Lives || 0) + 1);
+  const lbox = document.getElementById("level6Lives");
+  if (lbox) lbox.textContent = renderHearts(level6Lives);
 
-    const m = document.getElementById("level6Message");
-    if (m) m.textContent = translations[currentLang]?.level6Correct || "✅ Correct!";
+  const m = document.getElementById("level6Message");
+  if (m) m.textContent = translations[currentLang]?.level6Correct || "✅ Correct!";
 
     setTimeout(() => {
       if (m) m.textContent = "";
