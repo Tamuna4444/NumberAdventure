@@ -696,9 +696,7 @@ body {
 input, button {
   touch-action: manipulation;
 }
-body {
-  overscroll-behavior: none; /* swipe-to-refresh გამორთავს */
-}
+
 
 
 

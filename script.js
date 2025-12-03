@@ -1501,14 +1501,19 @@ if (Number(choice) === Number(level5Correct)) {
     const wrongMsg = translations[currentLang]?.level5Wrong || "❌ Wrong! Correct was: ";
     if (level5Message) level5Message.textContent = wrongMsg + String(level5Correct);
 
-    if (level5Part === 1 && level5Lives <= 0) {
-      try { clearInterval(level5TimerInterval); } catch (_) {}
-      if (numberOptions) numberOptions.innerHTML = "";
-      const l5c = document.getElementById("level5Container");
-      if (l5c) l5c.style.display = "none";
-      showSummary();
-      return;
-    }
+  // 🔴 UNIVERSAL GAME OVER — Level 2 ends anytime lives == 0
+if (level5Lives <= 0) {
+    clearInterval(level5TimerInterval);
+
+    const numberOptions = document.getElementById("numberOptions");
+    if (numberOptions) numberOptions.innerHTML = "";
+
+    const l5c = document.getElementById("level5Container");
+    if (l5c) l5c.style.display = "none";
+
+    showSummary(); // ➜ სრული დასასრული Level 2-ისთვის
+    return;
+}
 
     setTimeout(() => {
       if (level5Message) level5Message.textContent = "";

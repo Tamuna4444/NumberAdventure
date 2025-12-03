@@ -319,32 +319,4 @@ body.level-3 #levelScoreLabel,#level6ScoreValue,#level6Time,#level6Lives{
     padding-top: 12px;
   }
 }
-/* 📱 Anti-overlap HUD on very small screens */
-@media (max-width: 400px) {
-  #timer,
-  #score,
-  #message,
-  #level5Lives,
-  #level5Time,
-  #level5ScoreValue,
-  #level6Lives,
-  #level6Time,
-  #level6ScoreValue {
-    font-size: 16px !important;
-    line-height: 1.2;
-  }
 
-  .option-btn,
-  #numberBoxes .box,
-  #level6Boxes button {
-    width: 56px !important;
-    height: 56px !important;
-    font-size: 20px !important;
-  }
-
-  #level5Hud {
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 4px !important;
-  }
-}
