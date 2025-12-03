@@ -686,7 +686,19 @@ input, textarea, [contenteditable="true"] {
     display: flex;                 /* ჩნდება ბნელი overlay ტექსტით */
   }
 }
-/* === SUMMARY MODAL – საბოლოო ზომები ყველა ლეველზე === */
+:root {
+  --vh: 100%;
+}
+
+body {
+  height: calc(var(--vh) * 1);
+}
+input, button {
+  touch-action: manipulation;
+}
+body {
+  overscroll-behavior: none; /* swipe-to-refresh გამორთავს */
+}
 
 
 

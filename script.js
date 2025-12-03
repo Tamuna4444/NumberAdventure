@@ -1,11 +1,11 @@
 let loadingReadySent = false;
-
 function sendGameReady() {
-  if (loadingReadySent) return;
-  if (window.ysdk && ysdk.features && ysdk.features.LoadingAPI) {
-    ysdk.features.LoadingAPI.ready();
-    console.log("✅ Yandex LoadingAPI GameReady sent from game");
+  if (!window.ysdk || loadingReadySent) return;
+  const loadingAPI = ysdk.features && ysdk.features.LoadingAPI;
+  if (loadingAPI && typeof loadingAPI.ready === "function") {
+    loadingAPI.ready();
     loadingReadySent = true;
+    console.log("✅ GameReady sent");
   }
 }
 
@@ -1854,13 +1854,23 @@ function closeSummary() {
 
 
 document.addEventListener("DOMContentLoaded", () => {
-  const savedLang = localStorage.getItem("lang") || "ru";
-  currentLang = savedLang;
-  changeLanguage(savedLang);
-  updateDocumentTitle(savedLang);
+  // 1) ვტვირთავთ პროგრესს
+  loadState();
+  setScoreUI(getTotalScore());
+
+  // 2) ვტოვებთ currentLang-ს SDK-დან; მხოლოდ მაშინ ვცვლით,
+  // თუ ადრე მოთამაშემ თვითონ აირჩია ენა და ჩავწერეთ localStorage-ში
+  const savedLang = localStorage.getItem("lang");
+  if (savedLang === "ru" || savedLang === "en") {
+    currentLang = savedLang;        // user override
+  }
+  changeLanguage(currentLang);
+  updateDocumentTitle(currentLang);
 
   const sv = document.getElementById("scoreValue");
   if (sv) sv.textContent = String(highScore);
+
+  // ... (აქ აგრძელებ როგორც გქონდა)
 
 
 
@@ -1885,6 +1895,7 @@ document.querySelectorAll(".langBtn").forEach(btn => {
     currentLang = lang;
     changeLanguage(currentLang);
     document.documentElement.setAttribute("lang", currentLang);
+    localStorage.setItem("lang", currentLang);   // ✅ ვიმახსოვრებთ
     if (typeof updateDocumentTitle === "function") updateDocumentTitle(currentLang);
   });
 });
@@ -2163,12 +2174,16 @@ if (soundBtn) {
   });
 }
 
-  langBtns.forEach(b => {
-    b.addEventListener('click', () => {
-      const lang = b.dataset.lang;
-      if (typeof changeLanguage === 'function') changeLanguage(lang);
-    });
+langBtns.forEach(b => {
+  b.addEventListener('click', () => {
+    const lang = (b.dataset.lang === "ru") ? "ru" : "en";
+    currentLang = lang;
+    if (typeof changeLanguage === 'function') changeLanguage(currentLang);
+    document.documentElement.setAttribute("lang", currentLang);
+    localStorage.setItem("lang", currentLang);
+    if (typeof updateDocumentTitle === "function") updateDocumentTitle(currentLang);
   });
+});
 });
 // === AUTO PAUSE MUSIC WHEN TAB IS HIDDEN ===
 document.addEventListener("visibilitychange", () => {
@@ -2310,3 +2325,17 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   document.head.appendChild(style);
 });
+function isIOS() {
+  return /iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
+if (isIOS()) {
+  function fixIOSHeight() {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  }
+
+  window.addEventListener('resize', fixIOSHeight);
+  window.addEventListener('orientationchange', fixIOSHeight);
+  fixIOSHeight();
+}
