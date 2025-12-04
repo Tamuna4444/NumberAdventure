@@ -261,31 +261,35 @@ body.menu #startScreen {
   background:  white !important;
   color:black !important;
   border: 2px solid black;
-   position: fixed;
+  
+  position: absolute;                       /* fixed → absolute */
   left: 50%;
   transform: translateX(-50%);
-  bottom: calc(12px + env(safe-area-inset-bottom));
-  z-index: 50;
-  
+  bottom: calc(12px + env(safe-area-inset-bottom)); /* iPhone safe area */
+  width: 140px;
+  text-align: center;
 }
 input, textarea, select { font-size: 16px; }
 input[type="tel"] {
   -webkit-text-size-adjust: 100%;
 }
-  #mainMenuBtn5 {
+#mainMenuBtn5 {
   background: white !important;
   color: black !important;
   border: 2px solid white !important;
-  border-radius: 20px;   /* აქ ციფრით აკონტროლებ მომრგვალებას */
+  border-radius: 20px;
   padding: 10px 10px;
-   display: block;        /* აღარ იქნება inline → აღარ ჩადგება Start-ის გვერდით */
+  display: block;
   margin: 12px auto 0;
-   position: fixed;
-  bottom: 20px;       /* ქვემოდან მანძილი */
+
+  position: absolute;                         /* fixed → absolute */
+  bottom: calc(12px + env(safe-area-inset-bottom));
   left: 50%;
   transform: translateX(-50%);
   font-weight: normal;
-  }
+  width: 140px;
+  text-align: center;
+}
   /* --- Main Menu და Start ღილაკები მობილურზე --- */
 /* მობილურზე ჰორიზონტალური წაწევა რომ არ იყოს */
 html, body { overflow-x: hidden; }
@@ -340,6 +344,7 @@ html, body {
   touch-action: none !important;
   overscroll-behavior: none !important;
 }
+
 body {
   margin: 0 !important;
   min-height: 100vh;
