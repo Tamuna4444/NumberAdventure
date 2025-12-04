@@ -259,15 +259,17 @@ body.menu #startScreen {
 
 #mainMenuBtn1 {
   background:  white !important;
-  color:black !important;
+  color: black !important;
   border: 2px solid black;
-  
-  position: absolute;                       /* fixed → absolute */
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: calc(12px + env(safe-area-inset-bottom)); /* iPhone safe area */
+  /* აღარ ვაკრავთ ძირს */
+  position: static;
+  left: auto;
+  bottom: auto;
+  transform: none;
+
   width: 140px;
   text-align: center;
+  margin: 16px auto 0; /* უბრალოდ ქვევით ჩაჯდება ელემენტების შემდეგ */
 }
 input, textarea, select { font-size: 16px; }
 input[type="tel"] {
@@ -290,9 +292,16 @@ input[type="tel"] {
   width: 140px;
   text-align: center;
 }
-  /* --- Main Menu და Start ღილაკები მობილურზე --- */
-/* მობილურზე ჰორიზონტალური წაწევა რომ არ იყოს */
-html, body { overflow-x: hidden; }
+/* მობილურზე რომ საერთოდ არ იყოს ბრაუზერის სკროლი/refresh */
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;          /* ვთიშავთ როგორც x, ისე y-ს */
+  overscroll-behavior: none; /* swipe-to-refresh თავიდან ასაცილებლად */
+  touch-action: none;
+}
 
 /* Level 3 კონტენტის გამსწორებელი */
 @media (max-width: 600px) {
