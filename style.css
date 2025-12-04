@@ -120,7 +120,19 @@ input[type="number"] {
         font-size: 13px;
         padding: 5px 8px;
       }
-    
+   @media (max-width: 600px) {
+  /* ყველა მთავარი მესიჯი პატარა ეკრანებზე */
+  #message,
+  #level5Message,
+  #level6Message {
+    font-size: 13px;
+    max-width: 240px;
+    margin: 8px auto 0;
+    line-height: 1.2;
+    text-align: center;
+    word-wrap: break-word;
+  }
+}
 
 
   h1, h2, p {
@@ -257,41 +269,7 @@ body.menu #startScreen {
   display: flex !important;
 }
 
-#mainMenuBtn1 {
-  background:  white !important;
-  color: black !important;
-  border: 2px solid black;
-  /* აღარ ვაკრავთ ძირს */
-  position: static;
-  left: auto;
-  bottom: auto;
-  transform: none;
 
-  width: 140px;
-  text-align: center;
-  margin: 16px auto 0; /* უბრალოდ ქვევით ჩაჯდება ელემენტების შემდეგ */
-}
-input, textarea, select { font-size: 16px; }
-input[type="tel"] {
-  -webkit-text-size-adjust: 100%;
-}
-#mainMenuBtn5 {
-  background: white !important;
-  color: black !important;
-  border: 2px solid white !important;
-  border-radius: 20px;
-  padding: 10px 10px;
-  display: block;
-  margin: 12px auto 0;
-
-  position: absolute;                         /* fixed → absolute */
-  bottom: calc(12px + env(safe-area-inset-bottom));
-  left: 50%;
-  transform: translateX(-50%);
-  font-weight: normal;
-  width: 140px;
-  text-align: center;
-}
 /* მობილურზე რომ საერთოდ არ იყოს ბრაუზერის სკროლი/refresh */
 html, body {
   width: 100%;
@@ -710,7 +688,22 @@ body {
 input, button {
   touch-action: manipulation;
 }
+/* წითელი მესიჯების გლუვი გაქრობა */
+.auto-hide {
+  animation: msgFadeOut 2.1s forwards;
+}
 
+@keyframes msgFadeOut {
+  0% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
 
 
 

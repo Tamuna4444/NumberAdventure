@@ -14,8 +14,11 @@
 
 <body class="home menu">
 <div id="app" class="portrait-only">
-  <div class="game-window">
-    <div class="window-body">
+ <div class="game-window">
+
+  <!-- BACK BUTTON INSIDE THE GAME WINDOW -->
+  <button id="backBtn" class="back-btn" aria-label="Back">←</button>
+      
       
 <!-- MAIN PAGE (Home Screen) -->
 <div id="mainHomeScreen">
@@ -71,9 +74,7 @@
           <p id="timer"><span data-i18n="timerLabel">⏱️</span> <span id="timeValue">50s</span></p>
           <p id="score"><span data-i18n="scoreLabel">🏆</span> <span id="scoreValue">0</span></p>
   
-        <button id="mainMenuBtn1" class="btn main-bottom-btn" data-i18n="mainMenu">
-  Main Menu
-</button>
+
         </div>
       </div>
 
@@ -95,7 +96,7 @@
     </div>
     <!-- /HUD -->
     
-<button id="mainMenuBtn5" class="btn main-bottom-btn" data-i18n="mainMenu" onclick="goToMainMenu()"></button>
+
   </div>
 </div>
 
@@ -112,7 +113,7 @@
             <span data-i18n="levelScoreLabel">🏆</span>
             <span id="level6ScoreNum">0</span>
           </div>
-<button id="mainMenuBtn6" class="btn main-bottom-btn" data-i18n="mainMenu" onclick="goToMainMenu()">Главное меню</button>
+
         </div>
       </div>
 

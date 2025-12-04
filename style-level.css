@@ -3,15 +3,16 @@ body.landing {
   background: url("image/landing-bg.png") center center / cover no-repeat fixed;
 }
 
-/* Landing window look */
-#landingScreen .game-window {
+body.home .game-window {
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(8px);
   border-radius: 22px;
-  width: 380px;
-  height: 600px;
-  margin: 60px auto;
-  padding: 30px;
+
+  width: 100%;          /* მთელი სიგანე */
+  max-width: 430px;     /* რომ iPhone 14 Pro Max-ზე კიდეებზე მხოლოდ ცოტა სივრცე დარჩეს */
+  height: calc(var(--vh) * 1);
+  margin: 0 auto;
+  padding: 30px 20px;
   text-align: center;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
 }
@@ -293,14 +294,7 @@ body.level-3 #levelScoreLabel,#level6ScoreValue,#level6Time,#level6Lives{
   padding-bottom: 90px; /* ადგილი ღილაკისთვის */
 }
 
-#mainMenuBtn6 {
-  position: absolute;
-  left: 50%;
-  bottom: 20px;
-  transform: translateX(-50%);
-  width: 140px;
-  text-align: center;
-}
+
 /* 📱 FIX: Level 2 – ფანჯარა ძალიან წვრილია მობილურზე */
 @media (max-width: 768px) {
   /* გავაფართოვოთ game-window მხოლოდ Level 2-ზე */
@@ -319,4 +313,3 @@ body.level-3 #levelScoreLabel,#level6ScoreValue,#level6Time,#level6Lives{
     padding-top: 12px;
   }
 }
-

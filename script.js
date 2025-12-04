@@ -450,9 +450,7 @@ document.body.addEventListener("click", (e) => {
     AudioBus.play('click');
   }
 });
-if (e.target.tagName === "BUTTON" && soundOn && userStarted) {
-  AudioBus.play('click');
-}
+
  
 const settingsBtn = document.getElementById('settingsBtn');
 const toggleSound = document.getElementById('toggleSound');
@@ -1168,7 +1166,34 @@ AudioBus.stopAll();
   try { updateLevelLocks(); } catch(_) {}
   try { applyTranslations(); } catch(_) {}
 }
- 
+function backToHome() {
+  // 1) გავაჩეროთ ყველა ტაიმერი
+  try { clearInterval(timer); } catch (_) {}
+  try { clearInterval(level5TimerInterval); } catch (_) {}
+  try { clearInterval(level6Timer); } catch (_) {}
+
+  // 2) გავაჩეროთ ყველა ხმა
+  AudioBus.stopAll();
+
+  // 3) დავმალოთ თამაშის ყველა ფანჯარა
+  ["startScreen","gameContainer","level5Container","level6Container","summaryModal"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = "none";
+  });
+
+  // 4) ვაჩვენოთ მთავარი Home-ეკრანი
+  const home = document.getElementById("mainHomeScreen");
+  if (home) home.style.display = "flex";
+
+  // ❗❗ აქ იყო პრობლემა
+  // ადრე: document.body.className = "home";
+  // ახლა:
+  document.body.className = "home menu";
+
+  // 6) ისარი დავმალოთ, როცა მთავარ ეკრანზე ვართ
+  const back = document.getElementById("backBtn");
+  if (back) back.style.display = "none";
+}
 
  
 
@@ -1862,9 +1887,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // 1) ვტვირთავთ პროგრესს
   loadState();
   setScoreUI(getTotalScore());
+    // ღილაკზე დაჭერის ხმები – მხოლოდ თუ თამაში უკვე დაწყებულია
+  document.body.addEventListener("click", (e) => {
+    if (e.target.tagName === "BUTTON" && soundOn && userStarted) {
+      AudioBus.play('click');
+    }
+  });
 
-  // 2) ვტოვებთ currentLang-ს SDK-დან; მხოლოდ მაშინ ვცვლით,
-  // თუ ადრე მოთამაშემ თვითონ აირჩია ენა და ჩავწერეთ localStorage-ში
   const savedLang = localStorage.getItem("lang");
   if (savedLang === "ru" || savedLang === "en") {
     currentLang = savedLang;        // user override
@@ -2089,14 +2118,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 // მიამაგრე ღილაკებზე
-const mm1 = document.getElementById("mainMenuBtn1");
-if (mm1) mm1.addEventListener("click", handleMainMenuClick);
 
-const mm5 = document.getElementById("mainMenuBtn5");
-if (mm5) mm5.addEventListener("click", handleMainMenuClick);
-
-const mm6 = document.getElementById("mainMenuBtn6");
-if (mm6) mm6.addEventListener("click", handleMainMenuClick);
 // NEW: Summary modal-ის Main Menu ღილაკი
 const mmSummary = document.getElementById("summaryMainMenuBtn");
 if (mmSummary) {
@@ -2221,13 +2243,26 @@ document.addEventListener("visibilitychange", () => {
   }, { passive: false });
 })();
 // HOME → GAME გადართვა
+// HOME → GAME გადართვა და BACK ისარი
 document.addEventListener('DOMContentLoaded', () => {
   const homeStart = document.getElementById('homeStartBtn');
+  const backBtn   = document.getElementById('backBtn');
+
+  // Home-ის Start ღილაკი
   if (homeStart) {
     homeStart.addEventListener('click', () => {
-      document.body.classList.remove('home');   // ქრება Home overlay
-      // სურვილისამებრ შეგიძლია აქვე დაიწყოს Level 1:
-      // startGame();
+      document.body.classList.remove('home'); // ქრება Home overlay
+      // თვითონ HTML-ში უკვე გაქვს onclick="enterGame()", ამიტომ აქ არაფერს ვამატებთ
+    });
+  }
+
+  // Back ისარი ↩️
+  if (backBtn) {
+    backBtn.style.display = 'none'; // თავიდან დამალული იყოს
+
+    backBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      backToHome();   // შენი ფუნქცია, რომელიც უკვე წერია ზევით
     });
   }
 });
@@ -2236,13 +2271,24 @@ function enterGame() {
   const home = document.getElementById('mainHomeScreen');
   if (home) home.style.display = 'none';
 
-  // აჩვენე თამაშის ფანჯარა
   const startScreen = document.getElementById('startScreen');
   if (startScreen) {
-    startScreen.style.display = 'flex'; // აჩვენებს მთავარ სტარტ ეკრანს
+    startScreen.style.display = 'flex';
   }
-sendGameReady();
+
+ const backBtn = document.getElementById('backBtn');
+if (backBtn) {
+  backBtn.style.display = 'flex';
+  backBtn.onclick = (e) => {
+    e.preventDefault();
+    goToMainMenu();   // ← BACK ძველი Home-ზე კი არა, სტარტ მენიუზე მიდის
+  };
+}  // ან 'inline-flex'
+
+  sendGameReady();
 }
+
+
 // რეალური vh კლავიატურისასაც
 (function fixViewportHeight(){
   const root = document.documentElement;
