@@ -316,9 +316,7 @@ background-color: white;   /* თეთრი ფონი */
 }
 
 
-/* === GAME WINDOW (new) === */
 
-:root { --vh: 100vh; }
 
 /* 🔒 Final anti-scroll lock for Yandex */
 html, body {
@@ -679,13 +677,7 @@ input, textarea, [contenteditable="true"] {
     display: flex;                 /* ჩნდება ბნელი overlay ტექსტით */
   }
 }
-:root {
-  --vh: 100%;
-}
 
-body {
-  height: calc(var(--vh) * 1);
-}
 input, button {
     font-size: 16px !important;
 }
@@ -720,5 +712,6 @@ input, button {
     margin-top: 10px;
   }
 }
+
 
 

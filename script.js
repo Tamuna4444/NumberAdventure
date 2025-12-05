@@ -2376,17 +2376,3 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   document.head.appendChild(style);
 });
-function isIOS() {
-  return /iPhone|iPad|iPod/i.test(navigator.userAgent);
-}
-
-if (isIOS()) {
-  function fixIOSHeight() {
-    const vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
-  }
-
-  window.addEventListener('resize', fixIOSHeight);
-  window.addEventListener('orientationchange', fixIOSHeight);
-  fixIOSHeight();
-}
