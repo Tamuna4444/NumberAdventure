@@ -96,6 +96,7 @@ body.level-2 {
   min-height: 100dvh;
   padding-top: 24px;
   text-align: center;
+  
 }
 /* Level 2 — სიცოცხლე, დრო, ქულა: ფერი/ჩრდილი/ზომა */
 body.level-2 #level5Lives,
@@ -179,7 +180,9 @@ body.level-3 {
   background-size: cover;
   background-position: center top; 
   color: white;
+  
 }
+
 #level3Container {
   padding-top: 60px; 
   text-align: center;
