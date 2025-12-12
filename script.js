@@ -1692,7 +1692,7 @@ function renderLevel6Stage() {
   if (timeEl) { timeEl.style.display = "inline-block"; timeEl.textContent = ""; }
 
   document.getElementById("level6ScoreValue").style.display = "none";
-sendGameReadyOnce(); // UI უკვე ჩანს → ახლა ვაგზავნით GameReady-ს
+sendGameReady(); // UI უკვე ჩანს → ახლა ვაგზავნით GameReady-ს
 startLevel6();       // ავტოსტარტი L3-ზე
 }
 function setupLevel6Round() {
