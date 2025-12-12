@@ -32,7 +32,11 @@ document.addEventListener('keydown', unlockOnce);
 // --- Yandex Games SDK init ---
 YaGames.init().then(ysdk => {
   window.ysdk = ysdk;
-  console.log("✅ Yandex SDK initialized");
+  initLanguage(ysdk);
+}).catch(err => {
+  console.error(err);
+  initLanguage(null); // fallback
+
 
 
   // აქვე შეგიძლია ენის ავტომატური არჩევაც, როგორც უკვე გაქვს დაგეგმილი
@@ -179,6 +183,46 @@ let level1Phase = 0; // 0..3
 
 
 let currentLang = 'en';
+const LANG_USER_KEY = "lang_user"; // user override
+const LANG_LAST_KEY = "lang_last"; // last effective (optional)
+
+function normalizeLang(l) {
+  const x = (l || "").toLowerCase().slice(0, 2);
+  return (x === "ru" || x === "en") ? x : "en";
+}
+
+function getSdkLang(ysdk) {
+  try {
+    return normalizeLang(ysdk?.environment?.i18n?.lang);
+  } catch (_) {
+    return null;
+  }
+}
+
+function applyLang(lang, { saveLast = true } = {}) {
+  currentLang = normalizeLang(lang);
+  document.documentElement.setAttribute("lang", currentLang);
+
+  if (typeof changeLanguage === "function") changeLanguage(currentLang);
+  if (typeof updateDocumentTitle === "function") updateDocumentTitle(currentLang);
+
+  if (saveLast) localStorage.setItem(LANG_LAST_KEY, currentLang);
+  console.log("🌐 applyLang:", currentLang);
+}
+
+function initLanguage(ysdk) {
+  // 1) თუ user override აქვს — ეგაა მთავარი
+  const user = localStorage.getItem(LANG_USER_KEY);
+  if (user === "ru" || user === "en") {
+    applyLang(user, { saveLast: true });
+    return;
+  }
+
+  // 2) თუ არა — SDK → browser fallback
+  const sdk = getSdkLang(ysdk);
+  const nav = normalizeLang(navigator.language || navigator.userLanguage || "en");
+  applyLang(sdk || nav, { saveLast: true });
+}
 
 const translations = {
   en: {
@@ -1894,12 +1938,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  const savedLang = localStorage.getItem("lang");
-  if (savedLang === "ru" || savedLang === "en") {
-    currentLang = savedLang;        // user override
-  }
-  changeLanguage(currentLang);
-  updateDocumentTitle(currentLang);
+
 
   const sv = document.getElementById("scoreValue");
   if (sv) sv.textContent = String(highScore);
@@ -1925,19 +1964,21 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 document.querySelectorAll(".langBtn").forEach(btn => {
   btn.addEventListener("click", () => {
-    const lang = btn.getAttribute("data-lang") === "ru" ? "ru" : "en";
-    currentLang = lang;
-    changeLanguage(currentLang);
-    document.documentElement.setAttribute("lang", currentLang);
-    localStorage.setItem("lang", currentLang);   // ✅ ვიმახსოვრებთ
-    if (typeof updateDocumentTitle === "function") updateDocumentTitle(currentLang);
+    const lang = btn.dataset.lang === "ru" ? "ru" : "en";
+
+    localStorage.setItem(LANG_USER_KEY, lang); // ✅ user chose language
+    applyLang(lang);                           // ✅ apply everywhere
   });
 });
+     
+   
+  });
+
 // DOMContentLoaded-ის ბოლოს:
 const bv = document.getElementById('bestValue');
 if (bv) bv.textContent = String(highScore);
 
-}); // აქ იხურება DOMContentLoaded
+ // აქ იხურება DOMContentLoaded
 // Auto-hide red messages after a short delay (no changes elsewhere required)
 (function () {
   function attachAutoHide(el) {
