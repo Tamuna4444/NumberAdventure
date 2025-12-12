@@ -517,9 +517,9 @@ body {
 }
 
 #createdByTamo {
-  margin-top: 10px;
-  font-size: 13px;
-  opacity: 0.85;
+  margin-top: 6px;
+  font-size: 12px;
+  opacity: 0.7;
 }
 
 /* ტელეფონისთვის ცოტა უფრო პატარა ზომა */
@@ -702,6 +702,13 @@ input, button {
     margin-top: 10px;
   }
 }
-
+/* ✅ FINAL Safari + Chrome consistent summary */
+#summaryModal .modal-content {
+  width: min(88vw, 340px);
+  max-height: calc(100dvh - 140px);
+  padding: 14px 16px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
 
 
