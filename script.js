@@ -2129,6 +2129,24 @@ if (mmSummary) {
   });
 }
 });
+// === Anti-scroll / Swipe-to-refresh lock (Yandex p.1.10.2) ===
+(function lockPageScroll() {
+  // 1) Touch move block (iOS pull-to-refresh / overscroll)
+  document.addEventListener('touchmove', function (e) {
+    // ნება მივცეთ მხოლოდ იმ ადგილებს, სადაც შიდა სკროლი რეალურად საჭიროა
+  
+
+    e.preventDefault();
+  }, { passive: false });
+
+  // 2) Wheel block (desktop trackpad / mouse wheel)
+  document.addEventListener('wheel', function (e) {
+    const allow = e.target.closest('#summaryModal .modal-content');
+    if (allow) return;
+
+    e.preventDefault();
+  }, { passive: false });
+})();
 function resetLevel2UIAndState() {
   try { clearInterval(level5TimerInterval); } catch (_) {}
 
