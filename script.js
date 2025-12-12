@@ -1,13 +1,26 @@
 let loadingReadySent = false;
+
 function sendGameReady() {
   if (!window.ysdk || loadingReadySent) return;
-  const loadingAPI = ysdk.features && ysdk.features.LoadingAPI;
+
+  const loadingAPI = window.ysdk.features && window.ysdk.features.LoadingAPI;
   if (loadingAPI && typeof loadingAPI.ready === "function") {
     loadingAPI.ready();
     loadingReadySent = true;
     console.log("✅ GameReady sent");
   }
 }
+
+YaGames.init()
+  .then((ysdk) => {
+    window.ysdk = ysdk;
+    initLanguage(ysdk);   // ✅ SDK language at load
+    sendGameReady();      // ✅ GameReady at load
+  })
+  .catch((err) => {
+    console.error("❌ Yandex SDK init error:", err);
+    initLanguage(null);   // fallback
+  });
 
 
 let audioCtx;
@@ -28,21 +41,24 @@ document.addEventListener('pointerdown', unlockOnce);
 document.addEventListener('keydown', unlockOnce);
 
 
-// --- Yandex Games SDK init ---
-// --- Yandex Games SDK init ---
-YaGames.init().then(ysdk => {
-  window.ysdk = ysdk;
-  initLanguage(ysdk);
-}).catch(err => {
-  console.error(err);
-  initLanguage(null); // fallback
+YaGames.init()
+  .then((ysdk) => {
+    window.ysdk = ysdk;
 
+    // ✅ Language autodetect at load
+    initLanguage(ysdk);
 
+    // ✅ GameReady after initial setup (still “on load”, not during play)
+    sendGameReady();
+  })
+  .catch((err) => {
+    console.error("❌ Yandex SDK init error:", err);
 
-  // აქვე შეგიძლია ენის ავტომატური არჩევაც, როგორც უკვე გაქვს დაგეგმილი
+    // fallback language (browser)
+    initLanguage(null);
 
-  // 🔹 აქ ჩასვი ენის ავტომატური განსაზღვრა SDK-დან
-   // 🔹 Автоопределение языка ЧЕРЕЗ SDK при загрузке
+    // GameReady გარეშე (SDK არ ჩაიტვირთა)
+  
   try {
     const sdkLangRaw =
       ysdk && ysdk.environment && ysdk.environment.i18n
@@ -78,19 +94,7 @@ YaGames.init().then(ysdk => {
 const AUTO_START_L2 = true;
 const AUTO_START_L3 = true;
 
-// --- GameReady Once helper ---
-let __gameReadySent = false;
-function sendGameReadyOnce() {
-  if (!__gameReadySent && window.ysdk?.features?.LoadingAPI) {
-    try {
-      ysdk.features.LoadingAPI.ready();
-      __gameReadySent = true;
-      console.log("✅ GameReady sent (UI visible)");
-    } catch (e) {
-      console.warn("GameReady send failed:", e);
-    }
-  }
-}
+
 
 
 // === Persistent Session State (score/lives/level) ===
