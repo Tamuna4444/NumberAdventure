@@ -321,7 +321,7 @@ const translations = {
       total: "🏆 Общий счёт",
       ranks: {
         grandmaster: "🏅Грандмастер чисел🏅",
-        master: "🥈 Мастер стратегии 🥈",
+        master: "🥈Мастер стратегии🥈",
         sharp: "🥉Проницательный игрок🥉",
         rising: "⭐Восходящий искатель⭐",
         new: "⭐Новый исследователь⭐",
@@ -2394,3 +2394,23 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   document.head.appendChild(style);
 });
+// === FULL anti-scroll / anti-pull-to-refresh lock ===
+(function () {
+  // iOS / Android touch
+  document.addEventListener(
+    'touchmove',
+    function (e) {
+      e.preventDefault();
+    },
+    { passive: false }
+  );
+
+  // Desktop / trackpad
+  document.addEventListener(
+    'wheel',
+    function (e) {
+      e.preventDefault();
+    },
+    { passive: false }
+  );
+})();

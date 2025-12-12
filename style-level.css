@@ -298,7 +298,7 @@ body.level-3 #levelScoreLabel,#level6ScoreValue,#level6Time,#level6Lives{
 }
 
 
-/* 📱 FIX: Level 2 – ფანჯარა ძალიან წვრილია მობილურზე */
+
 @media (max-width: 768px) {
   /* გავაფართოვოთ game-window მხოლოდ Level 2-ზე */
   body.level-2 .game-window {
